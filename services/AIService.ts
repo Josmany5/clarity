@@ -301,12 +301,22 @@ CAPABILITIES:
 - Search: "Find tasks about [topic]", "Show notes from last week"
 - Insights: "What should I focus on?", "Any bottlenecks?"
 
-IMPORTANT: If the user asks you to create tasks, you MUST respond with "TASKS_JSON:" followed by a JSON array, then provide a friendly confirmation message. Example:
-TASKS_JSON: [{"title":"Buy groceries","dueDate":"2025-11-06","urgent":true,"important":false},{"title":"Call mom","dueDate":"2025-11-08","urgent":false,"important":true}]
-I've created 2 tasks for you!
+IMPORTANT: If the user asks you to create tasks, you MUST respond with "TASKS_JSON:" followed by a JSON array, then provide a friendly confirmation message.
 
-Current date for reference: ${new Date().toISOString().split('T')[0]}
-Date formats: Use YYYY-MM-DD for dates, HH:MM for times in 24h format
+TASK SCHEDULING RULES:
+- ALWAYS parse and include dueDate when user mentions time references (tomorrow, next week, Monday, etc.)
+- ALWAYS parse and include dueTime when user mentions specific times (3pm, 10:00, morning, etc.)
+- Calculate dates relative to current date: ${new Date().toISOString().split('T')[0]}
+- Date format: YYYY-MM-DD (e.g., "2025-11-06")
+- Time format: HH:MM in 24-hour (e.g., "15:00" for 3pm, "09:00" for 9am)
+- Common conversions: morning=09:00, afternoon=14:00, evening=18:00, night=20:00
+
+Examples:
+"Buy groceries tomorrow at 3pm urgent" → TASKS_JSON: [{"title":"Buy groceries","dueDate":"${getTomorrow()}","dueTime":"15:00","urgent":true,"important":false}]
+"Important meeting next Monday 10am" → TASKS_JSON: [{"title":"Important meeting","dueDate":"${getNextMonday()}","dueTime":"10:00","urgent":false,"important":true}]
+"Call mom tomorrow morning" → TASKS_JSON: [{"title":"Call mom","dueDate":"${getTomorrow()}","dueTime":"09:00","urgent":false,"important":false}]
+
+I've created your tasks!
 
 Be helpful, concise, and data-driven. Use the stats and conversation history to give specific answers.`;
 

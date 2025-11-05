@@ -163,8 +163,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     <div
       className={`fixed z-50 transition-all duration-300 ${
         isMinimized
-          ? 'bottom-6 right-6 w-80'
-          : 'bottom-6 right-6 w-80 h-[500px]'
+          ? 'bottom-6 right-6 w-96'
+          : 'bottom-6 right-6 w-96 h-[600px]'
       }`}
     >
       <WidgetCard className="flex flex-col h-full shadow-2xl">
@@ -175,21 +175,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
               <span className="text-white text-xl">🤖</span>
             </div>
             <div>
-              <h3 className="font-bold text-text-primary">AI Assistant</h3>
-              <p className="text-xs text-text-secondary">Powered by Gemini 2.5 Flash</p>
+              <h3 className="font-bold text-text-primary">Wove</h3>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setMessages([])}
-              className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
-              aria-label="New chat"
-              title="New chat"
-            >
-              <svg className="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
             <button
               onClick={() => setIsMinimized(!isMinimized)}
               className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"

@@ -13,6 +13,7 @@ import { TemplatesPage } from './components/TemplatesPage';
 import { SystemsPage } from './components/SystemsPage';
 import { HistoryPage } from './components/HistoryPage';
 import { WorkspacesPage } from './components/WorkspacesPage';
+import { ChatHistoryPage } from './components/ChatHistoryPage';
 import { AIAssistant } from './components/AIAssistant';
 
 export interface Note {
@@ -313,6 +314,8 @@ const App: React.FC = () => {
         return <SystemsPage />;
       case 'History':
         return <HistoryPage />;
+      case 'Chat History':
+        return <ChatHistoryPage />;
       case 'Workspaces':
         return <WorkspacesPage
           workspaces={workspaces}
