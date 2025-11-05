@@ -220,12 +220,15 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
               {messages.length === 0 && (
                 <div className="text-center text-text-secondary py-12">
                   <div className="text-6xl mb-4">👋</div>
-                  <p className="font-semibold text-text-primary mb-2">Hey there!</p>
-                  <p className="text-sm">Ask me anything about your tasks, or say:</p>
-                  <div className="mt-4 space-y-2 text-sm">
-                    <p className="italic">"Create task: Buy groceries tomorrow"</p>
-                    <p className="italic">"What did I accomplish this week?"</p>
-                    <p className="italic">"Show my urgent tasks"</p>
+                  <p className="font-semibold text-text-primary mb-2">Hey! I'm Wove</p>
+                  <p className="text-sm mb-3">Your AI assistant for everything</p>
+                  <div className="mt-4 space-y-2 text-sm text-left max-w-xs mx-auto">
+                    <p className="text-text-primary font-medium">I can help with:</p>
+                    <p className="text-xs">💡 Brainstorming ideas & planning</p>
+                    <p className="text-xs">💻 Coding & technical help</p>
+                    <p className="text-xs">📚 Learning & explaining concepts</p>
+                    <p className="text-xs">✅ Managing your tasks</p>
+                    <p className="text-xs">💬 General conversation & advice</p>
                   </div>
                 </div>
               )}
