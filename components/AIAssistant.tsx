@@ -64,8 +64,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         };
         setMessages(prev => [...prev, assistantMessage]);
 
-        // Speak confirmation
-        await speak(assistantMessage.content);
+        // Auto-speak disabled to prevent browser crashes
+        // User can enable voice in Settings if needed
       } else {
         // General AI response
         const response = await getAIResponse(input, currentPage);
@@ -77,8 +77,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         };
         setMessages(prev => [...prev, assistantMessage]);
 
-        // Speak response
-        await speak(response);
+        // Auto-speak disabled to prevent browser crashes
+        // User can enable voice in Settings if needed
       }
     } catch (error: any) {
       const errorMessage: Message = {

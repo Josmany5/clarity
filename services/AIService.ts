@@ -254,24 +254,45 @@ export const getAIResponse = async (
   currentPage: string
 ): Promise<string> => {
   const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-  const projects = JSON.parse(localStorage.getItem('projects') || '[]');
   const notes = JSON.parse(localStorage.getItem('notes') || '[]');
 
-  const context = `You are a helpful AI assistant for a productivity dashboard called Clarity.
+  // Calculate productivity stats
+  const completedTasks = tasks.filter((t: any) => t.completed);
+  const urgentTasks = tasks.filter((t: any) => t.urgent && !t.completed);
+  const importantTasks = tasks.filter((t: any) => t.important && !t.completed);
+  const overdueTasks = tasks.filter((t: any) => {
+    if (!t.dueDate || t.completed) return false;
+    return new Date(t.dueDate) < new Date();
+  });
 
-Current page: ${currentPage}
-User has ${tasks.length} tasks, ${projects.length} projects, and ${notes.length} notes.
+  // Weekly stats
+  const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+  const tasksThisWeek = tasks.filter((t: any) => t.createdAt > weekAgo);
+  const completedThisWeek = tasksThisWeek.filter((t: any) => t.completed);
 
-Recent tasks:
-${tasks.slice(0, 5).map((t: any) => `- ${t.title}${t.completed ? ' ✓' : ''}`).join('\n')}
+  const context = `You are a helpful AI assistant for Clarity, a productivity dashboard.
 
-You can help with:
-- Creating tasks (e.g., "Create a task to...")
-- Analyzing productivity (e.g., "What did I do this week?")
-- Finding information (e.g., "Show my urgent tasks")
-- Providing insights
+CURRENT STATS:
+- Total tasks: ${tasks.length} (${completedTasks.length} completed, ${tasks.length - completedTasks.length} pending)
+- Urgent tasks: ${urgentTasks.length}
+- Important tasks: ${importantTasks.length}
+- Overdue tasks: ${overdueTasks.length}
+- This week: ${tasksThisWeek.length} tasks created, ${completedThisWeek.length} completed
+- Notes: ${notes.length}
 
-Be concise and helpful. If the user wants to create/modify data, explain what you would do.`;
+RECENT TASKS:
+${tasks.slice(0, 8).map((t: any) =>
+  `- ${t.title}${t.completed ? ' ✓' : ''}${t.urgent ? ' [URGENT]' : ''}${t.important ? ' [IMPORTANT]' : ''}${t.dueDate ? ` (due: ${t.dueDate})` : ''}`
+).join('\n')}
+
+COMMANDS YOU CAN HELP WITH:
+- Productivity analysis: "How productive was I this week?", "Show my completion rate"
+- Task filtering: "Show my urgent tasks", "List overdue tasks", "What's important?"
+- Weekly summaries: "Summarize my week", "What did I accomplish?"
+- Search: "Find tasks about [topic]", "Show notes from last week"
+- Insights: "What should I focus on?", "Any bottlenecks?"
+
+Be helpful, concise, and data-driven. Use the stats above to give specific answers.`;
 
   return await askGemini(userMessage, context);
 };
