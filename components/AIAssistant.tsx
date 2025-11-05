@@ -23,13 +23,26 @@ interface AIAssistantProps {
 export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // Load messages from localStorage on init
+    try {
+      const saved = localStorage.getItem('aiChatHistory');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('aiChatHistory', JSON.stringify(messages));
+  }, [messages]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -150,7 +163,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       className={`fixed z-50 transition-all duration-300 ${
         isMinimized
           ? 'bottom-6 right-6 w-80'
-          : 'bottom-6 right-6 w-96 h-[600px]'
+          : 'bottom-6 right-6 w-80 h-[500px]'
       }`}
     >
       <WidgetCard className="flex flex-col h-full shadow-2xl">
@@ -162,10 +175,20 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
             </div>
             <div>
               <h3 className="font-bold text-text-primary">AI Assistant</h3>
-              <p className="text-xs text-text-secondary">Powered by Gemini 1.5 Flash</p>
+              <p className="text-xs text-text-secondary">Powered by Gemini 2.5 Flash</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMessages([])}
+              className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
+              aria-label="New chat"
+              title="New chat"
+            >
+              <svg className="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
             <button
               onClick={() => setIsMinimized(!isMinimized)}
               className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
