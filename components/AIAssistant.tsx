@@ -18,9 +18,12 @@ interface Message {
 interface AIAssistantProps {
   currentPage: string;
   onTaskCreate?: (task: any) => void;
+  onTaskUpdate?: (task: any) => void;
+  onNoteCreate?: (note: { title: string; content: string }) => any;
+  tasks?: any[];
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onNoteCreate, tasks = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -66,22 +69,17 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       // Get AI response with conversation history
       const response = await getAIResponse(input, currentPage, messages);
 
-      // Check if AI wants to create tasks (JSON format)
-      const jsonMatch = response.match(/TASKS_JSON:\s*(\[[\s\S]*?\])/);
-
-      if (jsonMatch && onTaskCreate) {
+      // Check for task creation
+      const tasksMatch = response.match(/TASKS_JSON:\s*(\[[\s\S]*?\])/);
+      if (tasksMatch && onTaskCreate) {
         try {
-          const tasksArray = JSON.parse(jsonMatch[1]);
-
-          // Create each task
+          const tasksArray = JSON.parse(tasksMatch[1]);
           for (const taskData of tasksArray) {
-            // Convert subtasks format if needed (AI returns {title: string}, we need {id, title, completed})
             const subtasks = taskData.subtasks?.map((st: any) => ({
               id: crypto.randomUUID(),
               title: typeof st === 'string' ? st : st.title,
               completed: false,
             }));
-
             onTaskCreate({
               ...taskData,
               subtasks,
@@ -95,8 +93,61 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
       }
 
-      // Remove TASKS_JSON line from the display message
-      const displayMessage = response.replace(/TASKS_JSON:\s*\[[\s\S]*?\]\n?/, '').trim();
+      // Check for note creation
+      const noteMatch = response.match(/NOTE_JSON:\s*(\{[\s\S]*?\})/);
+      if (noteMatch && onNoteCreate) {
+        try {
+          const noteData = JSON.parse(noteMatch[1]);
+          onNoteCreate({
+            title: noteData.title,
+            content: noteData.content
+          });
+        } catch (error) {
+          console.error('Failed to parse note JSON:', error);
+        }
+      }
+
+      // Check for task update
+      const updateMatch = response.match(/TASK_UPDATE_JSON:\s*(\{[\s\S]*?\})/);
+      if (updateMatch && onTaskUpdate && tasks) {
+        try {
+          const updateData = JSON.parse(updateMatch[1]);
+          const taskToUpdate = tasks.find(t =>
+            t.title.toLowerCase().includes(updateData.taskTitle.toLowerCase())
+          );
+
+          if (taskToUpdate) {
+            const updates: any = { ...updateData.updates };
+
+            // Handle adding subtasks
+            if (updates.addSubtasks) {
+              updates.subtasks = [
+                ...(taskToUpdate.subtasks || []),
+                ...updates.addSubtasks.map((st: any) => ({
+                  id: crypto.randomUUID(),
+                  title: typeof st === 'string' ? st : st.title,
+                  completed: false,
+                }))
+              ];
+              delete updates.addSubtasks;
+            }
+
+            onTaskUpdate({
+              ...taskToUpdate,
+              ...updates
+            });
+          }
+        } catch (error) {
+          console.error('Failed to parse task update JSON:', error);
+        }
+      }
+
+      // Remove JSON lines from display message
+      let displayMessage = response
+        .replace(/TASKS_JSON:\s*\[[\s\S]*?\]\n?/, '')
+        .replace(/NOTE_JSON:\s*\{[\s\S]*?\}\n?/, '')
+        .replace(/TASK_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/, '')
+        .trim();
 
       const assistantMessage: Message = {
         role: 'assistant',

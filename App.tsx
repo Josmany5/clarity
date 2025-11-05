@@ -411,6 +411,18 @@ const App: React.FC = () => {
         <AIAssistant
           currentPage={activePage}
           onTaskCreate={handleAddTask}
+          onTaskUpdate={handleUpdateTask}
+          onNoteCreate={(note) => {
+            const newNote: Note = {
+              id: crypto.randomUUID(),
+              title: note.title,
+              content: note.content,
+              lastModified: Date.now(),
+            };
+            setNotes([newNote, ...notes]);
+            return newNote;
+          }}
+          tasks={tasks}
         />
       </div>
     </div>
