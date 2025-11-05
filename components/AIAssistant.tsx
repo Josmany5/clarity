@@ -50,36 +50,40 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     setIsLoading(true);
 
     try {
-      // Check if it's a task creation command
-      if (input.toLowerCase().includes('create task') || input.toLowerCase().includes('add task')) {
-        const taskData = await parseTaskCommand(input);
-        if (onTaskCreate) {
-          onTaskCreate(taskData);
+      // Get AI response with conversation history
+      const response = await getAIResponse(input, currentPage, messages);
+
+      // Check if AI wants to create tasks
+      const createTaskLines = response.split('\n').filter(line => line.trim().startsWith('CREATE_TASK:'));
+
+      if (createTaskLines.length > 0 && onTaskCreate) {
+        // Parse and create each task
+        for (const line of createTaskLines) {
+          const taskInput = line.replace('CREATE_TASK:', '').trim();
+          try {
+            const taskData = await parseTaskCommand(taskInput);
+            onTaskCreate(taskData);
+          } catch (error) {
+            console.error('Failed to create task:', error);
+          }
         }
-
-        const assistantMessage: Message = {
-          role: 'assistant',
-          content: `Task created: "${taskData.title}"${taskData.dueDate ? ` for ${taskData.dueDate}` : ''}${taskData.urgent ? ' (Urgent)' : ''}${taskData.important ? ' (Important)' : ''}`,
-          timestamp: Date.now()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-
-        // Auto-speak disabled to prevent browser crashes
-        // User can enable voice in Settings if needed
-      } else {
-        // General AI response
-        const response = await getAIResponse(input, currentPage);
-
-        const assistantMessage: Message = {
-          role: 'assistant',
-          content: response,
-          timestamp: Date.now()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-
-        // Auto-speak disabled to prevent browser crashes
-        // User can enable voice in Settings if needed
       }
+
+      // Remove CREATE_TASK lines from the display message
+      const displayMessage = response.split('\n')
+        .filter(line => !line.trim().startsWith('CREATE_TASK:'))
+        .join('\n')
+        .trim();
+
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: displayMessage || response,
+        timestamp: Date.now()
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+
+      // Auto-speak disabled to prevent browser crashes
+      // User can enable voice in Settings if needed
     } catch (error: any) {
       const errorMessage: Message = {
         role: 'assistant',

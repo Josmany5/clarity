@@ -251,7 +251,8 @@ const getNextMonday = (): string => {
 
 export const getAIResponse = async (
   userMessage: string,
-  currentPage: string
+  currentPage: string,
+  conversationHistory?: Array<{ role: string; content: string }>
 ): Promise<string> => {
   const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
   const notes = JSON.parse(localStorage.getItem('notes') || '[]');
@@ -270,6 +271,13 @@ export const getAIResponse = async (
   const tasksThisWeek = tasks.filter((t: any) => t.createdAt > weekAgo);
   const completedThisWeek = tasksThisWeek.filter((t: any) => t.completed);
 
+  // Build conversation history context
+  const historyContext = conversationHistory && conversationHistory.length > 0
+    ? `\n\nCONVERSATION HISTORY:\n${conversationHistory.slice(-6).map(msg =>
+        `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
+      ).join('\n')}\n`
+    : '';
+
   const context = `You are a helpful AI assistant for Clarity, a productivity dashboard.
 
 CURRENT STATS:
@@ -284,15 +292,21 @@ RECENT TASKS:
 ${tasks.slice(0, 8).map((t: any) =>
   `- ${t.title}${t.completed ? ' ✓' : ''}${t.urgent ? ' [URGENT]' : ''}${t.important ? ' [IMPORTANT]' : ''}${t.dueDate ? ` (due: ${t.dueDate})` : ''}`
 ).join('\n')}
-
-COMMANDS YOU CAN HELP WITH:
+${historyContext}
+CAPABILITIES:
+- When user asks you to create/add tasks, respond with: CREATE_TASK followed by the task details
 - Productivity analysis: "How productive was I this week?", "Show my completion rate"
 - Task filtering: "Show my urgent tasks", "List overdue tasks", "What's important?"
 - Weekly summaries: "Summarize my week", "What did I accomplish?"
 - Search: "Find tasks about [topic]", "Show notes from last week"
 - Insights: "What should I focus on?", "Any bottlenecks?"
 
-Be helpful, concise, and data-driven. Use the stats above to give specific answers.`;
+IMPORTANT: If the user asks you to create tasks, you MUST respond with "CREATE_TASK:" followed by each task on a new line, then provide a friendly confirmation message. Example:
+CREATE_TASK: Buy groceries tomorrow urgent
+CREATE_TASK: Call mom important
+I've created 2 tasks for you!
+
+Be helpful, concise, and data-driven. Use the stats and conversation history to give specific answers.`;
 
   return await askGemini(userMessage, context);
 };
