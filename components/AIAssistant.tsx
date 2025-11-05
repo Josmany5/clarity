@@ -112,11 +112,18 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       if (updateMatch && onTaskUpdate && tasks) {
         try {
           const updateData = JSON.parse(updateMatch[1]);
-          const taskToUpdate = tasks.find(t =>
-            t.title.toLowerCase().includes(updateData.taskTitle.toLowerCase())
-          );
+          console.log('📝 Task update request:', updateData);
+          console.log('📋 Available tasks:', tasks.map(t => t.title));
+
+          // Try to find the task - be more flexible with matching
+          const searchTerm = updateData.taskTitle.toLowerCase();
+          const taskToUpdate = tasks.find(t => {
+            const title = t.title.toLowerCase();
+            return title.includes(searchTerm) || searchTerm.includes(title);
+          });
 
           if (taskToUpdate) {
+            console.log('✅ Found task to update:', taskToUpdate.title);
             const updates: any = { ...updateData.updates };
 
             // Handle adding subtasks
@@ -132,10 +139,13 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
               delete updates.addSubtasks;
             }
 
+            console.log('🔄 Applying updates:', updates);
             onTaskUpdate({
               ...taskToUpdate,
               ...updates
             });
+          } else {
+            console.warn('❌ Could not find task matching:', updateData.taskTitle);
           }
         } catch (error) {
           console.error('Failed to parse task update JSON:', error);
