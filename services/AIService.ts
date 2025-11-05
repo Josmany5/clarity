@@ -294,17 +294,19 @@ ${tasks.slice(0, 8).map((t: any) =>
 ).join('\n')}
 ${historyContext}
 CAPABILITIES:
-- When user asks you to create/add tasks, respond with: CREATE_TASK followed by the task details
+- When user asks you to create/add tasks, respond with JSON array
 - Productivity analysis: "How productive was I this week?", "Show my completion rate"
 - Task filtering: "Show my urgent tasks", "List overdue tasks", "What's important?"
 - Weekly summaries: "Summarize my week", "What did I accomplish?"
 - Search: "Find tasks about [topic]", "Show notes from last week"
 - Insights: "What should I focus on?", "Any bottlenecks?"
 
-IMPORTANT: If the user asks you to create tasks, you MUST respond with "CREATE_TASK:" followed by each task on a new line, then provide a friendly confirmation message. Example:
-CREATE_TASK: Buy groceries tomorrow urgent
-CREATE_TASK: Call mom important
+IMPORTANT: If the user asks you to create tasks, you MUST respond with "TASKS_JSON:" followed by a JSON array, then provide a friendly confirmation message. Example:
+TASKS_JSON: [{"title":"Buy groceries","dueDate":"2025-11-06","urgent":true,"important":false},{"title":"Call mom","dueDate":"2025-11-08","urgent":false,"important":true}]
 I've created 2 tasks for you!
+
+Current date for reference: ${new Date().toISOString().split('T')[0]}
+Date formats: Use YYYY-MM-DD for dates, HH:MM for times in 24h format
 
 Be helpful, concise, and data-driven. Use the stats and conversation history to give specific answers.`;
 

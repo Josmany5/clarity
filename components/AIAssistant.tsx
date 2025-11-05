@@ -66,27 +66,28 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       // Get AI response with conversation history
       const response = await getAIResponse(input, currentPage, messages);
 
-      // Check if AI wants to create tasks
-      const createTaskLines = response.split('\n').filter(line => line.trim().startsWith('CREATE_TASK:'));
+      // Check if AI wants to create tasks (JSON format)
+      const jsonMatch = response.match(/TASKS_JSON:\s*(\[[\s\S]*?\])/);
 
-      if (createTaskLines.length > 0 && onTaskCreate) {
-        // Parse and create each task
-        for (const line of createTaskLines) {
-          const taskInput = line.replace('CREATE_TASK:', '').trim();
-          try {
-            const taskData = await parseTaskCommand(taskInput);
-            onTaskCreate(taskData);
-          } catch (error) {
-            console.error('Failed to create task:', error);
+      if (jsonMatch && onTaskCreate) {
+        try {
+          const tasksArray = JSON.parse(jsonMatch[1]);
+          // Create each task
+          for (const taskData of tasksArray) {
+            onTaskCreate({
+              ...taskData,
+              createdAt: Date.now(),
+              completed: false,
+              tags: taskData.tags || []
+            });
           }
+        } catch (error) {
+          console.error('Failed to parse tasks JSON:', error);
         }
       }
 
-      // Remove CREATE_TASK lines from the display message
-      const displayMessage = response.split('\n')
-        .filter(line => !line.trim().startsWith('CREATE_TASK:'))
-        .join('\n')
-        .trim();
+      // Remove TASKS_JSON line from the display message
+      const displayMessage = response.replace(/TASKS_JSON:\s*\[[\s\S]*?\]\n?/, '').trim();
 
       const assistantMessage: Message = {
         role: 'assistant',
