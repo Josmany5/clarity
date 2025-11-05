@@ -1,0 +1,912 @@
+import React, { useCallback, useState, MouseEvent, useEffect } from 'react';
+import ReactFlow, {
+  Node,
+  Edge,
+  Background,
+  Controls,
+  MiniMap,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Connection,
+  BackgroundVariant,
+  NodeTypes,
+  Panel,
+  useReactFlow,
+  EdgeTypes,
+  MarkerType,
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import type { Workspace, Note, Task } from '../../App';
+import { CustomNode } from './CustomNode';
+import { NodePreviewModal } from './NodePreviewModal';
+import { NodeCustomizationModal } from './NodeCustomizationModal';
+
+interface MapViewProps {
+  workspace: Workspace;
+  onUpdateWorkspace: (workspace: Workspace) => void;
+  notes: Note[];
+  tasks: Task[];
+  onUpdateNote?: (note: Note) => void;
+  onUpdateTask?: (task: Task) => void;
+}
+
+interface ContextMenu {
+  x: number;
+  y: number;
+  type?: 'canvas' | 'node' | 'edge';
+  nodeId?: string;
+  edgeId?: string;
+}
+
+const nodeTypes: NodeTypes = {
+  custom: CustomNode,
+};
+
+// Custom edge types for different connection styles
+const edgeTypes: EdgeTypes = {};
+
+export const MapView: React.FC<MapViewProps> = ({
+  workspace,
+  onUpdateWorkspace,
+  notes,
+  tasks,
+  onUpdateNote,
+  onUpdateTask,
+}) => {
+  const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  const [edgeType, setEdgeType] = useState<'default' | 'step' | 'smoothstep' | 'straight'>('smoothstep');
+  const [snapToGrid, setSnapToGrid] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
+  const [showCanvasTools, setShowCanvasTools] = useState(false); // Collapsed by default
+  const [previewModal, setPreviewModal] = useState<{
+    isOpen: boolean;
+    entityType: 'note' | 'task' | 'project' | 'goal';
+    entityId: string;
+  } | null>(null);
+  const [customizeModal, setCustomizeModal] = useState<{
+    isOpen: boolean;
+    nodeId: string;
+    currentColor: string;
+    currentEmoji: string;
+    nodeType: 'note' | 'task' | 'project' | 'goal';
+  } | null>(null);
+
+  // Convert workspace entities to React Flow nodes
+  const initialNodes: Node[] = workspace.entities.map(entity => {
+    let label = '';
+    let fullContent = '';
+    let bgColor = '#3b82f6';
+    let emoji = '📄';
+
+    if (entity.type === 'note') {
+      const note = notes.find(n => n.id === entity.entityId);
+      label = note?.title || 'Unknown Note';
+      fullContent = note?.content?.replace(/<[^>]*>/g, '').substring(0, 200) || '';
+      bgColor = '#8b5cf6';
+      emoji = '📝';
+    } else if (entity.type === 'task') {
+      const task = tasks.find(t => t.id === entity.entityId);
+      label = task?.title || 'Unknown Task';
+      fullContent = task?.dueDate ? `Due: ${task.dueDate}` : 'No due date';
+      bgColor = task?.completed ? '#10b981' : '#f59e0b';
+      emoji = task?.completed ? '✅' : '☐';
+    } else if (entity.type === 'project') {
+      label = 'Project';
+      bgColor = '#ec4899';
+      emoji = '📁';
+    } else if (entity.type === 'goal') {
+      label = 'Goal';
+      bgColor = '#06b6d4';
+      emoji = '🎯';
+    }
+
+    return {
+      id: entity.id,
+      type: 'custom',
+      position: entity.position,
+      data: {
+        label,
+        emoji,
+        type: entity.type,
+        bgColor,
+        fullContent,
+        onEdit: (newLabel: string) => handleNodeEdit(entity.id, newLabel),
+        onCustomize: () => {
+          setCustomizeModal({
+            isOpen: true,
+            nodeId: entity.id,
+            currentColor: bgColor,
+            currentEmoji: emoji,
+            nodeType: entity.type,
+          });
+        },
+        onDelete: () => handleNodeDelete(entity.id),
+        onPreview: () => {
+          setPreviewModal({
+            isOpen: true,
+            entityType: entity.type,
+            entityId: entity.entityId,
+          });
+        },
+      },
+    };
+  });
+
+  // Convert links to edges
+  const initialEdges: Edge[] = [];
+  workspace.entities.forEach(entity => {
+    entity.links.forEach(targetId => {
+      initialEdges.push({
+        id: `${entity.id}-${targetId}`,
+        source: entity.id,
+        target: targetId,
+        type: edgeType,
+        animated: true,
+        style: { stroke: '#8b5cf6', strokeWidth: 2 },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: '#8b5cf6',
+        },
+      });
+    });
+  });
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Re-sync nodes and edges when workspace ID changes (switching workspaces) or entity count changes
+  useEffect(() => {
+    const updatedNodes: Node[] = workspace.entities.map(entity => {
+      let label = '';
+      let fullContent = '';
+      let bgColor = '#3b82f6';
+      let emoji = '📄';
+
+      if (entity.type === 'note') {
+        const note = notes.find(n => n.id === entity.entityId);
+        label = note?.title || 'Unknown Note';
+        fullContent = note?.content?.replace(/<[^>]*>/g, '').substring(0, 200) || '';
+        bgColor = '#8b5cf6';
+        emoji = '📝';
+      } else if (entity.type === 'task') {
+        const task = tasks.find(t => t.id === entity.entityId);
+        label = task?.title || 'Unknown Task';
+        fullContent = task?.dueDate ? `Due: ${task.dueDate}` : 'No due date';
+        bgColor = task?.completed ? '#10b981' : '#f59e0b';
+        emoji = task?.completed ? '✅' : '☐';
+      } else if (entity.type === 'project') {
+        label = 'Project';
+        bgColor = '#ec4899';
+        emoji = '📁';
+      } else if (entity.type === 'goal') {
+        label = 'Goal';
+        bgColor = '#06b6d4';
+        emoji = '🎯';
+      }
+
+      // Override with custom colors/emojis if they exist in the entity
+      if (entity.customColor) {
+        bgColor = entity.customColor;
+      }
+      if (entity.customEmoji) {
+        emoji = entity.customEmoji;
+      }
+
+      return {
+        id: entity.id,
+        type: 'custom',
+        position: entity.position,
+        style: entity.size ? {
+          width: entity.size.width,
+          height: entity.size.height,
+        } : undefined,
+        data: {
+          label,
+          emoji,
+          type: entity.type,
+          bgColor,
+          fullContent,
+          onEdit: (newLabel: string) => handleNodeEdit(entity.id, newLabel),
+          onCustomize: () => {
+            setCustomizeModal({
+              isOpen: true,
+              nodeId: entity.id,
+              currentColor: bgColor,
+              currentEmoji: emoji,
+              nodeType: entity.type,
+            });
+          },
+          onDelete: () => handleNodeDelete(entity.id),
+          onPreview: () => {
+            setPreviewModal({
+              isOpen: true,
+              entityType: entity.type,
+              entityId: entity.entityId,
+            });
+          },
+        },
+      };
+    });
+
+    const updatedEdges: Edge[] = [];
+    workspace.entities.forEach(entity => {
+      entity.links.forEach(targetId => {
+        const edgeId = `${entity.id}-${targetId}`;
+        const savedEdgeType = workspace.edgeStyles?.[edgeId] || edgeType;
+        const savedHandles = workspace.edgeHandles?.[edgeId];
+
+        updatedEdges.push({
+          id: edgeId,
+          source: entity.id,
+          target: targetId,
+          sourceHandle: savedHandles?.sourceHandle || null,
+          targetHandle: savedHandles?.targetHandle || null,
+          type: savedEdgeType,
+          animated: true,
+          style: { stroke: '#8b5cf6', strokeWidth: 3 },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: '#8b5cf6',
+          },
+          interactionWidth: 30, // Makes the edge easier to click
+        });
+      });
+    });
+
+    setNodes(updatedNodes);
+    setEdges(updatedEdges);
+  }, [workspace.id, workspace.entities, notes, tasks, edgeType]);
+
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) => addEdge(connection, eds));
+
+      // Update workspace with new link
+      const updatedEntities = workspace.entities.map(entity => {
+        if (entity.id === connection.source && connection.target) {
+          return {
+            ...entity,
+            links: [...entity.links, connection.target],
+          };
+        }
+        return entity;
+      });
+
+      // Save the handle information
+      const edgeId = `${connection.source}-${connection.target}`;
+      const updatedEdgeHandles = {
+        ...(workspace.edgeHandles || {}),
+        [edgeId]: {
+          sourceHandle: connection.sourceHandle || undefined,
+          targetHandle: connection.targetHandle || undefined,
+        },
+      };
+
+      onUpdateWorkspace({
+        ...workspace,
+        entities: updatedEntities,
+        edgeHandles: updatedEdgeHandles,
+      });
+    },
+    [workspace, onUpdateWorkspace, setEdges]
+  );
+
+  const onEdgesDelete = useCallback(
+    (edgesToDelete: Edge[]) => {
+      edgesToDelete.forEach((edge) => {
+        // Remove the link from the workspace
+        const updatedEntities = workspace.entities.map(entity => {
+          if (entity.id === edge.source) {
+            return {
+              ...entity,
+              links: entity.links.filter(linkId => linkId !== edge.target),
+            };
+          }
+          return entity;
+        });
+
+        // Also remove the edge style and handles if they exist
+        const updatedEdgeStyles = { ...(workspace.edgeStyles || {}) };
+        const updatedEdgeHandles = { ...(workspace.edgeHandles || {}) };
+        delete updatedEdgeStyles[edge.id];
+        delete updatedEdgeHandles[edge.id];
+
+        onUpdateWorkspace({
+          ...workspace,
+          entities: updatedEntities,
+          edgeStyles: updatedEdgeStyles,
+          edgeHandles: updatedEdgeHandles,
+        });
+      });
+    },
+    [workspace, onUpdateWorkspace]
+  );
+
+  const onNodeDragStop = useCallback(
+    (_event: any, node: Node) => {
+      // Update workspace with new position
+      const updatedEntities = workspace.entities.map(entity => {
+        if (entity.id === node.id) {
+          return {
+            ...entity,
+            position: node.position,
+          };
+        }
+        return entity;
+      });
+
+      onUpdateWorkspace({
+        ...workspace,
+        entities: updatedEntities,
+      });
+    },
+    [workspace, onUpdateWorkspace]
+  );
+
+  const onNodeResizeStop = useCallback(
+    (_event: any, node: Node) => {
+      // Update workspace with new size
+      const updatedEntities = workspace.entities.map(entity => {
+        if (entity.id === node.id) {
+          return {
+            ...entity,
+            size: node.style?.width && node.style?.height ? {
+              width: typeof node.style.width === 'number' ? node.style.width : parseInt(node.style.width as string),
+              height: typeof node.style.height === 'number' ? node.style.height : parseInt(node.style.height as string),
+            } : entity.size,
+          };
+        }
+        return entity;
+      });
+
+      onUpdateWorkspace({
+        ...workspace,
+        entities: updatedEntities,
+      });
+    },
+    [workspace, onUpdateWorkspace]
+  );
+
+  const handleNodeEdit = (nodeId: string, newLabel: string) => {
+    // Update the node label in React Flow
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: newLabel,
+            },
+          };
+        }
+        return node;
+      })
+    );
+
+    // Note: This doesn't update the actual note/task - that would require
+    // a connection back to the parent component. For now, it's just visual.
+  };
+
+  const handleNodeDelete = (nodeId: string) => {
+    // Remove node from React Flow
+    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+
+    // Remove from workspace
+    const updatedEntities = workspace.entities.filter(e => e.id !== nodeId);
+    onUpdateWorkspace({
+      ...workspace,
+      entities: updatedEntities,
+    });
+  };
+
+  const handleNodeCustomize = (nodeId: string, color: string, emoji: string) => {
+    // Update the node visually in React Flow
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              bgColor: color,
+              emoji: emoji,
+            },
+          };
+        }
+        return node;
+      })
+    );
+
+    // Save custom colors/emojis to the workspace entity for persistence
+    const updatedEntities = workspace.entities.map(entity => {
+      if (entity.id === nodeId) {
+        return {
+          ...entity,
+          customColor: color,
+          customEmoji: emoji,
+        };
+      }
+      return entity;
+    });
+
+    onUpdateWorkspace({
+      ...workspace,
+      entities: updatedEntities,
+    });
+  };
+
+  const handlePaneContextMenu = useCallback((event: MouseEvent) => {
+    event.preventDefault();
+
+    if (!reactFlowInstance) return;
+
+    const bounds = (event.target as HTMLElement).getBoundingClientRect();
+    const position = reactFlowInstance.project({
+      x: event.clientX - bounds.left,
+      y: event.clientY - bounds.top,
+    });
+
+    setContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      type: 'canvas',
+    });
+  }, [reactFlowInstance]);
+
+  const handleCreateNote = () => {
+    if (!reactFlowInstance || !contextMenu) return;
+
+    const bounds = document.querySelector('.react-flow')?.getBoundingClientRect();
+    if (!bounds) return;
+
+    const position = reactFlowInstance.project({
+      x: contextMenu.x - bounds.left,
+      y: contextMenu.y - bounds.top,
+    });
+
+    const newEntity = {
+      id: crypto.randomUUID(),
+      type: 'note' as const,
+      entityId: 'new-note', // Placeholder - in real app, create actual note
+      position: { x: position.x, y: position.y },
+      links: [],
+    };
+
+    const newNode: Node = {
+      id: newEntity.id,
+      type: 'custom',
+      position: newEntity.position,
+      data: {
+        label: 'New Note',
+        emoji: '📝',
+        type: 'note',
+        bgColor: '#8b5cf6',
+        onEdit: (newLabel: string) => handleNodeEdit(newEntity.id, newLabel),
+        onDelete: () => handleNodeDelete(newEntity.id),
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+
+    onUpdateWorkspace({
+      ...workspace,
+      entities: [...workspace.entities, newEntity],
+    });
+
+    setContextMenu(null);
+  };
+
+  const handleCreateTask = () => {
+    if (!reactFlowInstance || !contextMenu) return;
+
+    const bounds = document.querySelector('.react-flow')?.getBoundingClientRect();
+    if (!bounds) return;
+
+    const position = reactFlowInstance.project({
+      x: contextMenu.x - bounds.left,
+      y: contextMenu.y - bounds.top,
+    });
+
+    const newEntity = {
+      id: crypto.randomUUID(),
+      type: 'task' as const,
+      entityId: 'new-task',
+      position: { x: position.x, y: position.y },
+      links: [],
+    };
+
+    const newNode: Node = {
+      id: newEntity.id,
+      type: 'custom',
+      position: newEntity.position,
+      data: {
+        label: 'New Task',
+        emoji: '☐',
+        type: 'task',
+        bgColor: '#f59e0b',
+        onEdit: (newLabel: string) => handleNodeEdit(newEntity.id, newLabel),
+        onDelete: () => handleNodeDelete(newEntity.id),
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+
+    onUpdateWorkspace({
+      ...workspace,
+      entities: [...workspace.entities, newEntity],
+    });
+
+    setContextMenu(null);
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  const handleExportImage = () => {
+    if (reactFlowInstance) {
+      // This would require html-to-image library
+      alert('Export feature - install html-to-image library to enable');
+    }
+  };
+
+  const handleFitView = () => {
+    if (reactFlowInstance) {
+      reactFlowInstance.fitView({ padding: 0.2, duration: 800 });
+    }
+  };
+
+  const handleZoomIn = () => {
+    if (reactFlowInstance) {
+      reactFlowInstance.zoomIn({ duration: 300 });
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (reactFlowInstance) {
+      reactFlowInstance.zoomOut({ duration: 300 });
+    }
+  };
+
+  const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge) => {
+    _event.preventDefault();
+    setContextMenu({
+      x: _event.clientX,
+      y: _event.clientY,
+      type: 'edge',
+      edgeId: edge.id,
+    });
+  }, []);
+
+  const handleDeleteEdge = () => {
+    if (!contextMenu?.edgeId) return;
+
+    const edgeToDelete = edges.find(e => e.id === contextMenu.edgeId);
+    if (edgeToDelete) {
+      onEdgesDelete([edgeToDelete]);
+    }
+    setContextMenu(null);
+  };
+
+  const handleChangeEdgeStyle = (newType: 'default' | 'step' | 'smoothstep' | 'straight') => {
+    if (!contextMenu?.edgeId) return;
+
+    // Update the edge visually in React Flow
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.id === contextMenu.edgeId) {
+          return {
+            ...edge,
+            type: newType,
+          };
+        }
+        return edge;
+      })
+    );
+
+    // Save the edge style to the workspace's edgeStyles map
+    const updatedEdgeStyles = {
+      ...(workspace.edgeStyles || {}),
+      [contextMenu.edgeId]: newType,
+    };
+
+    onUpdateWorkspace({
+      ...workspace,
+      edgeStyles: updatedEdgeStyles,
+    });
+
+    setContextMenu(null);
+  };
+
+  return (
+    <div className="w-full bg-black/5 dark:bg-white/5 rounded-lg overflow-hidden relative" style={{ height: '900px' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onEdgesDelete={onEdgesDelete}
+        onConnect={onConnect}
+        onNodeDragStop={onNodeDragStop}
+        onNodeResizeStop={onNodeResizeStop}
+        onEdgeClick={handleEdgeClick}
+        onInit={setReactFlowInstance}
+        onPaneContextMenu={handlePaneContextMenu}
+        onPaneClick={handleCloseContextMenu}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        deleteKeyCode={['Backspace', 'Delete']}
+        snapToGrid={snapToGrid}
+        snapGrid={[15, 15]}
+        fitView
+        attributionPosition="bottom-left"
+        defaultEdgeOptions={{
+          type: edgeType,
+          animated: true,
+          style: { strokeWidth: 2 },
+        }}
+        selectNodesOnDrag={false}
+        selectionOnDrag={false}
+        panOnDrag={[0, 1]}
+        selectionMode="partial"
+        panOnScroll={true}
+        zoomOnScroll={true}
+        zoomOnDoubleClick={false}
+        multiSelectionKeyCode="Shift"
+        nodesDraggable={true}
+        nodesConnectable={true}
+        nodesFocusable={true}
+        elementsSelectable={true}
+        edgesReconnectable={false}
+        minZoom={0.05}
+        maxZoom={4}
+        defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
+      >
+        {showGrid && <Background variant={BackgroundVariant.Dots} gap={20} size={1} />}
+        <Controls />
+        <MiniMap
+          nodeColor={(node) => {
+            return (node.data.bgColor as string) || '#3b82f6';
+          }}
+          maskColor="rgba(0, 0, 0, 0.1)"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}
+        />
+
+        {/* Control Panel - Collapsible */}
+        <Panel position="top-right">
+          {!showCanvasTools ? (
+            // Minimized Toggle Button
+            <button
+              onClick={() => setShowCanvasTools(true)}
+              className="bg-card-bg border border-card-border rounded-lg shadow-lg p-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              title="Show Canvas Tools"
+            >
+              <span className="text-lg">🛠️</span>
+            </button>
+          ) : (
+            // Expanded Panel
+            <div className="bg-card-bg border border-card-border rounded-lg shadow-lg p-3 space-y-2 min-w-[200px]">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-sm font-bold text-text-primary">Canvas Tools</div>
+                <button
+                  onClick={() => setShowCanvasTools(false)}
+                  className="text-text-secondary hover:text-text-primary text-lg leading-none"
+                  title="Hide Canvas Tools"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Edge Type Selector */}
+              <div className="space-y-1">
+                <label className="text-xs text-text-secondary">Connection Style</label>
+                <select
+                  value={edgeType}
+                  onChange={(e) => setEdgeType(e.target.value as any)}
+                  className="w-full text-xs px-2 py-1 bg-black/5 dark:bg-white/5 text-text-primary rounded border border-card-border focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                  <option value="default">Bezier</option>
+                  <option value="smoothstep">Smooth Step</option>
+                  <option value="step">Step</option>
+                  <option value="straight">Straight</option>
+                </select>
+              </div>
+
+              {/* Toggle Options */}
+              <div className="space-y-1 pt-2 border-t border-card-border">
+                <label className="flex items-center gap-2 text-xs text-text-primary cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={snapToGrid}
+                    onChange={(e) => setSnapToGrid(e.target.checked)}
+                    className="rounded"
+                  />
+                  Snap to Grid
+                </label>
+                <label className="flex items-center gap-2 text-xs text-text-primary cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showGrid}
+                    onChange={(e) => setShowGrid(e.target.checked)}
+                    className="rounded"
+                  />
+                  Show Grid
+                </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-1 pt-2 border-t border-card-border">
+                <button
+                  onClick={handleFitView}
+                  className="w-full text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                  🎯 Fit View
+                </button>
+                <button
+                  onClick={handleZoomIn}
+                  className="w-full text-xs px-2 py-1 bg-black/10 dark:bg-white/10 text-text-primary rounded hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+                >
+                  ➕ Zoom In
+                </button>
+                <button
+                  onClick={handleZoomOut}
+                  className="w-full text-xs px-2 py-1 bg-black/10 dark:bg-white/10 text-text-primary rounded hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+                >
+                  ➖ Zoom Out
+                </button>
+                <button
+                  onClick={handleExportImage}
+                  className="w-full text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                >
+                  📸 Export Image
+                </button>
+              </div>
+
+              {/* Info */}
+              <div className="pt-2 border-t border-card-border text-xs text-text-secondary">
+                <div>Nodes: {nodes.length}</div>
+                <div>Connections: {edges.length}</div>
+                <div className="mt-1 text-[10px] space-y-1">
+                  <p>💡 Shift+Drag to multi-select</p>
+                  <p>💡 Click line + Delete to remove</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Panel>
+      </ReactFlow>
+
+      {/* Context Menu */}
+      {contextMenu && contextMenu.type === 'canvas' && (
+        <div
+          className="absolute bg-card-bg border border-card-border rounded-lg shadow-2xl py-2 z-50 min-w-[200px]"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+        >
+          <div className="px-3 py-2 text-xs font-bold text-text-secondary uppercase border-b border-card-border mb-2">
+            Create New
+          </div>
+          <button
+            onClick={handleCreateNote}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary flex items-center gap-3 transition-colors"
+          >
+            <span className="text-xl">📝</span>
+            <span className="font-medium">Note</span>
+          </button>
+          <button
+            onClick={handleCreateTask}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary flex items-center gap-3 transition-colors"
+          >
+            <span className="text-xl">☐</span>
+            <span className="font-medium">Task</span>
+          </button>
+          <div className="border-t border-card-border my-2"></div>
+          <button
+            onClick={handleCloseContextMenu}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary flex items-center gap-3 text-sm transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      )}
+
+      {/* Edge Context Menu */}
+      {contextMenu && contextMenu.type === 'edge' && (
+        <div
+          className="absolute bg-card-bg border border-card-border rounded-lg shadow-2xl py-2 z-50 min-w-[200px]"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+        >
+          <div className="px-3 py-2 text-xs font-bold text-text-secondary uppercase border-b border-card-border mb-2">
+            Connection Style
+          </div>
+          <button
+            onClick={() => handleChangeEdgeStyle('default')}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary transition-colors"
+          >
+            Bezier Curve
+          </button>
+          <button
+            onClick={() => handleChangeEdgeStyle('smoothstep')}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary transition-colors"
+          >
+            Smooth Step
+          </button>
+          <button
+            onClick={() => handleChangeEdgeStyle('step')}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary transition-colors"
+          >
+            Step
+          </button>
+          <button
+            onClick={() => handleChangeEdgeStyle('straight')}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary transition-colors"
+          >
+            Straight Line
+          </button>
+          <div className="border-t border-card-border my-2"></div>
+          <button
+            onClick={handleDeleteEdge}
+            className="w-full text-left px-4 py-2 hover:bg-red-500/10 text-red-600 font-medium transition-colors"
+          >
+            🗑️ Delete Connection
+          </button>
+          <button
+            onClick={handleCloseContextMenu}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary text-sm transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      )}
+
+      {workspace.entities.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center text-text-secondary bg-card-bg/80 backdrop-blur-sm p-8 rounded-xl">
+            <p className="text-lg font-semibold mb-2">Empty Canvas</p>
+            <p className="text-sm mb-4">Right-click canvas to create a new item</p>
+            <div className="text-xs space-y-1 text-left">
+              <p>💡 <strong>Click node</strong> - Open preview & edit</p>
+              <p>💡 <strong>Left-click drag</strong> - Pan the canvas</p>
+              <p>💡 <strong>Right-click canvas</strong> - Create new items</p>
+              <p>💡 <strong>Double-click node</strong> - Quick edit node text</p>
+              <p>💡 <strong>Drag node</strong> - Move nodes around</p>
+              <p>💡 <strong>Connect handles</strong> - Link items together</p>
+              <p>💡 <strong>Click line + Delete/Backspace</strong> - Remove connection</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Node Preview Modal */}
+      {previewModal && (
+        <NodePreviewModal
+          isOpen={previewModal.isOpen}
+          onClose={() => setPreviewModal(null)}
+          entityType={previewModal.entityType}
+          entityId={previewModal.entityId}
+          notes={notes}
+          tasks={tasks}
+          onUpdateNote={onUpdateNote}
+          onUpdateTask={onUpdateTask}
+        />
+      )}
+
+      {/* Node Customization Modal */}
+      {customizeModal && (
+        <NodeCustomizationModal
+          isOpen={customizeModal.isOpen}
+          onClose={() => setCustomizeModal(null)}
+          currentColor={customizeModal.currentColor}
+          currentEmoji={customizeModal.currentEmoji}
+          nodeType={customizeModal.nodeType}
+          onSave={(color, emoji) => {
+            handleNodeCustomize(customizeModal.nodeId, color, emoji);
+            setCustomizeModal(null);
+          }}
+        />
+      )}
+    </div>
+  );
+};

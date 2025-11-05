@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clarity Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://rsms.me/inter/inter.css');
+      @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+      body {
+        font-family: var(--font-family, 'Inter', sans-serif);
+      }
+
+      /* Minimalist Theme - Light */
+      :root, .theme-minimalist.light {
+        --font-family: 'Inter', sans-serif;
+        --bg-primary: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --accent-primary: #9ca3af;
+        --accent-secondary: #6b7280;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --card-border: #e5e7eb;
+        --sidebar-bg: rgba(249, 250, 251, 0.85);
+        --sidebar-border: #e5e7eb;
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --blur: 16px;
+        --card-radius: 1rem;
+        --border-width: 1px;
+      }
+
+      /* Minimalist Theme - Dark */
+      .theme-minimalist.dark {
+        --font-family: 'Inter', sans-serif;
+        --bg-primary: #111827;
+        --text-primary: #f9fafb;
+        --text-secondary: #9ca3af;
+        --accent-primary: #d1d5db;
+        --accent-secondary: #9ca3af;
+        --card-bg: rgba(31, 41, 55, 0.95);
+        --card-border: rgba(75, 85, 99, 0.5);
+        --sidebar-bg: rgba(17, 24, 39, 0.85);
+        --sidebar-border: rgba(75, 85, 99, 0.5);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+        --blur: 16px;
+        --card-radius: 1rem;
+        --border-width: 1px;
+      }
+
+      /* Glass Theme - Light */
+      .theme-glass.light {
+        --font-family: 'Inter', sans-serif;
+        --bg-primary: #f0f0f0;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --accent-primary: #8b5cf6;
+        --accent-secondary: #a78bfa;
+        --card-bg: rgba(255, 255, 255, 0.6);
+        --card-border: rgba(0, 0, 0, 0.1);
+        --sidebar-bg: rgba(255, 255, 255, 0.4);
+        --sidebar-border: rgba(0, 0, 0, 0.08);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        --blur: 16px;
+        --card-radius: 1rem;
+        --border-width: 1px;
+      }
+
+      /* Glass Theme - Dark */
+      .theme-glass.dark {
+        --font-family: 'Inter', sans-serif;
+        --bg-primary: #0a0a0a;
+        --text-primary: #f9fafb;
+        --text-secondary: #9ca3af;
+        --accent-primary: #a78bfa;
+        --accent-secondary: #8b5cf6;
+        --card-bg: rgba(255, 255, 255, 0.07);
+        --card-border: rgba(255, 255, 255, 0.15);
+        --sidebar-bg: rgba(17, 17, 17, 0.5);
+        --sidebar-border: rgba(255, 255, 255, 0.1);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --blur: 16px;
+        --card-radius: 1rem;
+        --border-width: 1px;
+      }
+
+      /* Terminal Theme - Dark Only */
+      .theme-terminal, .theme-terminal.dark, .theme-terminal.light {
+        --font-family: 'Roboto Mono', monospace;
+        --bg-primary: #000000;
+        --text-primary: #00ff41;
+        --text-secondary: #00ff41a0;
+        --accent-primary: #00ff41;
+        --accent-secondary: #00ff41;
+        --card-bg: #000000;
+        --card-border: #00ff41;
+        --sidebar-bg: #000000;
+        --sidebar-border: #00ff41;
+        --shadow: none;
+        --blur: 0px;
+        --card-radius: 0rem;
+        --border-width: 1px;
+      }
+
+      /* Terminal Theme - Override light mode to use dark mode overlays */
+      .theme-terminal.light .hover\:bg-black\/10:hover,
+      .theme-terminal.light .hover\:bg-black\/20:hover,
+      .theme-terminal.light .bg-black\/5,
+      .theme-terminal.light .bg-black\/10 {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+
+      .theme-terminal.light .hover\:bg-black\/20:hover {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+      }
+
+      /* Pastel Theme - Light (default) */
+      .theme-pastel, .theme-pastel.light {
+        --font-family: 'Nunito', sans-serif;
+        --bg-primary: #fdf6e3;
+        --text-primary: #586e75;
+        --text-secondary: #93a1a1;
+        --accent-primary: #d33682;
+        --accent-secondary: #6c71c4;
+        --card-bg: #fdf6e3;
+        --card-border: #586e75;
+        --sidebar-bg: #eee8d5;
+        --sidebar-border: #93a1a1;
+        --shadow: 0px 4px 0px 0px #586e75;
+        --blur: 0px;
+        --card-radius: 1.5rem;
+        --border-width: 2px;
+      }
+
+      /* Pastel Theme - Dark */
+      .theme-pastel.dark {
+        --font-family: 'Nunito', sans-serif;
+        --bg-primary: #2d2a2e;
+        --text-primary: #e8c5de;
+        --text-secondary: #bda8c0;
+        --accent-primary: #d33682;
+        --accent-secondary: #6c71c4;
+        --card-bg: #3a3640;
+        --card-border: #e8c5de;
+        --sidebar-bg: #221f26;
+        --sidebar-border: #bda8c0;
+        --shadow: 0px 4px 0px 0px #e8c5de;
+        --blur: 0px;
+        --card-radius: 1.5rem;
+        --border-width: 2px;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'primary': '#7C3AED',
+              'primary-light': '#A78BFA',
+              'bg-primary': 'var(--bg-primary)',
+              'text-primary': 'var(--text-primary)',
+              'text-secondary': 'var(--text-secondary)',
+              'card-bg': 'var(--card-bg)',
+              'card-border': 'var(--card-border)',
+              'sidebar-bg': 'var(--sidebar-bg)',
+              'sidebar-border': 'var(--sidebar-border)',
+              'accent': 'var(--accent-primary)',
+              'accent-secondary': 'var(--accent-secondary)',
+            },
+            boxShadow: {
+               'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.1)',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
