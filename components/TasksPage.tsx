@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Task } from '../App';
+import type { Task, Subtask } from '../App';
 import { DateTimePicker } from './DateTimePicker';
 
 interface TasksPageProps {
@@ -14,6 +14,8 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
   const [view, setView] = useState<'list' | 'matrix'>('list');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [schedulingTask, setSchedulingTask] = useState<Task | null>(null);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +62,47 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
     if (window.confirm(`Delete "${task.title}"?`)) {
       onDeleteTask(task.id);
     }
+  };
+
+  const addSubtask = (task: Task, title: string) => {
+    const newSubtask: Subtask = {
+      id: crypto.randomUUID(),
+      title: title.trim(),
+      completed: false,
+    };
+    onUpdateTask({
+      ...task,
+      subtasks: [...(task.subtasks || []), newSubtask],
+    });
+  };
+
+  const toggleSubtask = (task: Task, subtaskId: string) => {
+    onUpdateTask({
+      ...task,
+      subtasks: task.subtasks?.map(st =>
+        st.id === subtaskId ? { ...st, completed: !st.completed } : st
+      ),
+    });
+  };
+
+  const deleteSubtask = (task: Task, subtaskId: string) => {
+    onUpdateTask({
+      ...task,
+      subtasks: task.subtasks?.filter(st => st.id !== subtaskId),
+    });
+  };
+
+  const updateEstimatedTime = (task: Task, minutes: number) => {
+    onUpdateTask({ ...task, estimatedTime: minutes });
+  };
+
+  const formatEstimatedTime = (minutes?: number): string => {
+    if (!minutes) return '';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
+    if (hours > 0) return `${hours}h`;
+    return `${mins}m`;
   };
 
   const filteredTasks = tasks.filter(task => {
@@ -214,19 +257,33 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
 
                     {/* Task Content */}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-lg text-text-primary ${task.completed ? 'line-through' : ''}`}>
-                        {task.title}
-                      </p>
-                      {task.dueDate && (
-                        <p className="text-xs text-text-secondary mt-1">
-                          Due: {new Date(`${task.dueDate}${task.dueTime ? `T${task.dueTime}` : ''}`).toLocaleString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                            ...(task.dueTime && { hour: 'numeric', minute: '2-digit' })
-                          })}
+                      <div className="flex items-center gap-2">
+                        <p className={`text-lg text-text-primary ${task.completed ? 'line-through' : ''}`}>
+                          {task.title}
                         </p>
-                      )}
+                        {task.subtasks && task.subtasks.length > 0 && (
+                          <span className="text-xs text-text-secondary bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded-full">
+                            {task.subtasks.filter(st => st.completed).length}/{task.subtasks.length}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 mt-1">
+                        {task.dueDate && (
+                          <p className="text-xs text-text-secondary">
+                            📅 {new Date(`${task.dueDate}${task.dueTime ? `T${task.dueTime}` : ''}`).toLocaleString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              ...(task.dueTime && { hour: 'numeric', minute: '2-digit' })
+                            })}
+                          </p>
+                        )}
+                        {task.estimatedTime && (
+                          <p className="text-xs text-text-secondary">
+                            ⏱️ {formatEstimatedTime(task.estimatedTime)}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
                     {/* Priority Dropdown */}
@@ -244,13 +301,22 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
                       <option value="critical">Critical</option>
                     </select>
 
+                    {/* Expand Button */}
+                    <button
+                      onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                      className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+                      aria-label="Expand task"
+                    >
+                      {expandedTaskId === task.id ? '▲' : '▼'}
+                    </button>
+
                     {/* Schedule Button */}
                     <button
                       onClick={() => setSchedulingTask(task)}
                       className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
                       aria-label="Schedule task"
                     >
-                      📅 Schedule
+                      📅
                     </button>
 
                     {/* Delete */}
@@ -264,6 +330,88 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
                       </svg>
                     </button>
                   </div>
+
+                  {/* Expanded View - Subtasks and Estimated Time */}
+                  {expandedTaskId === task.id && (
+                    <div className="mt-4 pt-4 border-t border-card-border">
+                      {/* Estimated Time Input */}
+                      <div className="mb-4">
+                        <label className="text-xs font-semibold text-text-secondary mb-2 block">
+                          Estimated Time
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            placeholder="Minutes"
+                            value={task.estimatedTime || ''}
+                            onChange={(e) => updateEstimatedTime(task, parseInt(e.target.value) || 0)}
+                            className="w-32 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                          />
+                          <span className="text-sm text-text-secondary py-2">minutes</span>
+                        </div>
+                      </div>
+
+                      {/* Subtasks */}
+                      <div>
+                        <label className="text-xs font-semibold text-text-secondary mb-2 block">
+                          Subtasks
+                        </label>
+                        <div className="space-y-2">
+                          {task.subtasks?.map(subtask => (
+                            <div key={subtask.id} className="flex items-center gap-2 bg-black/5 dark:bg-white/5 rounded-lg p-2">
+                              <button
+                                onClick={() => toggleSubtask(task, subtask.id)}
+                                className={`flex-shrink-0 w-4 h-4 rounded border-2 transition-colors ${
+                                  subtask.completed
+                                    ? 'bg-accent border-accent'
+                                    : 'border-text-secondary hover:border-accent'
+                                }`}
+                              >
+                                {subtask.completed && (
+                                  <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <path d="M5 13l4 4L19 7" />
+                                  </svg>
+                                )}
+                              </button>
+                              <span className={`flex-1 text-sm text-text-primary ${subtask.completed ? 'line-through' : ''}`}>
+                                {subtask.title}
+                              </span>
+                              <button
+                                onClick={() => deleteSubtask(task, subtask.id)}
+                                className="text-text-secondary hover:text-red-500 transition-colors text-lg"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              if (newSubtaskTitle.trim()) {
+                                addSubtask(task, newSubtaskTitle);
+                                setNewSubtaskTitle('');
+                              }
+                            }}
+                            className="flex gap-2"
+                          >
+                            <input
+                              type="text"
+                              value={newSubtaskTitle}
+                              onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                              placeholder="Add subtask..."
+                              className="flex-1 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                            />
+                            <button
+                              type="submit"
+                              className="px-4 py-2 bg-accent/20 text-accent rounded-lg text-sm font-semibold hover:bg-accent/30 transition-colors"
+                            >
+                              Add
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })

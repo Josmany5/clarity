@@ -31,7 +31,15 @@ export interface Task {
   important: boolean;
   dueDate?: string;
   dueTime?: string;
+  estimatedTime?: number; // in minutes
+  subtasks?: Subtask[];
   createdAt: number;
+}
+
+export interface Subtask {
+  id: string;
+  title: string;
+  completed: boolean;
 }
 
 export interface Goal {
@@ -229,7 +237,7 @@ const App: React.FC = () => {
       id: crypto.randomUUID(),
       createdAt: Date.now(),
     };
-    setTasks([newTask, ...tasks]);
+    setTasks(prevTasks => [newTask, ...prevTasks]);
   };
 
   const handleUpdateTask = (updatedTask: Task) => {

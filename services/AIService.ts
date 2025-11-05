@@ -303,18 +303,32 @@ CAPABILITIES:
 
 IMPORTANT: If the user asks you to create tasks, you MUST respond with "TASKS_JSON:" followed by a JSON array, then provide a friendly confirmation message.
 
-TASK SCHEDULING RULES:
+TASK CREATION RULES:
 - ALWAYS parse and include dueDate when user mentions time references (tomorrow, next week, Monday, etc.)
 - ALWAYS parse and include dueTime when user mentions specific times (3pm, 10:00, morning, etc.)
+- Include estimatedTime (in minutes) when user mentions duration (30 min, 2 hours, etc.)
+- Include subtasks array when user mentions steps or sub-items
 - Calculate dates relative to current date: ${new Date().toISOString().split('T')[0]}
 - Date format: YYYY-MM-DD (e.g., "2025-11-06")
 - Time format: HH:MM in 24-hour (e.g., "15:00" for 3pm, "09:00" for 9am)
 - Common conversions: morning=09:00, afternoon=14:00, evening=18:00, night=20:00
+- Time duration: 1 hour = 60 minutes, convert all durations to minutes
+
+Task Format:
+{
+  "title": "Task title",
+  "dueDate": "YYYY-MM-DD",
+  "dueTime": "HH:MM",
+  "estimatedTime": 60,  // in minutes
+  "urgent": false,
+  "important": false,
+  "subtasks": [{"title": "Step 1"}, {"title": "Step 2"}]
+}
 
 Examples:
 "Buy groceries tomorrow at 3pm urgent" → TASKS_JSON: [{"title":"Buy groceries","dueDate":"${getTomorrow()}","dueTime":"15:00","urgent":true,"important":false}]
-"Important meeting next Monday 10am" → TASKS_JSON: [{"title":"Important meeting","dueDate":"${getNextMonday()}","dueTime":"10:00","urgent":false,"important":true}]
-"Call mom tomorrow morning" → TASKS_JSON: [{"title":"Call mom","dueDate":"${getTomorrow()}","dueTime":"09:00","urgent":false,"important":false}]
+"Important meeting next Monday 10am for 2 hours" → TASKS_JSON: [{"title":"Important meeting","dueDate":"${getNextMonday()}","dueTime":"10:00","estimatedTime":120,"urgent":false,"important":true}]
+"Study for exam with steps: read chapter 1, do practice problems, review notes" → TASKS_JSON: [{"title":"Study for exam","urgent":false,"important":true,"subtasks":[{"title":"Read chapter 1"},{"title":"Do practice problems"},{"title":"Review notes"}]}]
 
 I've created your tasks!
 

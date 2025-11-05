@@ -72,10 +72,19 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       if (jsonMatch && onTaskCreate) {
         try {
           const tasksArray = JSON.parse(jsonMatch[1]);
+
           // Create each task
           for (const taskData of tasksArray) {
+            // Convert subtasks format if needed (AI returns {title: string}, we need {id, title, completed})
+            const subtasks = taskData.subtasks?.map((st: any) => ({
+              id: crypto.randomUUID(),
+              title: typeof st === 'string' ? st : st.title,
+              completed: false,
+            }));
+
             onTaskCreate({
               ...taskData,
+              subtasks,
               createdAt: Date.now(),
               completed: false,
               tags: taskData.tags || []
@@ -163,8 +172,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     <div
       className={`fixed z-50 transition-all duration-300 ${
         isMinimized
-          ? 'bottom-6 right-6 w-96'
-          : 'bottom-6 right-6 w-96 h-[600px]'
+          ? 'bottom-4 right-4 w-80 md:w-96 md:bottom-6 md:right-6'
+          : 'bottom-4 right-4 left-4 h-[70vh] md:left-auto md:w-96 md:h-[600px] md:bottom-6 md:right-6'
       }`}
     >
       <WidgetCard className="flex flex-col h-full shadow-2xl">
@@ -175,7 +184,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
               <span className="text-white text-xl">🤖</span>
             </div>
             <div>
-              <h3 className="font-bold text-text-primary">Wove</h3>
+              <h3 className="text-xl font-bold text-text-primary">Wove</h3>
             </div>
           </div>
           <div className="flex items-center gap-2">
