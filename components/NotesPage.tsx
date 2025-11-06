@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import type { Note } from '../App';
-import { NoteIcon, SunIcon, MoonIcon } from './Icons';
 import { RichTextEditor } from './RichTextEditor';
 
 interface NotesPageProps {
@@ -11,8 +10,6 @@ interface NotesPageProps {
   onDeleteNote: (id: string) => void;
   onAddNote: () => void;
   searchQuery?: string;
-  themeMode: 'light' | 'dark';
-  toggleTheme: () => void;
 }
 
 export const NotesPage: React.FC<NotesPageProps> = ({
@@ -22,9 +19,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   onUpdateNote,
   onDeleteNote,
   onAddNote,
-  searchQuery = '',
-  themeMode,
-  toggleTheme
+  searchQuery = ''
 }) => {
   // Local state for editing
   const [editTitle, setEditTitle] = useState('');

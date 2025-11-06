@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import type { Task, Subtask } from '../App';
 import { DateTimePicker } from './DateTimePicker';
-import { SunIcon, MoonIcon } from './Icons';
 
 interface TasksPageProps {
   tasks: Task[];
   onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   onUpdateTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
-  themeMode: 'light' | 'dark';
-  toggleTheme: () => void;
 }
 
-export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdateTask, onDeleteTask, themeMode, toggleTheme }) => {
+export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdateTask, onDeleteTask }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [view, setView] = useState<'list' | 'matrix'>('list');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');

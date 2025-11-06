@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { Workspace, Note, Task, ViewMode } from '../App';
 import { WidgetCard } from './WidgetCard';
-import { WorkspaceIcon, SunIcon, MoonIcon } from './Icons';
 import { MapView } from './workspace/MapView';
 import { ListView } from './workspace/ListView';
 import { TableView } from './workspace/TableView';
@@ -22,8 +21,6 @@ interface WorkspacesPageProps {
   onUpdateTask?: (task: Task) => void;
   onAddNote?: (title: string, content: string) => Note;
   onAddTask?: (task: { title: string; urgent: boolean; important: boolean; dueDate?: string; dueTime?: string }) => Task;
-  themeMode: 'light' | 'dark';
-  toggleTheme: () => void;
 }
 
 export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
@@ -39,8 +36,6 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
   onUpdateTask,
   onAddNote,
   onAddTask,
-  themeMode,
-  toggleTheme,
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState('');

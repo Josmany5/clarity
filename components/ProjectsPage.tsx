@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
-import { ProjectIcon, SunIcon, MoonIcon } from './Icons';
 import { DateTimePicker } from './DateTimePicker';
 
 interface Project {
@@ -13,12 +12,9 @@ interface Project {
   dueTime?: string;
 }
 
-interface ProjectsPageProps {
-  themeMode: 'light' | 'dark';
-  toggleTheme: () => void;
-}
+interface ProjectsPageProps {}
 
-export const ProjectsPage: React.FC<ProjectsPageProps> = ({ themeMode, toggleTheme }) => {
+export const ProjectsPage: React.FC<ProjectsPageProps> = () => {
   const [projects, setProjects] = useState<Project[]>(() => {
     try {
       const saved = localStorage.getItem('projects');

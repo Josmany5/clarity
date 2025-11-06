@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import type { Event } from '../App';
 import { DateTimePicker } from './DateTimePicker';
-import { SunIcon, MoonIcon } from './Icons';
 
 interface EventsPageProps {
   events: Event[];
   onAddEvent: (event: Omit<Event, 'id' | 'createdAt'>) => void;
   onUpdateEvent: (event: Event) => void;
   onDeleteEvent: (id: string) => void;
-  themeMode?: 'light' | 'dark';
-  toggleTheme?: () => void;
 }
 
-export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUpdateEvent, onDeleteEvent, themeMode, toggleTheme }) => {
+export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUpdateEvent, onDeleteEvent }) => {
   const [view, setView] = useState<'list' | 'week' | 'month'>('list');
   const [filter, setFilter] = useState<'all' | 'class' | 'meeting' | 'appointment' | 'other'>('all');
   const [showAddModal, setShowAddModal] = useState(false);
