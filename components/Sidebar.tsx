@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
          >
            <MenuIcon className="w-6 h-6 text-text-primary"/>
          </button>
-         {!collapsed && <h1 className="text-2xl font-bold text-text-primary ml-3">Dashboard</h1>}
+         {!collapsed && <h1 className="text-2xl font-bold text-text-primary ml-3">Prose</h1>}
       </div>
       <nav aria-label="Main navigation" className="flex-1 overflow-y-auto">
         <ul role="list" className="space-y-1">

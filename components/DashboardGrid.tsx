@@ -127,29 +127,23 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({ setActivePage, the
         <div className="lg:col-span-4 xl:col-span-1 space-y-6">
           <FocusTimer />
           <ClickableWidget onClick={() => setActivePage('Templates')}>
-              <WidgetCard className="flex items-center justify-between">
+              <WidgetCard className="flex items-center justify-between p-4">
                   <div>
-                      <h3 className="font-bold text-lg text-text-primary">Templates</h3>
-                      <p className="text-sm text-text-secondary mt-1">Pre-built workflows</p>
+                      <h3 className="font-bold text-base text-text-primary">Templates</h3>
+                      <p className="text-xs text-text-secondary mt-1">{notes.length} active</p>
                   </div>
-                  <span className="text-2xl">📋</span>
+                  <span className="text-xl">📋</span>
               </WidgetCard>
           </ClickableWidget>
           <ClickableWidget onClick={() => setActivePage('Systems')}>
-              <WidgetCard className="flex items-center justify-between">
+              <WidgetCard className="flex items-center justify-between p-4">
                   <div>
-                      <h3 className="font-bold text-lg text-text-primary">Systems</h3>
-                      <p className="text-sm text-text-secondary mt-1">Automated processes</p>
+                      <h3 className="font-bold text-base text-text-primary">Systems</h3>
+                      <p className="text-xs text-text-secondary mt-1">{tasks?.length || 0} running</p>
                   </div>
-                  <span className="text-2xl">⚙️</span>
+                  <span className="text-xl">⚙️</span>
               </WidgetCard>
           </ClickableWidget>
-          <button
-              onClick={onNewNote}
-              className="w-full flex items-center justify-center p-4 bg-card-bg backdrop-blur-xl rounded-2xl text-text-primary font-semibold hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-200 shadow-glass border border-card-border">
-              New Note
-              <span className="ml-3 w-6 h-6 bg-black/10 dark:bg-white/20 rounded-full flex items-center justify-center">+</span>
-          </button>
         </div>
       </div>
     </div>

@@ -33,14 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ title, themeMode, toggleTheme, s
       </div>
 
       <div className="flex items-center space-x-2 md:space-x-4">
-        <button
-          onClick={toggleTheme}
-          className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-          aria-label="Toggle dark mode"
-          title={`Switch to ${themeMode === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
-        </button>
+        {/* Theme toggle removed - use system preference */}
       </div>
     </header>
   );

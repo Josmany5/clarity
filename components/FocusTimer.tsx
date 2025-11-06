@@ -35,7 +35,7 @@ export const FocusTimer: React.FC = () => {
   };
 
   const handleDurationChange = (newDuration: number) => {
-    if (newDuration >= 1 && newDuration <= 120) {
+    if (newDuration >= 1 && newDuration <= 90) {
       setDuration(newDuration);
       setTimeRemaining(newDuration * 60);
       setIsActive(false);
@@ -62,19 +62,8 @@ export const FocusTimer: React.FC = () => {
         aria-label={isActive ? 'Pause focus timer' : 'Start focus timer'}
         className="cursor-pointer transition-transform duration-200 hover:scale-[1.03] hover:shadow-xl rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent"
       >
-        <WidgetCard className="flex items-center justify-between">
-          {/* Settings Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowSettings(!showSettings);
-            }}
-            className="absolute top-4 right-4 p-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-text-secondary hover:text-text-primary"
-            aria-label="Timer settings"
-          >
-            ⚙️
-          </button>
-        <div className="relative w-24 h-24">
+        <WidgetCard className="flex flex-col items-center justify-center p-6">
+        <div className="relative w-24 h-24 mb-4">
           <svg className="w-full h-full" viewBox="0 0 100 100">
             {/* Background circle */}
             <circle
@@ -105,20 +94,33 @@ export const FocusTimer: React.FC = () => {
               <div className="w-2 h-2 bg-accent rounded-full"></div>
           </div>
         </div>
-        <div className="text-right flex-1">
+        <div className="text-center">
           <p className="text-4xl font-bold text-text-primary">
             {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
           </p>
           <p className="text-text-secondary mt-1">{isActive ? 'Work Session' : 'Paused'}</p>
-          {(isActive || timeRemaining !== duration * 60) && (
+          <div className="flex items-center gap-2 mt-3 justify-center">
+            {(isActive || timeRemaining !== duration * 60) && (
+              <button
+                onClick={resetTimer}
+                className="text-xs text-text-secondary hover:text-text-primary underline"
+                aria-label="Reset timer"
+              >
+                Reset
+              </button>
+            )}
             <button
-              onClick={resetTimer}
-              className="mt-2 text-xs text-text-secondary hover:text-text-primary underline"
-              aria-label="Reset timer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowSettings(!showSettings);
+              }}
+              className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-text-secondary hover:text-text-primary text-base"
+              aria-label="Timer settings"
+              title="Timer settings"
             >
-              Reset
+              ⚙️
             </button>
-          )}
+          </div>
         </div>
       </WidgetCard>
     </div>
@@ -132,7 +134,7 @@ export const FocusTimer: React.FC = () => {
             <input
               type="number"
               min="1"
-              max="120"
+              max="90"
               value={duration}
               onChange={(e) => {
                 const val = parseInt(e.target.value);
@@ -143,7 +145,7 @@ export const FocusTimer: React.FC = () => {
             <span className="text-sm text-text-secondary">min</span>
           </div>
           <div className="flex gap-2">
-            {[5, 15, 25, 45, 60].map((mins) => (
+            {[5, 15, 25, 45, 60, 90].map((mins) => (
               <button
                 key={mins}
                 onClick={() => handleDurationChange(mins)}
