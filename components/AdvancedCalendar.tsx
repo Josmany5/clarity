@@ -221,7 +221,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
     const dayEvents = getEventsForDate(currentDate);
 
     return (
-      <div className="overflow-auto max-h-[600px]">
+      <div>
         <div className="space-y-px">
           {timeSlots.map((hour) => {
             const hourEvents = dayEvents.filter((event) => {
@@ -284,9 +284,9 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
   };
 
   return (
-    <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden">
+    <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden flex flex-col max-h-[800px]">
       {/* Header Controls */}
-      <div className="p-4 border-b border-card-border">
+      <div className="p-4 border-b border-card-border flex-shrink-0">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-text-primary">
@@ -396,14 +396,16 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
       </div>
 
       {/* Calendar View */}
-      <div className="p-4">
-        {viewMode === 'month' && renderMonthView()}
-        {viewMode === 'week' && renderWeekView()}
-        {viewMode === 'day' && renderDayView()}
+      <div className="flex-1 overflow-auto">
+        <div className="p-4">
+          {viewMode === 'month' && renderMonthView()}
+          {viewMode === 'week' && renderWeekView()}
+          {viewMode === 'day' && renderDayView()}
+        </div>
       </div>
 
       {/* Legend */}
-      <div className="px-4 pb-4 flex flex-wrap gap-4 text-xs">
+      <div className="px-4 pb-4 flex flex-wrap gap-4 text-xs flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-blue-500"></div>
           <span className="text-text-secondary">Tasks</span>
