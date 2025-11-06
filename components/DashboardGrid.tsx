@@ -39,9 +39,28 @@ interface DashboardGridProps {
     onNewNote: () => void;
     onSelectNote: (noteId: string) => void;
     tasks?: Array<{ id: string; dueDate?: string; title: string }>;
+    timerDuration: number;
+    timerTimeRemaining: number;
+    timerIsActive: boolean;
+    onTimerDurationChange: (duration: number) => void;
+    onTimerTimeRemainingChange: (timeRemaining: number) => void;
+    onTimerIsActiveChange: (isActive: boolean) => void;
 }
 
-export const DashboardGrid: React.FC<DashboardGridProps> = ({ setActivePage, theme, notes, onNewNote, onSelectNote, tasks = [] }) => {
+export const DashboardGrid: React.FC<DashboardGridProps> = ({
+  setActivePage,
+  theme,
+  notes,
+  onNewNote,
+  onSelectNote,
+  tasks = [],
+  timerDuration,
+  timerTimeRemaining,
+  timerIsActive,
+  onTimerDurationChange,
+  onTimerTimeRemainingChange,
+  onTimerIsActiveChange
+}) => {
   const [mode, setMode] = useState('Overview');
   const modes = ['Overview', 'Work', 'Personal', 'Focus'];
   const recentNotes = notes.slice(0, 3);
@@ -125,7 +144,14 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({ setActivePage, the
 
         {/* Column 3 */}
         <div className="lg:col-span-4 xl:col-span-1 space-y-6">
-          <FocusTimer />
+          <FocusTimer
+            duration={timerDuration}
+            timeRemaining={timerTimeRemaining}
+            isActive={timerIsActive}
+            onDurationChange={onTimerDurationChange}
+            onTimeRemainingChange={onTimerTimeRemainingChange}
+            onIsActiveChange={onTimerIsActiveChange}
+          />
           <ClickableWidget onClick={() => setActivePage('Templates')}>
               <WidgetCard className="flex items-center justify-between p-4">
                   <div>

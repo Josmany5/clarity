@@ -1,44 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { WidgetCard } from './WidgetCard';
 
-export const FocusTimer: React.FC = () => {
-  const [duration, setDuration] = useState(25); // minutes
-  const [timeRemaining, setTimeRemaining] = useState(25 * 60); // seconds
-  const [isActive, setIsActive] = useState(false);
+interface FocusTimerProps {
+  duration: number;
+  timeRemaining: number;
+  isActive: boolean;
+  onDurationChange: (duration: number) => void;
+  onTimeRemainingChange: (timeRemaining: number) => void;
+  onIsActiveChange: (isActive: boolean) => void;
+}
+
+export const FocusTimer: React.FC<FocusTimerProps> = ({
+  duration,
+  timeRemaining,
+  isActive,
+  onDurationChange,
+  onTimeRemainingChange,
+  onIsActiveChange
+}) => {
   const [showSettings, setShowSettings] = useState(false);
 
-  useEffect(() => {
-    let interval: number | undefined;
-
-    if (isActive && timeRemaining > 0) {
-      interval = window.setInterval(() => {
-        setTimeRemaining((prevTime) => prevTime - 1);
-      }, 1000);
-    } else if (!isActive && timeRemaining !== 0) {
-      clearInterval(interval);
-    } else if (timeRemaining === 0) {
-        setIsActive(false);
-    }
-
-    return () => clearInterval(interval);
-  }, [isActive, timeRemaining]);
+  // Timer countdown logic has been moved to App.tsx to run globally
 
   const toggleTimer = () => {
-    if (timeRemaining === 0) setTimeRemaining(duration * 60);
-    setIsActive(!isActive);
+    if (timeRemaining === 0) onTimeRemainingChange(duration * 60);
+    onIsActiveChange(!isActive);
   };
 
   const resetTimer = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsActive(false);
-    setTimeRemaining(duration * 60);
+    onIsActiveChange(false);
+    onTimeRemainingChange(duration * 60);
   };
 
   const handleDurationChange = (newDuration: number) => {
     if (newDuration >= 1 && newDuration <= 90) {
-      setDuration(newDuration);
-      setTimeRemaining(newDuration * 60);
-      setIsActive(false);
+      onDurationChange(newDuration);
+      onTimeRemainingChange(newDuration * 60);
+      onIsActiveChange(false);
       setShowSettings(false);
     }
   };

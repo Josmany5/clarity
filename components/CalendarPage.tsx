@@ -4,6 +4,7 @@ import { CalendarIcon, SunIcon, MoonIcon } from './Icons';
 import { AdvancedCalendar } from './AdvancedCalendar';
 import { CalendarEventModal } from './CalendarEventModal';
 import type { Task, Note, Event } from '../App';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface CalendarEvent {
   id: string;
@@ -97,7 +98,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
+    <div className="max-w-7xl mx-auto space-y-4 md:space-y-6 px-4 md:px-4 lg:px-8 pb-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2">
           <AdvancedCalendar
@@ -165,7 +166,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
                       <span className="text-sm">{event.type === 'task' ? '✓' : '📁'}</span>
                       <div className="flex-1 min-w-0">
                         <p className={`text-sm font-medium text-text-primary truncate ${event.completed ? 'line-through' : ''}`}>{event.title}</p>
-                        <p className="text-xs text-text-secondary">{new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}{event.time && ` • ${new Date(`2000-01-01T${event.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}</p>
+                        <p className="text-xs text-text-secondary">{parseLocalDate(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}{event.time && ` • ${new Date(`2000-01-01T${event.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}</p>
                       </div>
                     </div>
                   </button>

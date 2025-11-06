@@ -128,7 +128,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
         </div>
         <div className="grid grid-cols-7 gap-3">
           {paddingDays.map((_, index) => (
-            <div key={`padding-${index}`} className="aspect-square" />
+            <div key={`padding-${index}`} className="h-20" />
           ))}
           {days.map((day) => {
             const date = new Date(year, month, day);
@@ -139,7 +139,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
               <button
                 key={day}
                 onClick={() => handleDateClick(date)}
-                className={`aspect-square p-2 text-base font-semibold transition-all duration-200 relative flex flex-col items-center justify-start ${
+                className={`h-20 p-2 text-base font-semibold transition-all duration-200 relative flex flex-col items-center justify-start ${
                   isToday(date)
                     ? 'bg-accent text-white shadow-lg'
                     : isSelected

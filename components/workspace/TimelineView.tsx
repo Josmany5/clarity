@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Workspace, Note, Task } from '../../App';
+import { parseLocalDate } from '../../utils/dateUtils';
 
 interface TimelineViewProps {
   workspace: Workspace;
@@ -30,7 +31,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
       const task = tasks.find(t => t.id === entity.entityId);
       // Use dueDate if available, otherwise createdAt
       if (task?.dueDate) {
-        timestamp = new Date(task.dueDate).getTime();
+        timestamp = parseLocalDate(task.dueDate).getTime();
       } else {
         timestamp = task?.createdAt || 0;
       }

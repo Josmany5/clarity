@@ -11,7 +11,7 @@ interface TasksPageProps {
 
 export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdateTask, onDeleteTask }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [view, setView] = useState<'list' | 'matrix'>('list');
+  const [view, setView] = useState<'list' | 'matrix'>('matrix');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [schedulingTask, setSchedulingTask] = useState<Task | null>(null);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
@@ -198,8 +198,9 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
           </button>
         </div>
 
-        <div className="flex gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-lg">
+        <div className="flex gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-lg relative z-20">
           <button
+            type="button"
             onClick={() => setView('list')}
             className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               view === 'list'
@@ -211,6 +212,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
             📋 List
           </button>
           <button
+            type="button"
             onClick={() => setView('matrix')}
             className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               view === 'matrix'
@@ -550,28 +552,43 @@ const MatrixQuadrant: React.FC<MatrixQuadrantProps> = ({ title, subtitle, tasks,
         {tasks.length > 0 ? (
           tasks.map(task => (
             <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onToggle(task);
+              <div
+                onClick={() => onToggle(task)}
+                className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-text-secondary hover:border-accent transition-colors cursor-pointer flex items-center justify-center"
+                role="checkbox"
+                aria-checked={task.completed}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onToggle(task);
+                  }
                 }}
-                className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-text-secondary hover:border-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
               >
-                {task.completed && <div className="w-full h-full rounded-full bg-accent"></div>}
-              </button>
-              <span className={`flex-1 text-sm text-text-primary truncate ${task.completed ? 'line-through' : ''}`}>
+                {task.completed && (
+                  <div className="w-3 h-3 rounded-full bg-accent"></div>
+                )}
+              </div>
+              <span className={`flex-1 text-sm text-text-primary truncate ${task.completed ? 'line-through opacity-60' : ''}`}>
                 {task.title}
               </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(task);
+              <div
+                onClick={() => onDelete(task)}
+                className="text-text-secondary hover:text-red-500 transition-colors p-1 cursor-pointer rounded hover:bg-red-500/10"
+                role="button"
+                aria-label="Delete task"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onDelete(task);
+                  }
                 }}
-                className="text-text-secondary hover:text-red-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
-                aria-label="Delete"
               >
-                ×
-              </button>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
             </div>
           ))
         ) : (

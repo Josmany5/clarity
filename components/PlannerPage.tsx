@@ -3,6 +3,7 @@ import { WidgetCard } from './WidgetCard';
 import { PlannerIcon } from './Icons';
 import { TimeBlockCalendar } from './TimeBlockCalendar';
 import type { Task } from '../App';
+import { parseLocalDate, compareDateStrings, formatLocalDate } from '../utils/dateUtils';
 
 interface PlannerPageProps {}
 
@@ -33,11 +34,11 @@ export const PlannerPage: React.FC<PlannerPageProps> = () => {
   const todayTasks = tasks.filter(task => task.dueDate === dateStr);
   const overdueTasks = tasks.filter(task => {
     if (!task.dueDate || task.completed) return false;
-    return new Date(task.dueDate) < new Date(dateStr);
+    return compareDateStrings(task.dueDate, dateStr) < 0;
   });
   const upcomingTasks = tasks.filter(task => {
     if (!task.dueDate || task.completed) return false;
-    return new Date(task.dueDate) > new Date(dateStr);
+    return compareDateStrings(task.dueDate, dateStr) > 0;
   }).slice(0, 5);
 
   const activeProjects = projects.filter((p: any) => p.status === 'in-progress').slice(0, 3);
@@ -93,7 +94,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = () => {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
                           <h4 className="font-semibold text-text-primary">{task.title}</h4>
-                          <p className="text-xs text-text-secondary mt-1">Due: {new Date(task.dueDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                          <p className="text-xs text-text-secondary mt-1">Due: {parseLocalDate(task.dueDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
                         </div>
                         <div className="flex gap-1">
                           {task.urgent && <span className="px-2 py-0.5 bg-red-500/20 text-red-600 text-xs rounded">Urgent</span>}
@@ -152,7 +153,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = () => {
                 {upcomingTasks.map(task => (
                   <div key={task.id} className="p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
                     <p className="text-sm font-medium text-text-primary">{task.title}</p>
-                    <p className="text-xs text-text-secondary mt-1">{task.dueDate && new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                    <p className="text-xs text-text-secondary mt-1">{task.dueDate && parseLocalDate(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
                   </div>
                 ))}
                 {upcomingTasks.length === 0 && <p className="text-sm text-text-secondary text-center py-4">No upcoming tasks</p>}

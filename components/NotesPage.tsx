@@ -74,11 +74,12 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   const [showSidebar, setShowSidebar] = useState(false);
 
   return (
-    <div className="flex h-full gap-0 relative max-w-screen-2xl mx-auto">
+    <div className="flex h-full gap-0 overflow-hidden max-w-screen-2xl mx-auto">
       {/* Toggle Button - Mobile Only */}
       <button
         onClick={() => setShowSidebar(!showSidebar)}
-        className="md:hidden fixed bottom-6 left-6 z-50 w-14 h-14 bg-accent text-white rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-accent/50"
+        className="md:hidden fixed bottom-20 left-6 z-50 w-14 h-14 bg-accent text-white rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-accent/50 hover:scale-110 transition-transform"
+        aria-label={showSidebar ? "Close notes list" : "Open notes list"}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showSidebar ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
@@ -86,7 +87,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
       </button>
 
       {/* Notes List Sidebar */}
-      <div className={`w-full md:w-80 flex-shrink-0 flex flex-col bg-sidebar-bg backdrop-blur-2xl md:rounded-l-2xl border-r border-sidebar-border ${showSidebar ? 'absolute inset-0 z-40' : 'hidden md:flex'}`}>
+      <div className={`w-full md:w-80 flex-shrink-0 flex flex-col bg-sidebar-bg backdrop-blur-2xl md:rounded-l-2xl border-r border-sidebar-border overflow-hidden ${showSidebar ? 'fixed inset-0 z-40 md:relative' : 'hidden md:flex'}`}>
         <div className="p-4 border-b border-sidebar-border flex justify-between items-center">
           <h2 className="text-xl font-bold text-text-primary">
             {searchQuery ? `Results` : 'Notes'}
@@ -141,11 +142,11 @@ export const NotesPage: React.FC<NotesPageProps> = ({
       </div>
 
       {/* Note Editor */}
-      <div className="flex-1 flex flex-col bg-card-bg backdrop-blur-xl rounded-r-2xl">
+      <div className="flex-1 flex flex-col bg-card-bg backdrop-blur-xl rounded-r-2xl overflow-hidden">
         {activeNote ? (
           <>
             {/* Editor Header */}
-            <div className="p-4 border-b border-card-border flex items-center justify-between gap-4">
+            <div className="p-4 border-b border-card-border flex items-center justify-between gap-4 flex-shrink-0">
               <input
                 type="text"
                 value={editTitle}
@@ -164,7 +165,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
             </div>
 
             {/* Editor Content */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
               <RichTextEditor
                 content={editContent}
                 onChange={handleContentChange}
@@ -173,12 +174,12 @@ export const NotesPage: React.FC<NotesPageProps> = ({
             </div>
 
             {/* Editor Footer */}
-            <div className="p-4 border-t border-card-border text-xs text-text-secondary">
+            <div className="p-4 border-t border-card-border text-xs text-text-secondary flex-shrink-0">
               Last modified: {new Date(activeNote.lastModified).toLocaleString()}
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <div className="flex flex-col items-center justify-center h-full text-center p-8 overflow-y-auto">
             <NoteIcon className="w-20 h-20 text-accent mb-4" />
             <h2 className="text-2xl font-bold text-text-primary mb-2">No Note Selected</h2>
             <p className="text-text-secondary mb-6">

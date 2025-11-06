@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface DateTimePickerProps {
   value?: { date: string; time: string };
@@ -12,7 +13,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
   const [selectedTime, setSelectedTime] = useState(value?.time || '12:00');
   const [currentMonth, setCurrentMonth] = useState(() => {
     if (value?.date) {
-      const d = new Date(value.date);
+      const d = parseLocalDate(value.date);
       return new Date(d.getFullYear(), d.getMonth(), 1);
     }
     return new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -96,8 +97,8 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-card-bg backdrop-blur-xl rounded-2xl border border-card-border shadow-2xl w-full max-w-2xl mx-4 my-8 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+      <div className="bg-card-bg backdrop-blur-xl rounded-2xl border border-card-border shadow-2xl w-full max-w-2xl mx-4 my-8 max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-card-border flex-shrink-0">
           <h3 className="text-xl md:text-2xl font-bold text-text-primary flex items-center gap-2">
@@ -273,11 +274,12 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
             <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 md:p-4">
               <p className="text-xs md:text-sm text-text-secondary mb-1">Scheduled for:</p>
               <p className="text-base md:text-lg font-bold text-text-primary">
-                {new Date(`${selectedDate}T${selectedTime}`).toLocaleString('en-US', {
+                {parseLocalDate(selectedDate).toLocaleDateString('en-US', {
                   weekday: 'long',
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric',
+                })}{' '}at {new Date(`2000-01-01T${selectedTime}`).toLocaleTimeString('en-US', {
                   hour: 'numeric',
                   minute: '2-digit',
                 })}

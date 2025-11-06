@@ -154,25 +154,30 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
     <div className="flex flex-col space-y-4 md:space-y-6 px-4 md:px-4 lg:px-8 pb-6 max-w-screen-2xl mx-auto">
       {/* Header with Workspace Selector & View Modes */}
       <WidgetCard>
-        <div className="p-3 md:p-4">
-          <div className="flex flex-col gap-3">
+        <div className="p-4 md:p-6">
+          <div className="flex flex-col gap-4">
             {/* Workspace Selector */}
-            <div className="flex items-center gap-2">
-              <WorkspaceIcon className="w-5 h-5 text-accent flex-shrink-0" />
+            <div className="flex items-center gap-3">
+              <WorkspaceIcon className="w-6 h-6 md:w-8 md:h-8 text-accent flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <select
                   value={activeWorkspaceId || ''}
                   onChange={(e) => setActiveWorkspaceId(e.target.value)}
-                  className="text-lg md:text-xl font-bold bg-transparent text-text-primary border-none focus:outline-none focus:ring-2 focus:ring-accent rounded-lg px-2 py-1 cursor-pointer w-full"
+                  className="text-xl md:text-2xl font-bold bg-transparent text-text-primary border-none focus:outline-none focus:ring-2 focus:ring-accent rounded-lg px-2 py-1 cursor-pointer w-full"
                 >
                   {workspaces.map(ws => (
                     <option key={ws.id} value={ws.id}>{ws.name}</option>
                   ))}
                 </select>
+                {activeWorkspace && (
+                  <p className="text-xs md:text-sm text-text-secondary mt-1">
+                    {activeWorkspace.description || `${activeWorkspace.entities.length} items`}
+                  </p>
+                )}
               </div>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-3 py-1.5 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm flex-shrink-0"
+                className="px-3 md:px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap text-sm md:text-base flex-shrink-0"
               >
                 + New
               </button>
@@ -180,46 +185,60 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
 
             {/* View Mode Toolbar */}
             {activeWorkspace && (
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg flex-wrap">
-                  {[
-                    { mode: 'map' as ViewMode, icon: '🗺️' },
-                    { mode: 'list' as ViewMode, icon: '📋' },
-                    { mode: 'table' as ViewMode, icon: '📊' },
-                    { mode: 'timeline' as ViewMode, icon: '📅' },
-                    { mode: 'tree' as ViewMode, icon: '🌳' },
-                  ].map(({ mode, icon }) => (
-                    <button
-                      key={mode}
-                      onClick={() => handleViewModeChange(mode)}
-                      className={`px-2 py-1 rounded text-sm ${
-                        activeWorkspace.viewMode === mode
-                          ? 'bg-accent text-white'
-                          : 'text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'
-                      }`}
-                      title={mode}
-                    >
-                      {icon}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex gap-1">
+              <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1.5 rounded-lg flex-wrap">
+                {[
+                  { mode: 'map' as ViewMode, label: '2D Map', icon: '🗺️', shortLabel: 'Map' },
+                  { mode: 'list' as ViewMode, label: 'List', icon: '📋', shortLabel: 'List' },
+                  { mode: 'table' as ViewMode, label: 'Table', icon: '📊', shortLabel: 'Table' },
+                  { mode: 'timeline' as ViewMode, label: 'Timeline', icon: '📅', shortLabel: 'Timeline' },
+                  { mode: 'tree' as ViewMode, label: 'Tree', icon: '🌳', shortLabel: 'Tree' },
+                  { mode: 'zoom' as ViewMode, label: 'Zoom', icon: '🔍', shortLabel: 'Zoom' },
+                ].map(({ mode, label, icon, shortLabel }) => (
                   <button
-                    onClick={() => setShowCreateEntityModal(true)}
-                    className="px-2 py-1 bg-green-600 text-white rounded text-xs font-semibold hover:bg-green-700"
+                    key={mode}
+                    onClick={() => handleViewModeChange(mode)}
+                    className={`px-2 md:px-3 py-1.5 md:py-2 rounded-lg font-semibold transition-all text-xs md:text-sm flex items-center gap-1 md:gap-2 ${
+                      activeWorkspace.viewMode === mode
+                        ? 'bg-accent text-white shadow-lg'
+                        : 'text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-primary'
+                    }`}
+                    title={label}
                   >
-                    + New
+                    <span>{icon}</span>
+                    <span className="hidden sm:inline">{shortLabel}</span>
                   </button>
-                  <button
-                    onClick={() => setShowEntityPicker(!showEntityPicker)}
-                    className="px-2 py-1 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700"
-                  >
-                    + Add
-                  </button>
-                </div>
+                ))}
               </div>
             )}
           </div>
+
+          {/* Action Buttons */}
+          {activeWorkspace && (
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-card-border">
+              <button
+                onClick={() => setShowCreateEntityModal(true)}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                + Create New
+              </button>
+              <button
+                onClick={() => setShowEntityPicker(!showEntityPicker)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                + Add Existing
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm('Are you sure you want to delete this workspace?')) {
+                    onDeleteWorkspace(activeWorkspace.id);
+                  }
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
+              >
+                Delete Workspace
+              </button>
+            </div>
+          )}
         </div>
       </WidgetCard>
 

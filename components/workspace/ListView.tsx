@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Workspace, Note, Task } from '../../App';
+import { parseLocalDate } from '../../utils/dateUtils';
 
 interface ListViewProps {
   workspace: Workspace;
@@ -28,7 +29,7 @@ export const ListView: React.FC<ListViewProps> = ({
       return {
         title: task?.title || 'Unknown Task',
         subtitle: task?.dueDate
-          ? `Due: ${new Date(task.dueDate).toLocaleDateString()}`
+          ? `Due: ${parseLocalDate(task.dueDate).toLocaleDateString()}`
           : 'No due date',
         icon: task?.completed ? '✅' : '☐',
         color: task?.completed ? 'text-green-600' : 'text-orange-600',

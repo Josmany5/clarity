@@ -82,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
          </button>
          {!collapsed && <h1 className="text-2xl font-bold text-text-primary ml-3">Prose</h1>}
       </div>
-      <nav aria-label="Main navigation" className="flex-1 overflow-y-auto">
+      <nav aria-label="Main navigation" className="flex-1 overflow-y-auto sidebar-scroll">
         <ul role="list" className="space-y-1">
           {navItems.map((item) => (
             <NavItem
@@ -99,6 +99,47 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
           ))}
         </ul>
       </nav>
+      <style>{`
+        .sidebar-scroll::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.05);
+          border-radius: 4px;
+        }
+
+        .dark .sidebar-scroll::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+        }
+
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Firefox */
+        .sidebar-scroll {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .sidebar-scroll {
+          scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+        }
+      `}</style>
       {!collapsed && (
         <div className="mt-4 p-4 bg-black/5 dark:bg-white/5 rounded-lg text-center flex-shrink-0">
           <p className="text-sm text-text-primary font-medium">Upgrade to Pro</p>

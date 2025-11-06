@@ -42,6 +42,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   placeholder = 'Start writing...',
 }) => {
   const [showFormatting, setShowFormatting] = React.useState(false); // Hidden by default
+  const editorScrollRef = React.useRef<HTMLDivElement>(null);
 
   // Convert markdown to HTML if content looks like markdown
   const convertMarkdownToHTML = (text: string): string => {
@@ -122,10 +123,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       const html = convertMarkdownToHTML(content);
       editor.commands.setContent(html);
 
-      // Scroll to top when content changes
-      const editorElement = document.querySelector('.flex-1.overflow-y-auto.p-6');
-      if (editorElement) {
-        editorElement.scrollTop = 0;
+      // Scroll to top when content changes using ref
+      if (editorScrollRef.current) {
+        editorScrollRef.current.scrollTop = 0;
       }
     }
   }, [content, editor]);
@@ -312,7 +312,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       )}
 
       {/* Editor Content */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div ref={editorScrollRef} className="flex-1 overflow-y-auto p-6">
         <EditorContent editor={editor} />
       </div>
 
@@ -333,7 +333,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         }
 
         .ProseMirror {
-          min-height: 100%;
+          min-height: auto;
           line-height: 1.8;
           font-size: 16px;
         }

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Note, Task, Event, Workspace } from '../App';
 import { WidgetCard } from './WidgetCard';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface SearchResultsPageProps {
   searchQuery: string;
@@ -170,7 +171,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                   )}
                   {(task.dueDate || task.dueTime) && (
                     <p className="text-xs text-text-secondary mt-2">
-                      Due: {task.dueDate && new Date(task.dueDate).toLocaleDateString()} {task.dueTime}
+                      Due: {task.dueDate && parseLocalDate(task.dueDate).toLocaleDateString()} {task.dueTime}
                     </p>
                   )}
                 </div>
@@ -211,7 +212,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                   <div className="flex flex-wrap gap-2 text-xs text-text-secondary">
                     {event.startDate && (
                       <span>
-                        {new Date(event.startDate).toLocaleDateString()}
+                        {parseLocalDate(event.startDate).toLocaleDateString()}
                         {event.startTime && ` ${event.startTime}`}
                       </span>
                     )}

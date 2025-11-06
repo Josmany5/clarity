@@ -17,6 +17,7 @@ import { ChatHistoryPage } from './components/ChatHistoryPage';
 import { EventsPage } from './components/EventsPage';
 import { SearchResultsPage } from './components/SearchResultsPage';
 import { AIAssistant } from './components/AIAssistant';
+import { FloatingTimer } from './components/FloatingTimer';
 
 export interface Note {
   id: string;
@@ -162,6 +163,32 @@ const App: React.FC = () => {
     }
   });
 
+  // Timer state (persistent across pages)
+  const [timerDuration, setTimerDuration] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('timerDuration');
+      return saved ? parseInt(saved) : 25;
+    } catch {
+      return 25;
+    }
+  });
+  const [timerTimeRemaining, setTimerTimeRemaining] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('timerTimeRemaining');
+      return saved ? parseInt(saved) : 25 * 60;
+    } catch {
+      return 25 * 60;
+    }
+  });
+  const [timerIsActive, setTimerIsActive] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('timerIsActive');
+      return saved === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   useEffect(() => {
     window.localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
@@ -191,6 +218,33 @@ const App: React.FC = () => {
   useEffect(() => {
     window.localStorage.setItem('events', JSON.stringify(events));
   }, [events]);
+
+  useEffect(() => {
+    window.localStorage.setItem('timerDuration', timerDuration.toString());
+  }, [timerDuration]);
+
+  useEffect(() => {
+    window.localStorage.setItem('timerTimeRemaining', timerTimeRemaining.toString());
+  }, [timerTimeRemaining]);
+
+  useEffect(() => {
+    window.localStorage.setItem('timerIsActive', timerIsActive.toString());
+  }, [timerIsActive]);
+
+  // Timer countdown - runs globally on all pages
+  useEffect(() => {
+    let interval: number | undefined;
+
+    if (timerIsActive && timerTimeRemaining > 0) {
+      interval = window.setInterval(() => {
+        setTimerTimeRemaining(prev => prev - 1);
+      }, 1000);
+    } else if (timerTimeRemaining === 0 && timerIsActive) {
+      setTimerIsActive(false);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerIsActive, timerTimeRemaining]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -350,6 +404,12 @@ const App: React.FC = () => {
                 setActiveNoteId(noteId);
                 setActivePage('Notes');
             }}
+            timerDuration={timerDuration}
+            timerTimeRemaining={timerTimeRemaining}
+            timerIsActive={timerIsActive}
+            onTimerDurationChange={setTimerDuration}
+            onTimerTimeRemainingChange={setTimerTimeRemaining}
+            onTimerIsActiveChange={setTimerIsActive}
         />;
       case 'Search':
         return <SearchResultsPage
@@ -483,9 +543,9 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-black/30"></div>
         </div>
 
-        <div className="flex min-h-screen">
+        <div className="flex h-screen overflow-hidden">
           <Sidebar activePage={activePage} setActivePage={setActivePage} />
-          <main className="flex-1 flex flex-col min-h-screen">
+          <main className="flex-1 flex flex-col overflow-hidden">
             <Header
               title={activePage}
               themeMode={themeMode}
@@ -522,6 +582,21 @@ const App: React.FC = () => {
           onEventCreate={handleAddEvent}
           tasks={tasks}
         />
+
+        {/* Floating Timer - Show when timer has time remaining and not on Dashboard */}
+        {timerTimeRemaining > 0 && activePage !== 'Dashboard' && (
+          <FloatingTimer
+            duration={timerDuration}
+            timeRemaining={timerTimeRemaining}
+            isActive={timerIsActive}
+            onPause={() => setTimerIsActive(false)}
+            onResume={() => setTimerIsActive(true)}
+            onStop={() => {
+              setTimerIsActive(false);
+              setTimerTimeRemaining(timerDuration);
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -675,7 +675,7 @@ export const MapView: React.FC<MapViewProps> = ({
         edgesReconnectable={false}
         minZoom={0.1}
         maxZoom={2}
-        defaultViewport={{ x: 0, y: 0, zoom: 0.75 }}
+        defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
       >
         {showGrid && <Background variant={BackgroundVariant.Dots} gap={20} size={1} />}
         <Controls />

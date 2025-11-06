@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Event } from '../App';
 import { DateTimePicker } from './DateTimePicker';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface EventsPageProps {
   events: Event[];
@@ -231,7 +232,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
                   </div>
 
                   <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-text-secondary">
-                    <span>📅 {new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                    <span>📅 {parseLocalDate(event.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
                     <span>🕒 {event.startTime} - {event.endTime}</span>
                     {event.location && <span>📍 {event.location}</span>}
                     {event.recurring && (

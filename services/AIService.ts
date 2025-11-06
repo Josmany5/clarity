@@ -1,6 +1,8 @@
 // AI Service - SECURE version using backend API
 // API keys are kept on the server, not exposed to clients
 
+import { parseLocalDate } from '../utils/dateUtils';
+
 // ============= SPEECH TO TEXT (Client-side - FREE) =============
 
 export const startBrowserListening = (
@@ -325,7 +327,10 @@ export const getAIResponse = async (
   const importantTasks = tasks.filter((t: any) => t.important && !t.completed);
   const overdueTasks = tasks.filter((t: any) => {
     if (!t.dueDate || t.completed) return false;
-    return new Date(t.dueDate) < new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueDate = parseLocalDate(t.dueDate);
+    return dueDate < today;
   });
 
   // Weekly stats
