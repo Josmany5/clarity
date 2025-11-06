@@ -303,6 +303,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
             {/* View mode selector */}
             <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 rounded-lg p-1.5">
               <button
+                type="button"
                 onClick={() => setViewMode('month')}
                 className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'month'
@@ -313,6 +314,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
                 Month
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode('week')}
                 className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'week'
@@ -323,6 +325,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
                 Week
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode('day')}
                 className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'day'
@@ -336,12 +339,14 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
 
             {/* Navigation */}
             <button
+              type="button"
               onClick={goToToday}
               className="px-5 py-2.5 text-sm font-semibold bg-accent text-white rounded-lg hover:bg-accent-secondary transition-colors shadow-sm"
             >
               Today
             </button>
             <button
+              type="button"
               onClick={goToPrevious}
               className="px-4 py-2.5 text-lg bg-black/5 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
               aria-label="Previous"
@@ -349,6 +354,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
               ←
             </button>
             <button
+              type="button"
               onClick={goToNext}
               className="px-4 py-2.5 text-lg bg-black/5 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
               aria-label="Next"
