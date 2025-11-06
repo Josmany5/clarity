@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
 import { CalendarIcon, SunIcon, MoonIcon } from './Icons';
 import { AdvancedCalendar } from './AdvancedCalendar';
-import type { Task } from '../App';
+import type { Task, Note, Event } from '../App';
 
 interface CalendarEvent {
   id: string;
@@ -23,63 +23,57 @@ interface CalendarEvent {
 interface CalendarPageProps {
   themeMode: 'light' | 'dark';
   toggleTheme: () => void;
+  notes: Note[];
+  tasks: Task[];
+  events: Event[];
+  onUpdateNote: (note: Note) => void;
+  onUpdateTask: (task: Task) => void;
+  onUpdateEvent: (event: Event) => void;
 }
 
-export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleTheme }) => {
+export const CalendarPage: React.FC<CalendarPageProps> = ({
+  themeMode,
+  toggleTheme,
+  notes,
+  tasks: propTasks,
+  events: propEvents,
+  onUpdateNote,
+  onUpdateTask,
+  onUpdateEvent,
+}) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // Load events from localStorage
+  // Convert tasks and events to calendar events format
   const loadEvents = (): CalendarEvent[] => {
     const events: CalendarEvent[] = [];
 
-    try {
-      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-      tasks.forEach((task: Task) => {
-        if (task.dueDate) {
-          events.push({
-            id: task.id,
-            title: task.title,
-            date: task.dueDate,
-            time: task.dueTime,
-            type: 'task',
-            completed: task.completed,
-          });
-        }
-      });
-    } catch {}
-
-    try {
-      const projects = JSON.parse(localStorage.getItem('projects') || '[]');
-      projects.forEach((project: any) => {
-        if (project.dueDate) {
-          events.push({
-            id: project.id,
-            title: project.name,
-            date: project.dueDate,
-            time: project.dueTime,
-            type: 'project',
-          });
-        }
-      });
-    } catch {}
-
-    // Load events (classes, meetings, appointments)
-    try {
-      const storedEvents = JSON.parse(localStorage.getItem('events') || '[]');
-      storedEvents.forEach((event: any) => {
-        // Add single or first occurrence
+    // Add tasks with due dates
+    propTasks.forEach((task: Task) => {
+      if (task.dueDate) {
         events.push({
-          id: event.id,
-          title: event.title,
-          date: event.startDate,
-          time: event.startTime,
-          endTime: event.endTime,
-          type: 'event',
-          eventType: event.type,
-          recurring: event.recurring,
+          id: task.id,
+          title: task.title,
+          date: task.dueDate,
+          time: task.dueTime,
+          type: 'task',
+          completed: task.completed,
         });
+      }
+    });
+
+    // Add events
+    propEvents.forEach((event: Event) => {
+      events.push({
+        id: event.id,
+        title: event.title,
+        date: event.startDate,
+        time: event.startTime,
+        endTime: event.endTime,
+        type: 'event',
+        eventType: event.type,
+        recurring: event.recurring,
       });
-    } catch {}
+    });
 
     return events.sort((a, b) => {
       const dateA = new Date(`${a.date}${a.time ? `T${a.time}` : ''}`).getTime();
@@ -103,6 +97,12 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleThe
           <AdvancedCalendar
             events={events}
             onDateSelect={(date) => setSelectedDate(date)}
+            notes={notes}
+            tasks={propTasks}
+            calendarEvents={propEvents}
+            onUpdateNote={onUpdateNote}
+            onUpdateTask={onUpdateTask}
+            onUpdateEvent={onUpdateEvent}
           />
         </div>
 

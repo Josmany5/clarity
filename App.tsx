@@ -374,7 +374,16 @@ const App: React.FC = () => {
       case 'Projects':
         return <ProjectsPage themeMode={themeMode} toggleTheme={toggleMode} />;
       case 'Calendar':
-        return <CalendarPage themeMode={themeMode} toggleTheme={toggleMode} />;
+        return <CalendarPage
+          themeMode={themeMode}
+          toggleTheme={toggleMode}
+          notes={notes}
+          tasks={tasks}
+          events={events}
+          onUpdateNote={handleUpdateNote}
+          onUpdateTask={handleUpdateTask}
+          onUpdateEvent={handleUpdateEvent}
+        />;
       case 'Events':
         return <EventsPage
           events={events}

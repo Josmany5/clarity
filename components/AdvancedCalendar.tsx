@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import type { Task } from '../App';
+import type { Task, Note, Event } from '../App';
+import { CalendarEventModal } from './CalendarEventModal';
 
 interface CalendarEvent {
   id: string;
@@ -15,14 +16,34 @@ interface CalendarEvent {
 interface AdvancedCalendarProps {
   events: CalendarEvent[];
   onDateSelect?: (date: Date) => void;
+  notes?: Note[];
+  tasks?: Task[];
+  calendarEvents?: Event[];
+  onUpdateNote?: (note: Note) => void;
+  onUpdateTask?: (task: Task) => void;
+  onUpdateEvent?: (event: Event) => void;
 }
 
 type ViewMode = 'month' | 'week' | 'day';
 
-export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDateSelect }) => {
+export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
+  events,
+  onDateSelect,
+  notes = [],
+  tasks = [],
+  calendarEvents = [],
+  onUpdateNote,
+  onUpdateTask,
+  onUpdateEvent,
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [eventModal, setEventModal] = useState<{
+    isOpen: boolean;
+    eventType: 'task' | 'event' | 'note';
+    eventId: string;
+  } | null>(null);
 
   const monthName = currentDate.toLocaleString('default', { month: 'long' });
   const year = currentDate.getFullYear();
@@ -78,6 +99,15 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     onDateSelect?.(date);
+  };
+
+  const handleEventClick = (e: React.MouseEvent, event: CalendarEvent) => {
+    e.stopPropagation();
+    setEventModal({
+      isOpen: true,
+      eventType: event.type === 'task' ? 'task' : 'event',
+      eventId: event.id,
+    });
   };
 
   const renderMonthView = () => {
@@ -188,9 +218,10 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
                     }`}
                   >
                     {dayEvents.map((event) => (
-                      <div
+                      <button
                         key={event.id}
-                        className={`${getEventColor(event)} text-white text-xs p-1 rounded mb-1 border-l-2`}
+                        onClick={(e) => handleEventClick(e, event)}
+                        className={`${getEventColor(event)} text-white text-xs p-1 rounded mb-1 border-l-2 w-full text-left hover:opacity-80 transition-opacity cursor-pointer`}
                       >
                         <div className={`font-semibold truncate ${event.completed ? 'line-through' : ''}`}>
                           {event.title}
@@ -203,7 +234,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
                             })}
                           </div>
                         )}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 );
@@ -234,9 +265,10 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
               </div>
               <div className="flex-1 p-2 space-y-1">
                 {hourEvents.map((event) => (
-                  <div
+                  <button
                     key={event.id}
-                    className={`${getEventColor(event)} text-white px-3 py-2 rounded-lg border-l-4 shadow-sm`}
+                    onClick={(e) => handleEventClick(e, event)}
+                    className={`${getEventColor(event)} text-white px-3 py-2 rounded-lg border-l-4 shadow-sm w-full text-left hover:opacity-90 transition-opacity cursor-pointer`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
@@ -269,7 +301,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
                         </svg>
                       )}
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -417,6 +449,22 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
           <span className="text-text-secondary">Completed</span>
         </div>
       </div>
+
+      {/* Event Modal */}
+      {eventModal && (
+        <CalendarEventModal
+          isOpen={eventModal.isOpen}
+          onClose={() => setEventModal(null)}
+          eventType={eventModal.eventType}
+          eventId={eventModal.eventId}
+          notes={notes}
+          tasks={tasks}
+          events={calendarEvents}
+          onUpdateNote={onUpdateNote}
+          onUpdateTask={onUpdateTask}
+          onUpdateEvent={onUpdateEvent}
+        />
+      )}
     </div>
   );
 };
