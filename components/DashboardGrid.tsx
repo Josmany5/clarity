@@ -126,16 +126,25 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({ setActivePage, the
         {/* Column 3 */}
         <div className="lg:col-span-4 xl:col-span-1 space-y-6">
           <FocusTimer />
-          <ClickableWidget onClick={() => setActivePage('Tasks')}>
+          <ClickableWidget onClick={() => setActivePage('Templates')}>
               <WidgetCard className="flex items-center justify-between">
                   <div>
-                      <h3 className="font-bold text-lg text-text-primary">Personal Goals</h3>
-                      <p className="text-sm text-text-secondary mt-1">Meditation reminder</p>
+                      <h3 className="font-bold text-lg text-text-primary">Templates</h3>
+                      <p className="text-sm text-text-secondary mt-1">Pre-built workflows</p>
                   </div>
-                  <span className="text-2xl">🧘</span>
+                  <span className="text-2xl">📋</span>
               </WidgetCard>
           </ClickableWidget>
-          <button 
+          <ClickableWidget onClick={() => setActivePage('Systems')}>
+              <WidgetCard className="flex items-center justify-between">
+                  <div>
+                      <h3 className="font-bold text-lg text-text-primary">Systems</h3>
+                      <p className="text-sm text-text-secondary mt-1">Automated processes</p>
+                  </div>
+                  <span className="text-2xl">⚙️</span>
+              </WidgetCard>
+          </ClickableWidget>
+          <button
               onClick={onNewNote}
               className="w-full flex items-center justify-center p-4 bg-card-bg backdrop-blur-xl rounded-2xl text-text-primary font-semibold hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-200 shadow-glass border border-card-border">
               New Note
