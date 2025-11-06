@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
 import { PlannerIcon } from './Icons';
+import { TimeBlockCalendar } from './TimeBlockCalendar';
 import type { Task } from '../App';
 
 export const PlannerPage: React.FC = () => {
@@ -54,12 +55,6 @@ export const PlannerPage: React.FC = () => {
   const goToToday = () => setSelectedDate(new Date());
 
   const isToday = selectedDate.toDateString() === new Date().toDateString();
-
-  const timeSlots = [
-    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
-    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM'
-  ];
 
   return (
     <div className="space-y-6">
@@ -141,42 +136,10 @@ export const PlannerPage: React.FC = () => {
             </div>
           </WidgetCard>
 
-          <WidgetCard>
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-text-primary mb-4">Time Blocks</h3>
-              <div className="space-y-1">
-                {timeSlots.map(slot => {
-                  const slotTasks = todayTasks.filter(task => {
-                    if (!task.dueTime) return false;
-                    const taskHour = parseInt(task.dueTime.split(':')[0]);
-                    const slotHour = slot.includes('PM') && !slot.startsWith('12')
-                      ? parseInt(slot.split(':')[0]) + 12
-                      : slot.startsWith('12') && slot.includes('AM')
-                      ? 0
-                      : parseInt(slot.split(':')[0]);
-                    return taskHour === slotHour;
-                  });
-
-                  return (
-                    <div key={slot} className={`flex items-center gap-3 p-2 rounded-lg ${slotTasks.length > 0 ? 'bg-accent/10' : 'hover:bg-black/5 dark:hover:bg-white/5'} transition-colors`}>
-                      <span className="text-sm text-text-secondary w-20 flex-shrink-0">{slot}</span>
-                      <div className="flex-1 min-h-[20px]">
-                        {slotTasks.length > 0 ? (
-                          <div className="space-y-1">
-                            {slotTasks.map(task => (
-                              <div key={task.id} className="text-sm font-medium text-text-primary">{task.title}</div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="border-b border-dashed border-card-border"></div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </WidgetCard>
+          <TimeBlockCalendar
+            tasks={todayTasks}
+            selectedDate={selectedDate}
+          />
         </div>
 
         <div className="lg:col-span-1 space-y-6">
