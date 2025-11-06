@@ -56,7 +56,7 @@ export const MapView: React.FC<MapViewProps> = ({
 }) => {
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
-  const [edgeType, setEdgeType] = useState<'default' | 'step' | 'smoothstep' | 'straight'>('smoothstep');
+  const [edgeType, setEdgeType] = useState<'default' | 'step' | 'smoothstep' | 'straight'>('default');
   const [snapToGrid, setSnapToGrid] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
   const [showCanvasTools, setShowCanvasTools] = useState(false); // Collapsed by default
@@ -143,7 +143,7 @@ export const MapView: React.FC<MapViewProps> = ({
         source: entity.id,
         target: targetId,
         type: edgeType,
-        animated: true,
+        animated: false,
         style: { stroke: '#8b5cf6', strokeWidth: 2 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -244,7 +244,7 @@ export const MapView: React.FC<MapViewProps> = ({
           sourceHandle: savedHandles?.sourceHandle || null,
           targetHandle: savedHandles?.targetHandle || null,
           type: savedEdgeType,
-          animated: true,
+          animated: false,
           style: { stroke: '#8b5cf6', strokeWidth: 3 },
           markerEnd: {
             type: MarkerType.ArrowClosed,
@@ -645,7 +645,7 @@ export const MapView: React.FC<MapViewProps> = ({
         attributionPosition="bottom-left"
         defaultEdgeOptions={{
           type: edgeType,
-          animated: true,
+          animated: false,
           style: { strokeWidth: 2 },
         }}
         selectNodesOnDrag={false}
