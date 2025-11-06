@@ -78,7 +78,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   const [showSidebar, setShowSidebar] = useState(false);
 
   return (
-    <div className="flex h-full gap-0 relative">
+    <div className="flex h-full gap-0 relative max-w-screen-2xl mx-auto">
       {/* Toggle Button - Mobile Only */}
       <button
         onClick={() => setShowSidebar(!showSidebar)}
