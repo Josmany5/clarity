@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Note } from '../App';
 import { RichTextEditor } from './RichTextEditor';
+import { NoteIcon } from './Icons';
 
 interface NotesPageProps {
   notes: Note[];

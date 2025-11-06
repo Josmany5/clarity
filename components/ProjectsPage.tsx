@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
 import { DateTimePicker } from './DateTimePicker';
+import { ProjectIcon } from './Icons';
 
 interface Project {
   id: string;
