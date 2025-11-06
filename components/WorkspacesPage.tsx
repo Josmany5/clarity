@@ -185,7 +185,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
 
             {/* View Mode Toolbar */}
             {activeWorkspace && (
-              <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-2 rounded-lg">
+              <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-2 rounded-lg flex-wrap">
                 {[
                   { mode: 'map' as ViewMode, label: '2D Map', icon: '🗺️' },
                   { mode: 'list' as ViewMode, label: 'List', icon: '📋' },
@@ -205,7 +205,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
                     title={label}
                   >
                     <span>{icon}</span>
-                    <span className="hidden xl:inline">{label}</span>
+                    <span>{label}</span>
                   </button>
                 ))}
               </div>

@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import type { Event } from '../App';
 import { DateTimePicker } from './DateTimePicker';
+import { SunIcon, MoonIcon } from './Icons';
 
 interface EventsPageProps {
   events: Event[];
   onAddEvent: (event: Omit<Event, 'id' | 'createdAt'>) => void;
   onUpdateEvent: (event: Event) => void;
   onDeleteEvent: (id: string) => void;
+  themeMode?: 'light' | 'dark';
+  toggleTheme?: () => void;
 }
 
-export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUpdateEvent, onDeleteEvent }) => {
+export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUpdateEvent, onDeleteEvent, themeMode, toggleTheme }) => {
   const [view, setView] = useState<'list' | 'week' | 'month'>('list');
   const [filter, setFilter] = useState<'all' | 'class' | 'meeting' | 'appointment' | 'other'>('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -149,12 +152,23 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
             <h2 className="text-2xl font-bold text-text-primary">Events & Schedule</h2>
             <p className="text-text-secondary text-sm mt-1">Classes, meetings, and appointments</p>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors"
-          >
-            + Add Event
-          </button>
+          <div className="flex items-center gap-3">
+            {toggleTheme && (
+              <button
+                onClick={toggleTheme}
+                className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
+              </button>
+            )}
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors"
+            >
+              + Add Event
+            </button>
+          </div>
         </div>
       </div>
 
