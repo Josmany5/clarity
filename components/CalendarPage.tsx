@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
 import { CalendarIcon, SunIcon, MoonIcon } from './Icons';
 import { AdvancedCalendar } from './AdvancedCalendar';
+import { CalendarEventModal } from './CalendarEventModal';
 import type { Task, Note, Event } from '../App';
 
 interface CalendarEvent {
@@ -42,6 +43,9 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
   onUpdateEvent,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalEventType, setModalEventType] = useState<'task' | 'event' | 'note'>('task');
+  const [modalEventId, setModalEventId] = useState<string>('');
 
   // Convert tasks and events to calendar events format
   const loadEvents = (): CalendarEvent[] => {
@@ -90,6 +94,12 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
     return events.filter(event => event.date === dateStr);
   };
 
+  const handleEventClick = (eventId: string, eventType: 'task' | 'event') => {
+    setModalEventId(eventId);
+    setModalEventType(eventType);
+    setModalOpen(true);
+  };
+
   return (
     <div className="space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
@@ -115,7 +125,11 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
               {selectedDate ? (
                 <div className="space-y-3">
                   {getEventsForSelectedDate().length > 0 ? getEventsForSelectedDate().map((event) => (
-                    <div key={event.id} className={`p-3 rounded-lg border-l-4 ${event.completed ? 'bg-green-500/10 border-green-500' : event.type === 'task' ? 'bg-blue-500/10 border-blue-500' : 'bg-purple-500/10 border-purple-500'}`}>
+                    <button
+                      key={event.id}
+                      onClick={() => handleEventClick(event.id, event.type)}
+                      className={`w-full text-left p-3 rounded-lg border-l-4 transition-all hover:scale-[1.02] hover:shadow-md ${event.completed ? 'bg-green-500/10 border-green-500 hover:bg-green-500/20' : event.type === 'task' ? 'bg-blue-500/10 border-blue-500 hover:bg-blue-500/20' : 'bg-purple-500/10 border-purple-500 hover:bg-purple-500/20'}`}
+                    >
                       <div className="flex items-start gap-2">
                         <span className="text-lg">{event.type === 'task' ? '✓' : '📁'}</span>
                         <div className="flex-1 min-w-0">
@@ -124,7 +138,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
                           <span className="inline-block mt-1 px-2 py-0.5 bg-black/10 dark:bg-white/10 rounded text-xs text-text-secondary capitalize">{event.type}</span>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   )) : (
                     <div className="text-center py-8 text-text-secondary">
                       <CalendarIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
@@ -146,7 +160,11 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
               <h3 className="text-lg font-bold text-text-primary mb-4">Upcoming Events</h3>
               <div className="space-y-2">
                 {events.slice(0, 5).map((event) => (
-                  <div key={event.id} className="p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                  <button
+                    key={event.id}
+                    onClick={() => handleEventClick(event.id, event.type)}
+                    className="w-full text-left p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-all hover:scale-[1.02]"
+                  >
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{event.type === 'task' ? '✓' : '📁'}</span>
                       <div className="flex-1 min-w-0">
@@ -154,7 +172,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
                         <p className="text-xs text-text-secondary">{new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}{event.time && ` • ${new Date(`2000-01-01T${event.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}</p>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
                 {events.length === 0 && (<p className="text-sm text-text-secondary text-center py-4">No upcoming events</p>)}
               </div>
@@ -162,6 +180,20 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
           </WidgetCard>
         </div>
       </div>
+
+      {/* Event Modal */}
+      <CalendarEventModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        eventType={modalEventType}
+        eventId={modalEventId}
+        tasks={propTasks}
+        events={propEvents}
+        notes={notes}
+        onUpdateTask={onUpdateTask}
+        onUpdateEvent={onUpdateEvent}
+        onUpdateNote={onUpdateNote}
+      />
     </div>
   );
 };

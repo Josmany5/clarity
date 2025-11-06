@@ -310,7 +310,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
                       className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
                       aria-label="Expand task"
                     >
-                      {expandedTaskId === task.id ? '▲' : '▼'}
+                      {expandedTaskId === task.id ? '▲' : '▼'} Details
                     </button>
 
                     {/* Schedule Button */}
@@ -319,7 +319,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
                       className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
                       aria-label="Schedule task"
                     >
-                      📅
+                      📅 Schedule
                     </button>
 
                     {/* Delete */}
