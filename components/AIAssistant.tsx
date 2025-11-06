@@ -648,7 +648,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
                         : 'bg-black/5 dark:bg-white/5 text-text-primary'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                    <p className="text-base whitespace-pre-wrap">{msg.content}</p>
                     <p className="text-xs mt-1 opacity-60">
                       {new Date(msg.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
                     </p>

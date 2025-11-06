@@ -70,8 +70,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
   ];
 
   const sidebarContent = (collapsed: boolean = false) => (
-    <div className="flex flex-col h-full bg-sidebar-bg backdrop-blur-2xl p-4 border-r border-sidebar-border">
-      <div className={`flex items-center mb-10 ${collapsed ? 'justify-center' : 'pl-2'}`}>
+    <div className="flex flex-col h-full bg-sidebar-bg backdrop-blur-2xl p-4 border-r border-sidebar-border overflow-hidden">
+      <div className={`flex items-center mb-6 flex-shrink-0 ${collapsed ? 'justify-center' : 'pl-2'}`}>
          <button
            onClick={toggleCollapse}
            className="p-2 bg-black/10 dark:bg-white/10 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
@@ -82,8 +82,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
          </button>
          {!collapsed && <h1 className="text-2xl font-bold text-text-primary ml-3">Dashboard</h1>}
       </div>
-      <nav aria-label="Main navigation">
-        <ul role="list">
+      <nav aria-label="Main navigation" className="flex-1 overflow-y-auto">
+        <ul role="list" className="space-y-1">
           {navItems.map((item) => (
             <NavItem
               key={item.id}
@@ -100,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
         </ul>
       </nav>
       {!collapsed && (
-        <div className="mt-auto p-4 bg-black/5 dark:bg-white/5 rounded-lg text-center">
+        <div className="mt-4 p-4 bg-black/5 dark:bg-white/5 rounded-lg text-center flex-shrink-0">
           <p className="text-sm text-text-primary font-medium">Upgrade to Pro</p>
           <p className="text-xs text-text-secondary mt-1">Unlock all features</p>
           <button
