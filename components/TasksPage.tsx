@@ -551,8 +551,11 @@ const MatrixQuadrant: React.FC<MatrixQuadrantProps> = ({ title, subtitle, tasks,
           tasks.map(task => (
             <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
               <button
-                onClick={() => onToggle(task)}
-                className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-text-secondary hover:border-accent transition-colors focus:outline-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggle(task);
+                }}
+                className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-text-secondary hover:border-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
               >
                 {task.completed && <div className="w-full h-full rounded-full bg-accent"></div>}
               </button>
@@ -560,8 +563,11 @@ const MatrixQuadrant: React.FC<MatrixQuadrantProps> = ({ title, subtitle, tasks,
                 {task.title}
               </span>
               <button
-                onClick={() => onDelete(task)}
-                className="text-text-secondary hover:text-red-500 transition-colors p-1 focus:outline-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(task);
+                }}
+                className="text-text-secondary hover:text-red-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
                 aria-label="Delete"
               >
                 ×

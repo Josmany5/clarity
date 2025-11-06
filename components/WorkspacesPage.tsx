@@ -7,6 +7,7 @@ import { TableView } from './workspace/TableView';
 import { TimelineView } from './workspace/TimelineView';
 import { TreeView } from './workspace/TreeView';
 import { CreateEntityModal } from './workspace/CreateEntityModal';
+import { WorkspaceIcon } from './Icons';
 
 interface WorkspacesPageProps {
   workspaces: Workspace[];
