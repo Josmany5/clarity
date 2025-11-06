@@ -278,11 +278,21 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
                             })}
                           </p>
                         )}
-                        {task.estimatedTime && (
-                          <p className="text-xs text-text-secondary">
-                            ⏱️ {formatEstimatedTime(task.estimatedTime)}
-                          </p>
-                        )}
+                        <p className="text-xs text-text-secondary">
+                          {task.estimatedTime ? (
+                            <span>⏱️ {formatEstimatedTime(task.estimatedTime)}</span>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedTaskId(task.id);
+                              }}
+                              className="text-purple-400 hover:text-purple-300 underline"
+                            >
+                              + Add time estimate
+                            </button>
+                          )}
+                        </p>
                       </div>
                     </div>
 
