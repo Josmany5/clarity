@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Note } from '../App';
-import { NoteIcon } from './Icons';
+import { NoteIcon, SunIcon, MoonIcon } from './Icons';
 import { RichTextEditor } from './RichTextEditor';
 
 interface NotesPageProps {
@@ -11,6 +11,8 @@ interface NotesPageProps {
   onDeleteNote: (id: string) => void;
   onAddNote: () => void;
   searchQuery?: string;
+  themeMode: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
 export const NotesPage: React.FC<NotesPageProps> = ({
@@ -20,7 +22,9 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   onUpdateNote,
   onDeleteNote,
   onAddNote,
-  searchQuery = ''
+  searchQuery = '',
+  themeMode,
+  toggleTheme
 }) => {
   // Local state for editing
   const [editTitle, setEditTitle] = useState('');
@@ -91,15 +95,24 @@ export const NotesPage: React.FC<NotesPageProps> = ({
           <h2 className="text-xl font-bold text-text-primary">
             {searchQuery ? `Results` : 'Notes'}
           </h2>
-          <button
-            onClick={onAddNote}
-            className="p-2 rounded-lg bg-accent hover:bg-accent-secondary text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-            aria-label="Add new note"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {themeMode === 'light' ? <MoonIcon className="w-5 h-5 text-text-primary" /> : <SunIcon className="w-5 h-5 text-text-primary" />}
+            </button>
+            <button
+              onClick={onAddNote}
+              className="p-2 rounded-lg bg-accent hover:bg-accent-secondary text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+              aria-label="Add new note"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">

@@ -144,29 +144,29 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
       {/* Header */}
-      <div className="bg-card-bg backdrop-blur-xl rounded-2xl p-6 border border-card-border shadow-glass">
+      <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-text-primary">Events & Schedule</h2>
-            <p className="text-text-secondary text-sm mt-1">Classes, meetings, and appointments</p>
+            <h2 className="text-xl md:text-2xl font-bold text-text-primary">Events & Schedule</h2>
+            <p className="text-text-secondary text-xs md:text-sm mt-1">Classes, meetings, and appointments</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {toggleTheme && (
               <button
                 onClick={toggleTheme}
-                className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+                className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
                 aria-label="Toggle theme"
               >
-                {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
+                {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
               </button>
             )}
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors"
+              className="px-4 md:px-6 py-2 md:py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm md:text-base whitespace-nowrap"
             >
-              + Add Event
+              + Add
             </button>
           </div>
         </div>

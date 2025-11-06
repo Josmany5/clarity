@@ -430,6 +430,8 @@ const App: React.FC = () => {
             setTasks([newTask, ...tasks]);
             return newTask;
           }}
+          themeMode={themeMode}
+          toggleTheme={toggleMode}
         />;
       case 'Settings':
         return <SettingsPage themeStyle={themeStyle} themeMode={themeMode} onThemeStyleChange={changeThemeStyle} onThemeModeChange={changeThemeMode} />;

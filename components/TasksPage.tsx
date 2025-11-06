@@ -144,34 +144,34 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 h-full max-h-screen overflow-hidden pb-6">
+    <div className="max-w-6xl mx-auto space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
       {/* Header with theme toggle */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-text-primary">Tasks</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-text-primary">Tasks</h1>
         <button
           onClick={toggleTheme}
-          className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+          className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
           aria-label="Toggle theme"
         >
-          {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
+          {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
         </button>
       </div>
 
       {/* Quick Add */}
-      <div className="bg-card-bg backdrop-blur-xl rounded-2xl p-6 border border-card-border shadow-glass">
-        <form onSubmit={handleAddTask} className="flex gap-3">
+      <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
+        <form onSubmit={handleAddTask} className="flex gap-2 md:gap-3">
           <input
             type="text"
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
-            placeholder="Add a new task... (press Enter)"
-            className="flex-1 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-accent"
+            placeholder="Add a new task..."
+            className="flex-1 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label="New task"
             autoFocus
           />
           <button
             type="submit"
-            className="px-8 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+            className="px-4 md:px-8 py-2 md:py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap"
           >
             Add
           </button>
@@ -179,11 +179,11 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
       </div>
 
       {/* View Toggle & Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex gap-2">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-4">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               filter === 'all'
                 ? 'bg-accent text-white'
                 : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:text-text-primary'
@@ -193,7 +193,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
           </button>
           <button
             onClick={() => setFilter('active')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               filter === 'active'
                 ? 'bg-accent text-white'
                 : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:text-text-primary'
@@ -203,7 +203,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
           </button>
           <button
             onClick={() => setFilter('completed')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               filter === 'completed'
                 ? 'bg-accent text-white'
                 : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:text-text-primary'
@@ -213,28 +213,28 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
           </button>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-lg">
           <button
             onClick={() => setView('list')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               view === 'list'
-                ? 'bg-black/10 dark:bg-white/10 text-text-primary'
+                ? 'bg-accent text-white'
                 : 'text-text-secondary hover:text-text-primary'
             }`}
             title="List view"
           >
-            List
+            📋 List
           </button>
           <button
             onClick={() => setView('matrix')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex-1 md:flex-initial px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               view === 'matrix'
-                ? 'bg-black/10 dark:bg-white/10 text-text-primary'
+                ? 'bg-accent text-white'
                 : 'text-text-secondary hover:text-text-primary'
             }`}
             title="Matrix view"
           >
-            Matrix
+            📊 Matrix
           </button>
         </div>
       </div>

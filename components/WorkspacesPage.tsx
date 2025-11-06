@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Workspace, Note, Task, ViewMode } from '../App';
 import { WidgetCard } from './WidgetCard';
-import { WorkspaceIcon } from './Icons';
+import { WorkspaceIcon, SunIcon, MoonIcon } from './Icons';
 import { MapView } from './workspace/MapView';
 import { ListView } from './workspace/ListView';
 import { TableView } from './workspace/TableView';
@@ -22,6 +22,8 @@ interface WorkspacesPageProps {
   onUpdateTask?: (task: Task) => void;
   onAddNote?: (title: string, content: string) => Note;
   onAddTask?: (task: { title: string; urgent: boolean; important: boolean; dueDate?: string; dueTime?: string }) => Task;
+  themeMode: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
 export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
@@ -37,6 +39,8 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
   onUpdateTask,
   onAddNote,
   onAddTask,
+  themeMode,
+  toggleTheme,
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
@@ -151,53 +155,60 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
   };
 
   return (
-    <div className="flex flex-col space-y-6 h-full max-h-screen overflow-hidden">
+    <div className="flex flex-col space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
       {/* Header with Workspace Selector & View Modes */}
       <WidgetCard>
-        <div className="p-6">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="p-4 md:p-6">
+          <div className="flex flex-col gap-4">
             {/* Workspace Selector */}
-            <div className="flex items-center gap-3 flex-1">
-              <WorkspaceIcon className="w-8 h-8 text-accent" />
-              <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <WorkspaceIcon className="w-6 h-6 md:w-8 md:h-8 text-accent flex-shrink-0" />
+              <div className="flex-1 min-w-0">
                 <select
                   value={activeWorkspaceId || ''}
                   onChange={(e) => setActiveWorkspaceId(e.target.value)}
-                  className="text-2xl font-bold bg-transparent text-text-primary border-none focus:outline-none focus:ring-2 focus:ring-accent rounded-lg px-2 py-1 cursor-pointer"
+                  className="text-xl md:text-2xl font-bold bg-transparent text-text-primary border-none focus:outline-none focus:ring-2 focus:ring-accent rounded-lg px-2 py-1 cursor-pointer w-full"
                 >
                   {workspaces.map(ws => (
                     <option key={ws.id} value={ws.id}>{ws.name}</option>
                   ))}
                 </select>
                 {activeWorkspace && (
-                  <p className="text-sm text-text-secondary mt-1">
+                  <p className="text-xs md:text-sm text-text-secondary mt-1">
                     {activeWorkspace.description || `${activeWorkspace.entities.length} items`}
                   </p>
                 )}
               </div>
               <button
-                onClick={() => setShowCreateModal(true)}
-                className="px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap"
+                onClick={toggleTheme}
+                className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+                aria-label="Toggle theme"
               >
-                + New Workspace
+                {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
+              </button>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-3 md:px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap text-sm md:text-base"
+              >
+                + New
               </button>
             </div>
 
             {/* View Mode Toolbar */}
             {activeWorkspace && (
-              <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-2 rounded-lg flex-wrap">
+              <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1.5 rounded-lg flex-wrap">
                 {[
-                  { mode: 'map' as ViewMode, label: '2D Map', icon: '🗺️' },
-                  { mode: 'list' as ViewMode, label: 'List', icon: '📋' },
-                  { mode: 'table' as ViewMode, label: 'Table', icon: '📊' },
-                  { mode: 'timeline' as ViewMode, label: 'Timeline', icon: '📅' },
-                  { mode: 'tree' as ViewMode, label: 'Tree', icon: '🌳' },
-                  { mode: 'zoom' as ViewMode, label: 'Zoom', icon: '🔍' },
-                ].map(({ mode, label, icon }) => (
+                  { mode: 'map' as ViewMode, label: '2D Map', icon: '🗺️', shortLabel: 'Map' },
+                  { mode: 'list' as ViewMode, label: 'List', icon: '📋', shortLabel: 'List' },
+                  { mode: 'table' as ViewMode, label: 'Table', icon: '📊', shortLabel: 'Table' },
+                  { mode: 'timeline' as ViewMode, label: 'Timeline', icon: '📅', shortLabel: 'Timeline' },
+                  { mode: 'tree' as ViewMode, label: 'Tree', icon: '🌳', shortLabel: 'Tree' },
+                  { mode: 'zoom' as ViewMode, label: 'Zoom', icon: '🔍', shortLabel: 'Zoom' },
+                ].map(({ mode, label, icon, shortLabel }) => (
                   <button
                     key={mode}
                     onClick={() => handleViewModeChange(mode)}
-                    className={`px-3 py-2 rounded-lg font-semibold transition-all text-sm flex items-center gap-2 ${
+                    className={`px-2 md:px-3 py-1.5 md:py-2 rounded-lg font-semibold transition-all text-xs md:text-sm flex items-center gap-1 md:gap-2 ${
                       activeWorkspace.viewMode === mode
                         ? 'bg-accent text-white shadow-lg'
                         : 'text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-primary'
@@ -205,7 +216,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
                     title={label}
                   >
                     <span>{icon}</span>
-                    <span>{label}</span>
+                    <span className="hidden sm:inline">{shortLabel}</span>
                   </button>
                 ))}
               </div>

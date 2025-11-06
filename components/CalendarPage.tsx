@@ -97,15 +97,15 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleThe
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-text-primary">Calendar</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-text-primary">Calendar</h1>
         <button
           onClick={toggleTheme}
-          className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+          className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
           aria-label="Toggle theme"
         >
-          {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
+          {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
         </button>
       </div>
 
