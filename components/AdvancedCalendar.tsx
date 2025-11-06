@@ -284,7 +284,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
   };
 
   return (
-    <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden flex flex-col max-h-[800px]">
+    <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden flex flex-col max-h-[600px] md:max-h-[800px]">
       {/* Header Controls */}
       <div className="p-4 border-b border-card-border flex-shrink-0">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -396,7 +396,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
       </div>
 
       {/* Calendar View */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
         <div className="p-4">
           {viewMode === 'month' && renderMonthView()}
           {viewMode === 'week' && renderWeekView()}
