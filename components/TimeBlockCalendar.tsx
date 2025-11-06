@@ -1,129 +1,188 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import type { Task } from '../App';
+
+const localizer = momentLocalizer(moment);
 
 interface TimeBlockCalendarProps {
   tasks: Task[];
   selectedDate: Date;
+  onTaskUpdate?: (task: Task) => void;
 }
 
-export const TimeBlockCalendar: React.FC<TimeBlockCalendarProps> = ({ tasks, selectedDate }) => {
-  // Generate time slots from 5 AM to 11 PM in 30-minute increments
-  const generateTimeSlots = () => {
-    const slots = [];
-    for (let hour = 5; hour < 23; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
-        const time = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-        const displayTime = hour === 12
-          ? `12:${String(minute).padStart(2, '0')} PM`
-          : hour > 12
-            ? `${hour - 12}:${String(minute).padStart(2, '0')} PM`
-            : hour === 0
-              ? `12:${String(minute).padStart(2, '0')} AM`
-              : `${hour}:${String(minute).padStart(2, '0')} AM`;
-        slots.push({ time, displayTime, hour, minute });
+export const TimeBlockCalendar: React.FC<TimeBlockCalendarProps> = ({
+  tasks,
+  selectedDate,
+  onTaskUpdate
+}) => {
+  // Convert tasks to calendar events
+  const events = useMemo(() => {
+    return tasks.map(task => {
+      if (!task.dueDate) return null;
+
+      const [year, month, day] = task.dueDate.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+
+      let start = new Date(date);
+      let end = new Date(date);
+
+      if (task.dueTime) {
+        const [hours, minutes] = task.dueTime.split(':').map(Number);
+        start.setHours(hours, minutes, 0);
+
+        // Default 1 hour duration, or use estimatedTime
+        const duration = task.estimatedTime || 60;
+        end = new Date(start.getTime() + duration * 60000);
+      } else {
+        // All-day event
+        start.setHours(9, 0, 0);
+        end.setHours(10, 0, 0);
       }
+
+      return {
+        id: task.id,
+        title: task.title,
+        start,
+        end,
+        resource: task,
+      };
+    }).filter(Boolean);
+  }, [tasks]);
+
+  // Custom event styling based on task properties
+  const eventStyleGetter = (event: any) => {
+    const task = event.resource as Task;
+
+    let backgroundColor = '#8b5cf6'; // default accent color
+    let borderColor = '#7c3aed';
+
+    if (task.completed) {
+      backgroundColor = '#10b981'; // green
+      borderColor = '#059669';
+    } else if (task.urgent && task.important) {
+      backgroundColor = '#ef4444'; // red (critical)
+      borderColor = '#dc2626';
+    } else if (task.urgent) {
+      backgroundColor = '#f97316'; // orange
+      borderColor = '#ea580c';
+    } else if (task.important) {
+      backgroundColor = '#3b82f6'; // blue
+      borderColor = '#2563eb';
     }
-    return slots;
-  };
 
-  const timeSlots = generateTimeSlots();
-  const currentTime = new Date();
-  const isToday = selectedDate.toDateString() === currentTime.toDateString();
-  const currentHour = currentTime.getHours();
-  const currentMinute = currentTime.getMinutes();
-
-  // Map tasks to time slots with visual blocks
-  const getTasksForSlot = (hour: number, minute: number) => {
-    return tasks.filter(task => {
-      if (!task.dueTime) return false;
-      const [taskHour, taskMinute] = task.dueTime.split(':').map(Number);
-      const taskStartMinutes = taskHour * 60 + taskMinute;
-      const slotStartMinutes = hour * 60 + minute;
-      const slotEndMinutes = slotStartMinutes + 30;
-
-      // Task duration in minutes
-      const duration = task.estimatedTime || 60;
-      const taskEndMinutes = taskStartMinutes + duration;
-
-      // Check if task overlaps with this time slot
-      return taskStartMinutes < slotEndMinutes && taskEndMinutes > slotStartMinutes;
-    });
-  };
-
-  const getTaskColor = (task: Task) => {
-    if (task.completed) return 'bg-green-500/90 border-green-600';
-    if (task.urgent && task.important) return 'bg-red-500/90 border-red-600';
-    if (task.urgent) return 'bg-orange-500/90 border-orange-600';
-    if (task.important) return 'bg-blue-500/90 border-blue-600';
-    return 'bg-purple-500/90 border-purple-600';
+    return {
+      style: {
+        backgroundColor,
+        borderColor,
+        borderLeftWidth: '4px',
+        borderLeftStyle: 'solid',
+        opacity: task.completed ? 0.6 : 1,
+        textDecoration: task.completed ? 'line-through' : 'none',
+      }
+    };
   };
 
   return (
     <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden">
       <div className="p-4 border-b border-card-border">
         <h3 className="text-xl font-bold text-text-primary">Time Blocks</h3>
-        <p className="text-xs text-text-secondary mt-1">Visual schedule for the day</p>
+        <p className="text-xs text-text-secondary mt-1">Interactive schedule for the day</p>
       </div>
 
-      <div className="overflow-y-auto max-h-[600px] relative">
-        {/* Time grid */}
-        <div className="divide-y divide-card-border/50">
-          {timeSlots.map(({ time, displayTime, hour, minute }) => {
-            const slotTasks = getTasksForSlot(hour, minute);
-            const isCurrentSlot = isToday && hour === currentHour && Math.abs(minute - currentMinute) < 30;
+      <div className="h-[600px] p-4" style={{
+        '--rbc-bg-color': 'var(--card-bg)',
+        '--rbc-text-color': 'var(--text-primary)',
+        '--rbc-border-color': 'var(--card-border)',
+      } as any}>
+        <style>{`
+          .rbc-calendar {
+            font-family: inherit;
+            color: var(--text-primary);
+            background: transparent;
+          }
+          .rbc-header {
+            padding: 10px 3px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--card-border);
+            color: var(--text-primary);
+          }
+          .rbc-time-view {
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--card-bg);
+          }
+          .rbc-time-content {
+            border-top: 1px solid var(--card-border);
+          }
+          .rbc-time-slot {
+            border-top: 1px solid rgba(0,0,0,0.05);
+          }
+          .rbc-current-time-indicator {
+            background-color: #ef4444;
+            height: 2px;
+          }
+          .rbc-timeslot-group {
+            min-height: 60px;
+            border-left: 1px solid var(--card-border);
+          }
+          .rbc-time-header-content {
+            border-left: 1px solid var(--card-border);
+          }
+          .rbc-day-slot .rbc-time-slot {
+            border-top: 1px solid rgba(0,0,0,0.03);
+          }
+          .rbc-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 0 5px;
+          }
+          .rbc-event {
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-size: 13px;
+          }
+          .rbc-event-label {
+            font-size: 11px;
+          }
+          .rbc-toolbar {
+            display: none;
+          }
+          .rbc-time-column {
+            background: transparent;
+          }
+          .rbc-day-bg {
+            background: transparent;
+          }
+          .rbc-today {
+            background-color: transparent;
+          }
+        `}</style>
 
-            return (
-              <div
-                key={time}
-                className={`flex items-stretch border-l-2 ${
-                  isCurrentSlot ? 'border-l-red-500 bg-red-500/5' : 'border-l-transparent'
-                } hover:bg-black/5 dark:hover:bg-white/5 transition-colors min-h-[60px]`}
-              >
-                {/* Time label */}
-                <div className="w-24 flex-shrink-0 p-3 text-xs font-medium text-text-secondary">
-                  {displayTime}
-                </div>
-
-                {/* Task blocks */}
-                <div className="flex-1 p-2 flex flex-col gap-1">
-                  {slotTasks.length > 0 ? (
-                    slotTasks.map(task => (
-                      <div
-                        key={task.id}
-                        className={`${getTaskColor(task)} text-white px-3 py-2 rounded-lg border-l-4 shadow-sm`}
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-semibold truncate ${task.completed ? 'line-through' : ''}`}>
-                              {task.title}
-                            </p>
-                            {task.estimatedTime && (
-                              <p className="text-xs opacity-90 mt-0.5">
-                                {task.estimatedTime >= 60
-                                  ? `${Math.floor(task.estimatedTime / 60)}h ${task.estimatedTime % 60}m`
-                                  : `${task.estimatedTime}m`
-                                }
-                              </p>
-                            )}
-                          </div>
-                          {task.completed && (
-                            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="h-full flex items-center">
-                      <div className="w-full border-b border-dashed border-card-border"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: '100%' }}
+          defaultView="day"
+          view="day"
+          date={selectedDate}
+          onNavigate={() => {}}
+          views={['day']}
+          step={30}
+          timeslots={2}
+          min={new Date(2000, 1, 1, 5, 0, 0)}
+          max={new Date(2000, 1, 1, 23, 0, 0)}
+          eventPropGetter={eventStyleGetter}
+          toolbar={false}
+          formats={{
+            timeGutterFormat: 'h:mm A',
+            eventTimeRangeFormat: ({ start, end }: any) =>
+              `${moment(start).format('h:mm A')} - ${moment(end).format('h:mm A')}`,
+          }}
+        />
       </div>
     </div>
   );
