@@ -15,6 +15,7 @@ import { HistoryPage } from './components/HistoryPage';
 import { WorkspacesPage } from './components/WorkspacesPage';
 import { ChatHistoryPage } from './components/ChatHistoryPage';
 import { EventsPage } from './components/EventsPage';
+import { SearchResultsPage } from './components/SearchResultsPage';
 import { AIAssistant } from './components/AIAssistant';
 
 export interface Note {
@@ -259,7 +260,7 @@ const App: React.FC = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
-      setActivePage('Notes');
+      setActivePage('Search');
     }
   };
 
@@ -348,6 +349,24 @@ const App: React.FC = () => {
             onSelectNote={(noteId) => {
                 setActiveNoteId(noteId);
                 setActivePage('Notes');
+            }}
+        />;
+      case 'Search':
+        return <SearchResultsPage
+            searchQuery={searchQuery}
+            notes={notes}
+            tasks={tasks}
+            events={events}
+            workspaces={workspaces}
+            onSelectNote={(noteId) => {
+              setActiveNoteId(noteId);
+              setActivePage('Notes');
+              setSearchQuery('');
+            }}
+            onSelectWorkspace={(workspaceId) => {
+              setActiveWorkspaceId(workspaceId);
+              setActivePage('Workspaces');
+              setSearchQuery('');
             }}
         />;
       case 'Notes':
