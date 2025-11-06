@@ -299,12 +299,17 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
             </p>
           </div>
 
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap" style={{ pointerEvents: 'auto', zIndex: 10, position: 'relative' }}>
             {/* View mode selector */}
-            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 rounded-lg p-1.5">
+            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 rounded-lg p-1.5" style={{ pointerEvents: 'auto' }}>
               <button
                 type="button"
-                onClick={() => setViewMode('month')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewMode('month');
+                }}
+                style={{ pointerEvents: 'auto', cursor: 'pointer' }}
                 className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'month'
                     ? 'bg-accent text-white shadow-sm'
@@ -315,7 +320,12 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
               </button>
               <button
                 type="button"
-                onClick={() => setViewMode('week')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewMode('week');
+                }}
+                style={{ pointerEvents: 'auto', cursor: 'pointer' }}
                 className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'week'
                     ? 'bg-accent text-white shadow-sm'
@@ -326,7 +336,12 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
               </button>
               <button
                 type="button"
-                onClick={() => setViewMode('day')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewMode('day');
+                }}
+                style={{ pointerEvents: 'auto', cursor: 'pointer' }}
                 className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'day'
                     ? 'bg-accent text-white shadow-sm'
@@ -340,14 +355,24 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
             {/* Navigation */}
             <button
               type="button"
-              onClick={goToToday}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToToday();
+              }}
+              style={{ pointerEvents: 'auto', cursor: 'pointer' }}
               className="px-5 py-2.5 text-sm font-semibold bg-accent text-white rounded-lg hover:bg-accent-secondary transition-colors shadow-sm"
             >
               Today
             </button>
             <button
               type="button"
-              onClick={goToPrevious}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToPrevious();
+              }}
+              style={{ pointerEvents: 'auto', cursor: 'pointer' }}
               className="px-4 py-2.5 text-lg bg-black/5 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
               aria-label="Previous"
             >
@@ -355,7 +380,12 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
             </button>
             <button
               type="button"
-              onClick={goToNext}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToNext();
+              }}
+              style={{ pointerEvents: 'auto', cursor: 'pointer' }}
               className="px-4 py-2.5 text-lg bg-black/5 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
               aria-label="Next"
             >
