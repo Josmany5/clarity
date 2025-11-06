@@ -465,7 +465,7 @@ const App: React.FC = () => {
 
         <div className="flex min-h-screen">
           <Sidebar activePage={activePage} setActivePage={setActivePage} />
-          <main className="flex-1 flex flex-col">
+          <main className="flex-1 flex flex-col min-h-screen">
             <Header
               title={activePage}
               themeMode={themeMode}
@@ -473,7 +473,7 @@ const App: React.FC = () => {
               searchQuery={searchQuery}
               onSearchChange={handleSearch}
             />
-            <div className="flex-1 p-4 md:p-8">
+            <div className="flex-1 p-4 md:p-8 overflow-y-auto">
               {renderPage()}
             </div>
           </main>

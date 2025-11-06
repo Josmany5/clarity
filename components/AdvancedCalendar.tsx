@@ -150,10 +150,9 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
     const timeSlots = Array.from({ length: 18 }, (_, i) => i + 5); // 5 AM to 11 PM
 
     return (
-      <div className="overflow-auto max-h-[600px]">
-        <div className="grid grid-cols-8 gap-px bg-card-border rounded-lg overflow-hidden">
-          {/* Header */}
-          <div className="bg-card-bg p-2 text-xs font-bold text-text-secondary">Time</div>
+      <div className="grid grid-cols-8 gap-px bg-card-border rounded-lg overflow-hidden">
+        {/* Header */}
+        <div className="bg-card-bg p-2 text-xs font-bold text-text-secondary">Time</div>
           {weekDays.map((date, i) => (
             <div
               key={i}
@@ -211,7 +210,6 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
               })}
             </React.Fragment>
           ))}
-        </div>
       </div>
     );
   };
@@ -221,72 +219,70 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
     const dayEvents = getEventsForDate(currentDate);
 
     return (
-      <div>
-        <div className="space-y-px">
-          {timeSlots.map((hour) => {
-            const hourEvents = dayEvents.filter((event) => {
-              if (!event.time) return false;
-              const eventHour = parseInt(event.time.split(':')[0]);
-              return eventHour === hour;
-            });
+      <div className="space-y-px">
+        {timeSlots.map((hour) => {
+          const hourEvents = dayEvents.filter((event) => {
+            if (!event.time) return false;
+            const eventHour = parseInt(event.time.split(':')[0]);
+            return eventHour === hour;
+          });
 
-            return (
-              <div key={hour} className="flex items-stretch min-h-[60px] border-b border-card-border">
-                <div className="w-20 flex-shrink-0 p-3 text-xs font-medium text-text-secondary">
-                  {hour === 12 ? '12:00 PM' : hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`}
-                </div>
-                <div className="flex-1 p-2 space-y-1">
-                  {hourEvents.map((event) => (
-                    <div
-                      key={event.id}
-                      className={`${getEventColor(event)} text-white px-3 py-2 rounded-lg border-l-4 shadow-sm`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <p className={`text-sm font-semibold ${event.completed ? 'line-through' : ''}`}>
-                            {event.title}
-                          </p>
-                          {event.time && (
-                            <p className="text-xs opacity-90 mt-0.5">
-                              {new Date(`2000-01-01T${event.time}`).toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit',
-                              })}
-                              {event.endTime && ` - ${new Date(`2000-01-01T${event.endTime}`).toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit',
-                              })}`}
-                            </p>
-                          )}
-                          <span className="inline-block mt-1 px-2 py-0.5 bg-white/20 rounded text-[10px] uppercase tracking-wide">
-                            {event.type}
-                          </span>
-                        </div>
-                        {event.completed && (
-                          <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+          return (
+            <div key={hour} className="flex items-stretch min-h-[60px] border-b border-card-border">
+              <div className="w-20 flex-shrink-0 p-3 text-xs font-medium text-text-secondary">
+                {hour === 12 ? '12:00 PM' : hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`}
               </div>
-            );
-          })}
-        </div>
+              <div className="flex-1 p-2 space-y-1">
+                {hourEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className={`${getEventColor(event)} text-white px-3 py-2 rounded-lg border-l-4 shadow-sm`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <p className={`text-sm font-semibold ${event.completed ? 'line-through' : ''}`}>
+                          {event.title}
+                        </p>
+                        {event.time && (
+                          <p className="text-xs opacity-90 mt-0.5">
+                            {new Date(`2000-01-01T${event.time}`).toLocaleTimeString('en-US', {
+                              hour: 'numeric',
+                              minute: '2-digit',
+                            })}
+                            {event.endTime && ` - ${new Date(`2000-01-01T${event.endTime}`).toLocaleTimeString('en-US', {
+                              hour: 'numeric',
+                              minute: '2-digit',
+                            })}`}
+                          </p>
+                        )}
+                        <span className="inline-block mt-1 px-2 py-0.5 bg-white/20 rounded text-[10px] uppercase tracking-wide">
+                          {event.type}
+                        </span>
+                      </div>
+                      {event.completed && (
+                        <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   };
 
   return (
-    <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden flex flex-col max-h-[600px] md:max-h-[800px]">
+    <div className="bg-card-bg rounded-xl border border-card-border overflow-hidden w-full">
       {/* Header Controls */}
-      <div className="p-4 border-b border-card-border flex-shrink-0">
+      <div className="p-4 border-b border-card-border">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-text-primary">
@@ -396,12 +392,10 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
       </div>
 
       {/* Calendar View */}
-      <div className="flex-1 overflow-auto" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
-        <div className="p-4">
-          {viewMode === 'month' && renderMonthView()}
-          {viewMode === 'week' && renderWeekView()}
-          {viewMode === 'day' && renderDayView()}
-        </div>
+      <div className="p-4">
+        {viewMode === 'month' && renderMonthView()}
+        {viewMode === 'week' && renderWeekView()}
+        {viewMode === 'day' && renderDayView()}
       </div>
 
       {/* Legend */}
