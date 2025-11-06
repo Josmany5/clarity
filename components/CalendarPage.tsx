@@ -22,8 +22,6 @@ interface CalendarEvent {
 }
 
 interface CalendarPageProps {
-  themeMode: 'light' | 'dark';
-  toggleTheme: () => void;
   notes: Note[];
   tasks: Task[];
   events: Event[];
@@ -33,8 +31,6 @@ interface CalendarPageProps {
 }
 
 export const CalendarPage: React.FC<CalendarPageProps> = ({
-  themeMode,
-  toggleTheme,
   notes,
   tasks: propTasks,
   events: propEvents,

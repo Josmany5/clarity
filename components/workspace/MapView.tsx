@@ -479,6 +479,7 @@ export const MapView: React.FC<MapViewProps> = ({
       id: newEntity.id,
       type: 'custom',
       position: newEntity.position,
+      style: { width: 220, height: 140 },
       data: {
         label: 'New Note',
         emoji: '📝',
@@ -497,6 +498,11 @@ export const MapView: React.FC<MapViewProps> = ({
     });
 
     setContextMenu(null);
+
+    // Auto-fit view to show the new node
+    setTimeout(() => {
+      reactFlowInstance.fitView({ padding: 0.2, duration: 500 });
+    }, 50);
   };
 
   const handleCreateTask = () => {
@@ -522,6 +528,7 @@ export const MapView: React.FC<MapViewProps> = ({
       id: newEntity.id,
       type: 'custom',
       position: newEntity.position,
+      style: { width: 220, height: 140 },
       data: {
         label: 'New Task',
         emoji: '☐',
@@ -540,6 +547,11 @@ export const MapView: React.FC<MapViewProps> = ({
     });
 
     setContextMenu(null);
+
+    // Auto-fit view to show the new node
+    setTimeout(() => {
+      reactFlowInstance.fitView({ padding: 0.2, duration: 500 });
+    }, 50);
   };
 
   const handleCloseContextMenu = () => {
@@ -622,7 +634,7 @@ export const MapView: React.FC<MapViewProps> = ({
   };
 
   return (
-    <div className="w-full bg-black/5 dark:bg-white/5 rounded-lg overflow-hidden relative" style={{ height: '900px' }}>
+    <div className="w-full bg-black/5 dark:bg-white/5 rounded-lg overflow-hidden relative h-[600px] md:h-[700px] lg:h-[900px]">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -663,7 +675,7 @@ export const MapView: React.FC<MapViewProps> = ({
         edgesReconnectable={false}
         minZoom={0.1}
         maxZoom={2}
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+        defaultViewport={{ x: 0, y: 0, zoom: 0.75 }}
       >
         {showGrid && <Background variant={BackgroundVariant.Dots} gap={20} size={1} />}
         <Controls />

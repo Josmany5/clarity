@@ -64,8 +64,8 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
       <NodeResizer
         color="#8b5cf6"
         isVisible={true}
-        minWidth={180}
-        minHeight={120}
+        minWidth={220}
+        minHeight={140}
       />
 
       {/* Top Handle */}
