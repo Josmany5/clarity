@@ -182,16 +182,16 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
     return (
       <div className="grid grid-cols-8 gap-px bg-card-border rounded-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-card-bg p-2 text-xs font-bold text-text-secondary">Time</div>
+        <div className="bg-card-bg p-1.5 text-xs font-bold text-text-secondary">Time</div>
           {weekDays.map((date, i) => (
             <div
               key={i}
-              className={`bg-card-bg p-2 text-center ${isToday(date) ? 'bg-accent/10' : ''}`}
+              className={`bg-card-bg p-1.5 text-center ${isToday(date) ? 'bg-accent/10 border-l-2 border-accent' : ''}`}
             >
-              <div className="text-xs font-bold text-text-secondary">
+              <div className="text-[10px] font-bold text-text-secondary">
                 {date.toLocaleDateString('en-US', { weekday: 'short' })}
               </div>
-              <div className={`text-lg font-bold ${isToday(date) ? 'text-accent' : 'text-text-primary'}`}>
+              <div className={`text-base font-bold ${isToday(date) ? 'text-accent' : 'text-text-primary'}`}>
                 {date.getDate()}
               </div>
             </div>
@@ -200,8 +200,8 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
           {/* Time slots */}
           {timeSlots.map((hour) => (
             <React.Fragment key={hour}>
-              <div className="bg-card-bg p-2 text-xs text-text-secondary border-t border-card-border">
-                {hour === 12 ? '12 PM' : hour > 12 ? `${hour - 12} PM` : `${hour} AM`}
+              <div className="bg-card-bg p-1.5 text-[10px] text-text-secondary border-t border-card-border">
+                {hour === 12 ? '12P' : hour > 12 ? `${hour - 12}P` : `${hour}A`}
               </div>
               {weekDays.map((date, i) => {
                 const dayEvents = getEventsForDate(date).filter((event) => {
@@ -213,8 +213,8 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
                 return (
                   <div
                     key={i}
-                    className={`bg-card-bg p-1 min-h-[60px] border-t border-card-border ${
-                      isToday(date) ? 'bg-accent/5' : ''
+                    className={`bg-card-bg p-1 min-h-[50px] border-t border-card-border ${
+                      isToday(date) ? 'bg-accent/5 border-l-2 border-accent' : ''
                     }`}
                   >
                     {dayEvents.map((event) => (
