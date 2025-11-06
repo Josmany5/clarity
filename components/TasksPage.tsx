@@ -144,7 +144,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 h-full overflow-y-auto pb-6">
+    <div className="max-w-6xl mx-auto space-y-6 h-full max-h-screen overflow-hidden pb-6">
       {/* Header with theme toggle */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-text-primary">Tasks</h1>

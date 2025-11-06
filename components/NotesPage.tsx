@@ -120,7 +120,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                   </h3>
                   <p className="text-sm text-text-secondary truncate">
                     {note.content
-                      ? note.content.replace(/#{1,6}\s/g, '').replace(/\*\*/g, '').replace(/\*/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1').slice(0, 100)
+                      ? note.content.replace(/<[^>]*>/g, '').replace(/#{1,6}\s/g, '').replace(/\*\*/g, '').replace(/\*/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1').slice(0, 100)
                       : 'No content'}
                   </p>
                   <p className="text-xs text-text-secondary mt-1">
@@ -150,7 +150,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                 type="text"
                 value={editTitle}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                className="flex-1 text-2xl font-bold bg-transparent text-text-primary placeholder-text-secondary focus:outline-none"
+                className="flex-1 text-2xl font-bold bg-transparent text-text-primary placeholder-text-secondary focus:outline-none py-2"
                 placeholder="Note Title"
                 aria-label="Note title"
               />

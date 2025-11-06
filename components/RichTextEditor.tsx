@@ -41,7 +41,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   onChange,
   placeholder = 'Start writing...',
 }) => {
-  const [showFormatting, setShowFormatting] = React.useState(true); // Always show toolbar by default
+  const [showFormatting, setShowFormatting] = React.useState(false); // Hidden by default
 
   // Convert markdown to HTML if content looks like markdown
   const convertMarkdownToHTML = (text: string): string => {

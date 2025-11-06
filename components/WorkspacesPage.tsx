@@ -151,7 +151,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
   };
 
   return (
-    <div className="flex flex-col space-y-6 h-full overflow-y-auto">
+    <div className="flex flex-col space-y-6 h-full max-h-screen overflow-hidden">
       {/* Header with Workspace Selector & View Modes */}
       <WidgetCard>
         <div className="p-6">
