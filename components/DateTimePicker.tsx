@@ -96,11 +96,14 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-card-bg backdrop-blur-xl rounded-2xl border border-card-border shadow-2xl w-full max-w-2xl mx-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="bg-card-bg backdrop-blur-xl rounded-2xl border border-card-border shadow-2xl w-full max-w-2xl mx-4 my-8 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-card-border">
-          <h3 className="text-2xl font-bold text-text-primary">{title}</h3>
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-card-border flex-shrink-0">
+          <h3 className="text-xl md:text-2xl font-bold text-text-primary flex items-center gap-2">
+            <span>📅</span>
+            {title}
+          </h3>
           <button
             onClick={onClose}
             className="text-text-secondary hover:text-text-primary transition-colors p-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10"
@@ -112,7 +115,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
           </button>
         </div>
 
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 overflow-y-auto flex-1">
           {/* Calendar Section */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -265,11 +268,11 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
         </div>
 
         {/* Preview & Actions */}
-        <div className="p-6 border-t border-card-border space-y-4">
+        <div className="p-4 md:p-6 border-t border-card-border space-y-3 md:space-y-4 flex-shrink-0">
           {selectedDate && (
-            <div className="bg-accent/10 border border-accent/30 rounded-lg p-4">
-              <p className="text-sm text-text-secondary mb-1">Scheduled for:</p>
-              <p className="text-lg font-bold text-text-primary">
+            <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 md:p-4">
+              <p className="text-xs md:text-sm text-text-secondary mb-1">Scheduled for:</p>
+              <p className="text-base md:text-lg font-bold text-text-primary">
                 {new Date(`${selectedDate}T${selectedTime}`).toLocaleString('en-US', {
                   weekday: 'long',
                   month: 'long',
@@ -285,14 +288,14 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
           <div className="flex gap-3">
             <button
               onClick={handleClear}
-              className="flex-1 px-6 py-3 bg-black/10 dark:bg-white/10 text-text-primary rounded-xl font-semibold hover:bg-black/20 dark:hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+              className="flex-1 px-4 md:px-6 py-2.5 md:py-3 bg-black/10 dark:bg-white/10 text-text-primary rounded-xl font-semibold hover:bg-black/20 dark:hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-accent text-sm md:text-base"
             >
               Clear
             </button>
             <button
               onClick={handleSave}
               disabled={!selectedDate}
-              className="flex-1 px-6 py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="flex-1 px-4 md:px-6 py-2.5 md:py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-sm md:text-base"
             >
               Save Schedule
             </button>

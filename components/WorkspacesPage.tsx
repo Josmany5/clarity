@@ -359,7 +359,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
 
       {/* Create Workspace Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-card-bg border border-card-border rounded-2xl p-6 max-w-md w-full shadow-2xl">
             <h2 className="text-2xl font-bold text-text-primary mb-4">Create New Workspace</h2>
             <div className="space-y-4">

@@ -288,7 +288,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
 
       {/* Add/Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
           <div className="bg-card-bg border border-card-border rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-text-primary">
