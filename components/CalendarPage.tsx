@@ -99,8 +99,8 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
 
   return (
     <div className="max-w-[95%] mx-auto space-y-4 md:space-y-6 px-4 md:px-4 lg:px-8 pb-6">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
-        <div className="lg:col-span-4">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="lg:col-span-5">
           <AdvancedCalendar
             events={events}
             onDateSelect={(date) => setSelectedDate(date)}

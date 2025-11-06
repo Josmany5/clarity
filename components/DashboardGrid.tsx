@@ -1,11 +1,14 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { WidgetCard } from './WidgetCard';
 import { FocusTimer } from './FocusTimer';
 import { LineChartCard } from './LineChartCard';
 import { MiniCalendar } from './MiniCalendar';
+import { GoalWidget } from './GoalWidget';
+import { MiniTodoWidget } from './MiniTodoWidget';
+import { MiniEventsWidget } from './MiniEventsWidget';
 import { UserIcon, NoteIcon } from './Icons';
-import type { Note } from '../App';
+import type { Note, Goal, Task } from '../App';
 
 const Tag: React.FC<{ color: string; children: React.ReactNode }> = ({ color, children }) => (
   <span className={`text-xs font-semibold px-2 py-1 rounded-full ${color}`}>
@@ -17,19 +20,6 @@ const ClickableWidget: React.FC<{onClick: () => void, children: React.ReactNode,
     <div onClick={onClick} className={`cursor-pointer transition-transform duration-200 hover:scale-[1.03] hover:shadow-xl rounded-2xl ${className}`}>
         {children}
     </div>
-)
-
-const ModeButton: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
-    <button
-        onClick={onClick}
-        className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-200 whitespace-nowrap ${
-            active
-                ? 'bg-accent text-white'
-                : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-primary'
-        }`}
-    >
-        {children}
-    </button>
 );
 
 interface DashboardGridProps {
@@ -38,7 +28,11 @@ interface DashboardGridProps {
     notes: Note[];
     onNewNote: () => void;
     onSelectNote: (noteId: string) => void;
-    tasks?: Array<{ id: string; dueDate?: string; title: string }>;
+    tasks?: Task[];
+    goals?: Goal[];
+    events?: Array<{ id: string; title: string; startDate: string; startTime: string; type: string }>;
+    onUpdateGoal?: (goal: Goal) => void;
+    onUpdateTask?: (task: Task) => void;
     timerDuration: number;
     timerTimeRemaining: number;
     timerIsActive: boolean;
@@ -54,6 +48,10 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
   onNewNote,
   onSelectNote,
   tasks = [],
+  goals = [],
+  events = [],
+  onUpdateGoal,
+  onUpdateTask,
   timerDuration,
   timerTimeRemaining,
   timerIsActive,
@@ -61,19 +59,10 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
   onTimerTimeRemainingChange,
   onTimerIsActiveChange
 }) => {
-  const [mode, setMode] = useState('Overview');
-  const modes = ['Overview', 'Work', 'Personal', 'Focus'];
   const recentNotes = notes.slice(0, 3);
-  
+
   return (
-    <div className="h-full overflow-y-auto max-w-5xl mx-auto pb-8">
-      <div className="mb-6 flex items-center space-x-2 overflow-x-auto pb-2 sticky top-0 bg-bg-primary z-10 pt-2">
-          {modes.map(m => (
-              <ModeButton key={m} active={m === mode} onClick={() => setMode(m)}>
-                  {m}
-              </ModeButton>
-          ))}
-      </div>
+    <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {/* Column 1 */}
         <div className="lg:col-span-2 xl:col-span-2 space-y-6">
@@ -82,20 +71,11 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
                   <MiniCalendar tasks={tasks} />
               </WidgetCard>
           </ClickableWidget>
-          <ClickableWidget onClick={() => setActivePage('Projects')}>
-              <WidgetCard>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-bold text-lg text-text-primary">UI/UX Redesign</h3>
-                      <p className="text-sm text-text-secondary mt-1">Finalize mockups</p>
-                    </div>
-                    <Tag color="bg-teal-500/20 text-teal-400 dark:text-teal-300">#work</Tag>
-                  </div>
-                  <div className="mt-4">
-                    <Tag color="bg-indigo-500/20 text-indigo-500 dark:text-indigo-300">#project</Tag>
-                  </div>
-              </WidgetCard>
-          </ClickableWidget>
+          <GoalWidget
+            goals={goals}
+            onUpdateGoal={onUpdateGoal}
+            onAddGoal={() => setActivePage('Goals')}
+          />
             <WidgetCard>
                 <h3 className="font-bold text-lg text-text-primary mb-3">Recent Notes</h3>
                 {recentNotes.length > 0 ? (
@@ -140,6 +120,10 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
                   </div>
               </WidgetCard>
           </ClickableWidget>
+          <MiniEventsWidget
+            events={events}
+            onViewAll={() => setActivePage('Events')}
+          />
         </div>
 
         {/* Column 3 */}
@@ -170,6 +154,11 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
                   <span className="text-xl">⚙️</span>
               </WidgetCard>
           </ClickableWidget>
+          <MiniTodoWidget
+            tasks={tasks}
+            onUpdateTask={onUpdateTask}
+            onAddTask={() => setActivePage('Tasks')}
+          />
         </div>
       </div>
     </div>

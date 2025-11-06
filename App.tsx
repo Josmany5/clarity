@@ -36,6 +36,15 @@ export interface Task {
   dueTime?: string;
   estimatedTime?: number; // in minutes
   subtasks?: Subtask[];
+  listId?: string; // ID of the list this task belongs to
+  createdAt: number;
+}
+
+export interface TaskList {
+  id: string;
+  name: string;
+  color: string;
+  icon?: string;
   createdAt: number;
 }
 
@@ -137,6 +146,25 @@ const App: React.FC = () => {
       return [];
     }
   });
+  const [taskLists, setTaskLists] = useState<TaskList[]>(() => {
+    try {
+      const savedLists = window.localStorage.getItem('taskLists');
+      if (savedLists) {
+        return JSON.parse(savedLists);
+      }
+      // Create default lists
+      const defaultLists: TaskList[] = [
+        { id: 'inbox', name: 'Inbox', color: '#8b5cf6', icon: '📥', createdAt: Date.now() },
+        { id: 'work', name: 'Work', color: '#3b82f6', icon: '💼', createdAt: Date.now() },
+        { id: 'personal', name: 'Personal', color: '#10b981', icon: '🏠', createdAt: Date.now() },
+        { id: 'shopping', name: 'Shopping', color: '#f59e0b', icon: '🛒', createdAt: Date.now() },
+      ];
+      return defaultLists;
+    } catch (error) {
+      console.error("Could not parse task lists from localStorage", error);
+      return [];
+    }
+  });
   const [workspaces, setWorkspaces] = useState<Workspace[]>(() => {
     try {
       const savedWorkspaces = window.localStorage.getItem('workspaces');
@@ -159,6 +187,16 @@ const App: React.FC = () => {
       return savedEvents ? JSON.parse(savedEvents) : [];
     } catch (error) {
       console.error("Could not parse events from localStorage", error);
+      return [];
+    }
+  });
+
+  const [goals, setGoals] = useState<Goal[]>(() => {
+    try {
+      const savedGoals = window.localStorage.getItem('goals');
+      return savedGoals ? JSON.parse(savedGoals) : [];
+    } catch (error) {
+      console.error("Could not parse goals from localStorage", error);
       return [];
     }
   });
@@ -198,6 +236,10 @@ const App: React.FC = () => {
   }, [tasks]);
 
   useEffect(() => {
+    window.localStorage.setItem('taskLists', JSON.stringify(taskLists));
+  }, [taskLists]);
+
+  useEffect(() => {
     window.localStorage.setItem('themeStyle', themeStyle);
   }, [themeStyle]);
 
@@ -218,6 +260,10 @@ const App: React.FC = () => {
   useEffect(() => {
     window.localStorage.setItem('events', JSON.stringify(events));
   }, [events]);
+
+  useEffect(() => {
+    window.localStorage.setItem('goals', JSON.stringify(goals));
+  }, [goals]);
 
   useEffect(() => {
     window.localStorage.setItem('timerDuration', timerDuration.toString());
@@ -343,6 +389,28 @@ const App: React.FC = () => {
     setTasks(tasks.filter(task => !task.completed));
   };
 
+  const handleAddTaskList = (list: Omit<TaskList, 'id' | 'createdAt'>) => {
+    const newList: TaskList = {
+      ...list,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+    };
+    setTaskLists(prevLists => [...prevLists, newList]);
+    return newList;
+  };
+
+  const handleUpdateTaskList = (updatedList: TaskList) => {
+    setTaskLists(taskLists.map(list => list.id === updatedList.id ? updatedList : list));
+  };
+
+  const handleDeleteTaskList = (listId: string) => {
+    // Move tasks from deleted list to inbox
+    setTasks(tasks.map(task =>
+      task.listId === listId ? { ...task, listId: 'inbox' } : task
+    ));
+    setTaskLists(taskLists.filter(list => list.id !== listId && list.id !== 'inbox'));
+  };
+
   const handleAddEvent = (event: Omit<Event, 'id' | 'createdAt'>) => {
     const newEvent: Event = {
       ...event,
@@ -358,6 +426,23 @@ const App: React.FC = () => {
 
   const handleDeleteEvent = (eventId: string) => {
     setEvents(events.filter(event => event.id !== eventId));
+  };
+
+  const handleAddGoal = (goal: Omit<Goal, 'id' | 'createdAt'>) => {
+    const newGoal: Goal = {
+      ...goal,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+    };
+    setGoals(prevGoals => [newGoal, ...prevGoals]);
+  };
+
+  const handleUpdateGoal = (updatedGoal: Goal) => {
+    setGoals(goals.map(goal => goal.id === updatedGoal.id ? updatedGoal : goal));
+  };
+
+  const handleDeleteGoal = (goalId: string) => {
+    setGoals(goals.filter(goal => goal.id !== goalId));
   };
 
   const handleCreateWorkspace = (name: string, description: string = '') => {
@@ -399,6 +484,10 @@ const App: React.FC = () => {
             theme={themeStyle}
             notes={notes}
             tasks={tasks}
+            goals={goals}
+            events={events}
+            onUpdateGoal={handleUpdateGoal}
+            onUpdateTask={handleUpdateTask}
             onNewNote={handleAddNote}
             onSelectNote={(noteId) => {
                 setActiveNoteId(noteId);
@@ -442,9 +531,13 @@ const App: React.FC = () => {
       case 'Tasks':
         return <TasksPage
           tasks={tasks}
+          taskLists={taskLists}
           onAddTask={handleAddTask}
           onUpdateTask={handleUpdateTask}
           onDeleteTask={handleDeleteTask}
+          onAddTaskList={handleAddTaskList}
+          onUpdateTaskList={handleUpdateTaskList}
+          onDeleteTaskList={handleDeleteTaskList}
         />;
       case 'Projects':
         return <ProjectsPage />;
@@ -532,7 +625,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`theme-${themeStyle} ${themeMode}`}>
-      <div className="h-screen overflow-hidden bg-bg-primary text-text-primary font-sans transition-colors duration-300">
+      <div className="min-h-screen bg-bg-primary text-text-primary font-sans transition-colors duration-300">
         <div
           className="fixed inset-0 w-full h-full bg-cover bg-center -z-1 transition-opacity duration-500"
           style={{
@@ -553,7 +646,7 @@ const App: React.FC = () => {
               searchQuery={searchQuery}
               onSearchChange={handleSearch}
             />
-            <div className="flex-1 p-4 md:pl-8 md:pr-12 md:py-8 overflow-y-auto">
+            <div className="flex-1 p-4 md:p-8 overflow-y-auto">
               {renderPage()}
             </div>
           </main>
@@ -583,8 +676,8 @@ const App: React.FC = () => {
           tasks={tasks}
         />
 
-        {/* Floating Timer - Show when timer has time remaining and not on Dashboard */}
-        {timerTimeRemaining > 0 && activePage !== 'Dashboard' && (
+        {/* Floating Timer - Show only when active and not on Dashboard */}
+        {timerIsActive && activePage !== 'Dashboard' && (
           <FloatingTimer
             duration={timerDuration}
             timeRemaining={timerTimeRemaining}
@@ -593,7 +686,7 @@ const App: React.FC = () => {
             onResume={() => setTimerIsActive(true)}
             onStop={() => {
               setTimerIsActive(false);
-              setTimerTimeRemaining(timerDuration);
+              setTimerTimeRemaining(timerDuration * 60);
             }}
           />
         )}

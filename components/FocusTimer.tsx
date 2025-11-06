@@ -126,7 +126,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
 
     {/* Settings Modal */}
     {showSettings && (
-      <div className="absolute top-full mt-2 right-0 z-50 bg-card-bg border border-card-border rounded-xl shadow-2xl p-4 w-72">
+      <div className="absolute top-full mt-2 right-0 z-50 bg-card-bg/80 backdrop-blur-xl border border-card-border rounded-xl shadow-2xl p-4 w-72">
         <h4 className="text-sm font-semibold text-text-primary mb-3">Timer Duration</h4>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -143,12 +143,12 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
             />
             <span className="text-sm text-text-secondary">min</span>
           </div>
-          <div className="flex gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {[5, 15, 25, 45, 60, 90].map((mins) => (
               <button
                 key={mins}
                 onClick={() => handleDurationChange(mins)}
-                className={`flex-1 px-2 py-1 text-xs rounded-lg transition-colors ${
+                className={`px-3 py-2 text-xs rounded-lg transition-colors font-medium ${
                   duration === mins
                     ? 'bg-accent text-white'
                     : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'

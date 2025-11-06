@@ -1,21 +1,39 @@
 import React, { useState } from 'react';
-import type { Task, Subtask } from '../App';
+import type { Task, Subtask, TaskList } from '../App';
 import { DateTimePicker } from './DateTimePicker';
 
 interface TasksPageProps {
   tasks: Task[];
+  taskLists: TaskList[];
   onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   onUpdateTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
+  onAddTaskList: (list: Omit<TaskList, 'id' | 'createdAt'>) => TaskList;
+  onUpdateTaskList: (list: TaskList) => void;
+  onDeleteTaskList: (id: string) => void;
 }
 
-export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdateTask, onDeleteTask }) => {
+export const TasksPage: React.FC<TasksPageProps> = ({
+  tasks,
+  taskLists,
+  onAddTask,
+  onUpdateTask,
+  onDeleteTask,
+  onAddTaskList,
+  onUpdateTaskList,
+  onDeleteTaskList
+}) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [view, setView] = useState<'list' | 'matrix'>('matrix');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [selectedListId, setSelectedListId] = useState<string>('all');
   const [schedulingTask, setSchedulingTask] = useState<Task | null>(null);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
+  const [showListManager, setShowListManager] = useState(false);
+  const [newListName, setNewListName] = useState('');
+  const [newListColor, setNewListColor] = useState('#8b5cf6');
+  const [newListIcon, setNewListIcon] = useState('📋');
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +43,22 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
         completed: false,
         urgent: false,
         important: false,
+        listId: selectedListId === 'all' ? 'inbox' : selectedListId,
       });
       setNewTaskTitle('');
+    }
+  };
+
+  const handleAddList = () => {
+    if (newListName.trim()) {
+      onAddTaskList({
+        name: newListName.trim(),
+        color: newListColor,
+        icon: newListIcon,
+      });
+      setNewListName('');
+      setNewListColor('#8b5cf6');
+      setNewListIcon('📋');
     }
   };
 
@@ -106,8 +138,16 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
   };
 
   const filteredTasks = tasks.filter(task => {
-    if (filter === 'active') return !task.completed;
-    if (filter === 'completed') return task.completed;
+    // Filter by completion status
+    if (filter === 'active' && task.completed) return false;
+    if (filter === 'completed' && !task.completed) return false;
+
+    // Filter by list
+    if (selectedListId !== 'all') {
+      const taskListId = task.listId || 'inbox';
+      if (taskListId !== selectedListId) return false;
+    }
+
     return true;
   });
 
@@ -141,26 +181,105 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-4 md:space-y-6 px-4 md:px-4 lg:px-8 pb-6">
+    <div className="max-w-[98%] mx-auto space-y-4 md:space-y-6 px-2 sm:px-4 md:px-4 lg:px-8 pb-6">
       {/* Quick Add */}
-      <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
-        <form onSubmit={handleAddTask} className="flex gap-2 md:gap-3">
+      <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-card-border shadow-glass">
+        <form onSubmit={handleAddTask} className="flex gap-2 sm:gap-3">
           <input
             type="text"
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
             placeholder="Add a new task..."
-            className="flex-1 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-accent"
+            className="flex-1 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label="New task"
             autoFocus
           />
           <button
             type="submit"
-            className="px-4 md:px-8 py-2 md:py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap"
+            className="px-3 sm:px-4 md:px-8 py-2 sm:py-2.5 md:py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap text-sm sm:text-base"
           >
             Add
           </button>
         </form>
+      </div>
+
+      {/* List Selector */}
+      <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-3 sm:p-4 border border-card-border shadow-glass">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base sm:text-lg font-bold text-text-primary">Lists</h3>
+          <button
+            onClick={() => setShowListManager(!showListManager)}
+            className="px-2.5 sm:px-3 py-1.5 bg-accent text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-accent-secondary"
+          >
+            {showListManager ? 'Done' : '+ New List'}
+          </button>
+        </div>
+
+        {showListManager && (
+          <div className="mb-4 p-4 bg-black/5 dark:bg-white/5 rounded-lg space-y-3">
+            <input
+              type="text"
+              value={newListName}
+              onChange={(e) => setNewListName(e.target.value)}
+              placeholder="List name..."
+              className="w-full bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newListIcon}
+                onChange={(e) => setNewListIcon(e.target.value)}
+                placeholder="📋"
+                className="w-16 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-lg px-3 py-2 text-sm text-center focus:outline-none focus:ring-2 focus:ring-accent"
+              />
+              <input
+                type="color"
+                value={newListColor}
+                onChange={(e) => setNewListColor(e.target.value)}
+                className="w-16 h-10 rounded-lg cursor-pointer"
+              />
+              <button
+                onClick={handleAddList}
+                disabled={!newListName.trim()}
+                className="flex-1 px-4 py-2 bg-accent text-white rounded-lg text-sm font-semibold hover:bg-accent-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Create List
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          <button
+            onClick={() => setSelectedListId('all')}
+            className={`px-3 py-1 rounded-lg font-medium text-sm whitespace-nowrap cursor-pointer ${
+              selectedListId === 'all'
+                ? 'bg-accent text-white'
+                : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'
+            }`}
+          >
+            All Lists ({tasks.length})
+          </button>
+          {taskLists.map(list => {
+            const listTaskCount = tasks.filter(t => (t.listId || 'inbox') === list.id).length;
+            return (
+              <button
+                key={list.id}
+                onClick={() => setSelectedListId(list.id)}
+                className={`px-3 py-1 rounded-lg font-medium text-sm whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+                  selectedListId === list.id
+                    ? 'text-white'
+                    : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'
+                }`}
+                style={selectedListId === list.id ? { backgroundColor: list.color } : {}}
+              >
+                <span>{list.icon}</span>
+                <span>{list.name}</span>
+                <span>({listTaskCount})</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* View Toggle & Filters */}
