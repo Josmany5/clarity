@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import type { Task, Subtask } from '../App';
 import { DateTimePicker } from './DateTimePicker';
+import { SunIcon, MoonIcon } from './Icons';
 
 interface TasksPageProps {
   tasks: Task[];
   onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   onUpdateTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
+  themeMode: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
-export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdateTask, onDeleteTask }) => {
+export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdateTask, onDeleteTask, themeMode, toggleTheme }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [view, setView] = useState<'list' | 'matrix'>('list');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
@@ -142,7 +145,19 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 h-full overflow-y-auto pb-6">
-      {/* Header with Quick Add */}
+      {/* Header with theme toggle */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-text-primary">Tasks</h1>
+        <button
+          onClick={toggleTheme}
+          className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
+        </button>
+      </div>
+
+      {/* Quick Add */}
       <div className="bg-card-bg backdrop-blur-xl rounded-2xl p-6 border border-card-border shadow-glass">
         <form onSubmit={handleAddTask} className="flex gap-3">
           <input

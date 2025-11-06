@@ -89,14 +89,14 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
 
     return (
       <div>
-        <div className="grid grid-cols-7 gap-2 mb-3">
+        <div className="grid grid-cols-7 gap-3 mb-4">
           {weekdays.map((day, index) => (
-            <div key={`weekday-${index}`} className="text-center font-bold text-text-secondary text-xs py-2">
+            <div key={`weekday-${index}`} className="text-center font-bold text-text-secondary text-sm py-2">
               {day}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-3">
           {paddingDays.map((_, index) => (
             <div key={`padding-${index}`} className="aspect-square" />
           ))}
@@ -109,27 +109,24 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
               <button
                 key={day}
                 onClick={() => handleDateClick(date)}
-                className={`aspect-square rounded-xl p-1 text-sm font-semibold transition-all duration-200 relative flex flex-col ${
+                className={`aspect-square p-2 text-base font-semibold transition-all duration-200 relative flex flex-col items-center justify-start ${
                   isToday(date)
-                    ? 'bg-accent text-white shadow-lg ring-2 ring-accent/50'
+                    ? 'bg-accent text-white shadow-lg'
                     : isSelected
-                    ? 'bg-accent/20 text-accent border-2 border-accent'
-                    : 'text-text-primary hover:bg-black/10 dark:hover:bg-white/10 border border-card-border'
+                    ? 'bg-accent/20 text-accent'
+                    : 'text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
-                <div className="text-xs">{day}</div>
+                <div>{day}</div>
                 {dayEvents.length > 0 && (
-                  <div className="mt-auto space-y-0.5 w-full">
-                    {dayEvents.slice(0, 2).map((event, i) => (
+                  <div className="mt-auto flex gap-1 justify-center w-full">
+                    {dayEvents.slice(0, 3).map((event, i) => (
                       <div
                         key={i}
-                        className={`h-1 rounded-full ${getEventColor(event)} opacity-80`}
+                        className={`w-1.5 h-1.5 rounded-full ${getEventColor(event)}`}
                         title={event.title}
                       />
                     ))}
-                    {dayEvents.length > 2 && (
-                      <div className="text-[8px] text-center opacity-70">+{dayEvents.length - 2}</div>
-                    )}
                   </div>
                 )}
               </button>
@@ -302,35 +299,35 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
             </p>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
             {/* View mode selector */}
-            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 rounded-lg p-1.5">
               <button
                 onClick={() => setViewMode('month')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+                className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'month'
-                    ? 'bg-accent text-white'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'bg-accent text-white shadow-sm'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 Month
               </button>
               <button
                 onClick={() => setViewMode('week')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+                className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'week'
-                    ? 'bg-accent text-white'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'bg-accent text-white shadow-sm'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 Week
               </button>
               <button
                 onClick={() => setViewMode('day')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+                className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
                   viewMode === 'day'
-                    ? 'bg-accent text-white'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'bg-accent text-white shadow-sm'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 Day
@@ -340,20 +337,20 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({ events, onDa
             {/* Navigation */}
             <button
               onClick={goToToday}
-              className="px-3 py-1.5 text-xs font-semibold bg-accent text-white rounded-lg hover:bg-accent-secondary transition-colors"
+              className="px-5 py-2.5 text-sm font-semibold bg-accent text-white rounded-lg hover:bg-accent-secondary transition-colors shadow-sm"
             >
               Today
             </button>
             <button
               onClick={goToPrevious}
-              className="p-1.5 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              className="px-4 py-2.5 text-lg bg-black/5 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
               aria-label="Previous"
             >
               ←
             </button>
             <button
               onClick={goToNext}
-              className="p-1.5 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              className="px-4 py-2.5 text-lg bg-black/5 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
               aria-label="Next"
             >
               →

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
-import { CalendarIcon } from './Icons';
+import { CalendarIcon, SunIcon, MoonIcon } from './Icons';
 import { AdvancedCalendar } from './AdvancedCalendar';
 import type { Task } from '../App';
 
@@ -20,7 +20,12 @@ interface CalendarEvent {
   };
 }
 
-export const CalendarPage: React.FC = () => {
+interface CalendarPageProps {
+  themeMode: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleTheme }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Load events from localStorage
@@ -93,6 +98,17 @@ export const CalendarPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-text-primary">Calendar</h1>
+        <button
+          onClick={toggleTheme}
+          className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {themeMode === 'light' ? <MoonIcon className="w-6 h-6 text-text-primary" /> : <SunIcon className="w-6 h-6 text-text-primary" />}
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <AdvancedCalendar

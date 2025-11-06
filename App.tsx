@@ -359,6 +359,8 @@ const App: React.FC = () => {
             onDeleteNote={handleDeleteNote}
             onAddNote={handleAddNote}
             searchQuery={searchQuery}
+            themeMode={themeMode}
+            toggleTheme={toggleMode}
         />;
       case 'Tasks':
         return <TasksPage
@@ -366,20 +368,24 @@ const App: React.FC = () => {
           onAddTask={handleAddTask}
           onUpdateTask={handleUpdateTask}
           onDeleteTask={handleDeleteTask}
+          themeMode={themeMode}
+          toggleTheme={toggleMode}
         />;
       case 'Projects':
-        return <ProjectsPage />;
+        return <ProjectsPage themeMode={themeMode} toggleTheme={toggleMode} />;
       case 'Calendar':
-        return <CalendarPage />;
+        return <CalendarPage themeMode={themeMode} toggleTheme={toggleMode} />;
       case 'Events':
         return <EventsPage
           events={events}
           onAddEvent={handleAddEvent}
           onUpdateEvent={handleUpdateEvent}
           onDeleteEvent={handleDeleteEvent}
+          themeMode={themeMode}
+          toggleTheme={toggleMode}
         />;
       case 'Planner':
-        return <PlannerPage />;
+        return <PlannerPage themeMode={themeMode} toggleTheme={toggleMode} />;
       case 'Templates':
         return <TemplatesPage />;
       case 'Systems':

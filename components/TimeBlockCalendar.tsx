@@ -103,15 +103,20 @@ export const TimeBlockCalendar: React.FC<TimeBlockCalendarProps> = ({
             background: transparent;
           }
           .rbc-header {
-            padding: 10px 3px;
+            padding: 12px 6px;
             font-weight: 600;
             border-bottom: 2px solid var(--card-border);
             color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.02);
+          }
+          .dark .rbc-header {
+            background: rgba(255, 255, 255, 0.03);
           }
           .rbc-time-view {
             border: 1px solid var(--card-border);
-            border-radius: 8px;
+            border-radius: 12px;
             background: var(--card-bg);
+            overflow: hidden;
           }
           .rbc-time-content {
             border-top: 1px solid var(--card-border);
@@ -119,12 +124,16 @@ export const TimeBlockCalendar: React.FC<TimeBlockCalendarProps> = ({
           .rbc-time-slot {
             border-top: 1px solid rgba(0,0,0,0.05);
           }
+          .dark .rbc-time-slot {
+            border-top: 1px solid rgba(255,255,255,0.05);
+          }
           .rbc-current-time-indicator {
             background-color: #ef4444;
             height: 2px;
+            box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
           }
           .rbc-timeslot-group {
-            min-height: 60px;
+            min-height: 70px;
             border-left: 1px solid var(--card-border);
           }
           .rbc-time-header-content {
@@ -133,18 +142,27 @@ export const TimeBlockCalendar: React.FC<TimeBlockCalendarProps> = ({
           .rbc-day-slot .rbc-time-slot {
             border-top: 1px solid rgba(0,0,0,0.03);
           }
+          .dark .rbc-day-slot .rbc-time-slot {
+            border-top: 1px solid rgba(255,255,255,0.03);
+          }
           .rbc-label {
             color: var(--text-secondary);
-            font-size: 12px;
-            padding: 0 5px;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 0 8px;
           }
           .rbc-event {
-            border-radius: 4px;
-            padding: 2px 5px;
-            font-size: 13px;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          }
+          .dark .rbc-event {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
           }
           .rbc-event-label {
-            font-size: 11px;
+            font-size: 12px;
           }
           .rbc-toolbar {
             display: none;
@@ -157,6 +175,9 @@ export const TimeBlockCalendar: React.FC<TimeBlockCalendarProps> = ({
           }
           .rbc-today {
             background-color: transparent;
+          }
+          .rbc-time-content > * + * > * {
+            border-left: 1px solid var(--card-border);
           }
         `}</style>
 
