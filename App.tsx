@@ -532,7 +532,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`theme-${themeStyle} ${themeMode}`}>
-      <div className="min-h-screen bg-bg-primary text-text-primary font-sans transition-colors duration-300">
+      <div className="h-screen overflow-hidden bg-bg-primary text-text-primary font-sans transition-colors duration-300">
         <div
           className="fixed inset-0 w-full h-full bg-cover bg-center -z-1 transition-opacity duration-500"
           style={{
@@ -553,7 +553,7 @@ const App: React.FC = () => {
               searchQuery={searchQuery}
               onSearchChange={handleSearch}
             />
-            <div className="flex-1 p-4 md:p-8 overflow-y-auto">
+            <div className="flex-1 p-4 md:pl-8 md:pr-12 md:py-8 overflow-y-auto">
               {renderPage()}
             </div>
           </main>

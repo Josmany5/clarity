@@ -66,7 +66,7 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
   const recentNotes = notes.slice(0, 3);
   
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto max-w-5xl mx-auto pb-8">
       <div className="mb-6 flex items-center space-x-2 overflow-x-auto pb-2 sticky top-0 bg-bg-primary z-10 pt-2">
           {modes.map(m => (
               <ModeButton key={m} active={m === mode} onClick={() => setMode(m)}>
