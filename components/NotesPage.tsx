@@ -68,12 +68,25 @@ export const NotesPage: React.FC<NotesPageProps> = ({
 
   const handleSelectNote = (noteId: string) => {
     setActiveNoteId(noteId);
+    setShowSidebar(false); // Hide sidebar on mobile when note is selected
   };
 
+  const [showSidebar, setShowSidebar] = useState(false);
+
   return (
-    <div className="flex h-[calc(100vh-100px)] gap-0">
+    <div className="flex h-full gap-0 relative">
+      {/* Toggle Button - Mobile Only */}
+      <button
+        onClick={() => setShowSidebar(!showSidebar)}
+        className="md:hidden fixed bottom-6 left-6 z-50 w-14 h-14 bg-accent text-white rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-accent/50"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showSidebar ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+        </svg>
+      </button>
+
       {/* Notes List Sidebar */}
-      <div className="w-80 flex-shrink-0 flex flex-col bg-sidebar-bg backdrop-blur-2xl rounded-l-2xl border-r border-sidebar-border">
+      <div className={`w-full md:w-80 flex-shrink-0 flex flex-col bg-sidebar-bg backdrop-blur-2xl md:rounded-l-2xl border-r border-sidebar-border ${showSidebar ? 'absolute inset-0 z-40' : 'hidden md:flex'}`}>
         <div className="p-4 border-b border-sidebar-border flex justify-between items-center">
           <h2 className="text-xl font-bold text-text-primary">
             {searchQuery ? `Results` : 'Notes'}
