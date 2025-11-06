@@ -157,8 +157,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
             className="px-4 md:px-6 py-2 md:py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm md:text-base whitespace-nowrap"
           >
             + Add
-            </button>
-          </div>
+          </button>
         </div>
       </div>
 
