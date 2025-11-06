@@ -110,7 +110,7 @@ export const FocusTimer: React.FC = () => {
             {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
           </p>
           <p className="text-text-secondary mt-1">{isActive ? 'Work Session' : 'Paused'}</p>
-          {(isActive || timeRemaining !== TOTAL_SECONDS) && (
+          {(isActive || timeRemaining !== duration * 60) && (
             <button
               onClick={resetTimer}
               className="mt-2 text-xs text-text-secondary hover:text-text-primary underline"
