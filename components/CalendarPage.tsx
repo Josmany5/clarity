@@ -98,18 +98,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleThe
 
   return (
     <div className="space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-text-primary">Calendar</h1>
-        <button
-          onClick={toggleTheme}
-          className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
-          aria-label="Toggle theme"
-        >
-          {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2">
           <AdvancedCalendar
             events={events}
@@ -117,9 +106,9 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleThe
           />
         </div>
 
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 hidden lg:block">
           <WidgetCard>
-            <div className="p-6">
+            <div className="p-4 md:p-6">
               <h3 className="text-xl font-bold text-text-primary mb-4">
                 {selectedDate ? (<>{selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}<div className="text-sm text-text-secondary font-normal mt-1">{selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div></>) : 'Select a date'}
               </h3>
@@ -152,8 +141,8 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ themeMode, toggleThe
             </div>
           </WidgetCard>
 
-          <WidgetCard className="mt-6">
-            <div className="p-6">
+          <WidgetCard className="mt-4 md:mt-6">
+            <div className="p-4 md:p-6">
               <h3 className="text-lg font-bold text-text-primary mb-4">Upcoming Events</h3>
               <div className="space-y-2">
                 {events.slice(0, 5).map((event) => (

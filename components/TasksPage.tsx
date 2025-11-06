@@ -145,18 +145,6 @@ export const TasksPage: React.FC<TasksPageProps> = ({ tasks, onAddTask, onUpdate
 
   return (
     <div className="max-w-6xl mx-auto space-y-4 md:space-y-6 px-4 md:px-0 pb-6">
-      {/* Header with theme toggle */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-text-primary">Tasks</h1>
-        <button
-          onClick={toggleTheme}
-          className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
-          aria-label="Toggle theme"
-        >
-          {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
-        </button>
-      </div>
-
       {/* Quick Add */}
       <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
         <form onSubmit={handleAddTask} className="flex gap-2 md:gap-3">

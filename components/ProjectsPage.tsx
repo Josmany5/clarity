@@ -90,17 +90,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ themeMode, toggleThe
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Add Project Form */}
-      <div className="bg-card-bg backdrop-blur-xl rounded-2xl p-6 border border-card-border shadow-glass">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-text-primary">Create New Project</h2>
-          <button
-            onClick={toggleTheme}
-            className="p-2 md:p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
-            aria-label="Toggle theme"
-          >
-            {themeMode === 'light' ? <MoonIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" /> : <SunIcon className="w-5 h-5 md:w-6 md:h-6 text-text-primary" />}
-          </button>
-        </div>
+      <div className="bg-card-bg backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
+        <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-4">Create New Project</h2>
         <form onSubmit={handleAddProject} className="space-y-4">
           <input
             type="text"
