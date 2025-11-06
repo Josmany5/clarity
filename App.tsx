@@ -14,6 +14,7 @@ import { SystemsPage } from './components/SystemsPage';
 import { HistoryPage } from './components/HistoryPage';
 import { WorkspacesPage } from './components/WorkspacesPage';
 import { ChatHistoryPage } from './components/ChatHistoryPage';
+import { EventsPage } from './components/EventsPage';
 import { AIAssistant } from './components/AIAssistant';
 
 export interface Note {
@@ -48,6 +49,24 @@ export interface Goal {
   description: string;
   targetDate?: string;
   status: 'not-started' | 'in-progress' | 'completed';
+  createdAt: number;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  type: 'class' | 'meeting' | 'appointment' | 'other';
+  startDate: string; // YYYY-MM-DD
+  startTime: string; // HH:MM
+  endTime: string; // HH:MM
+  recurring?: {
+    frequency: 'daily' | 'weekly' | 'monthly';
+    daysOfWeek?: number[]; // 0-6 (Sunday-Saturday)
+    endDate?: string; // YYYY-MM-DD
+  };
+  location?: string;
+  color?: string;
   createdAt: number;
 }
 
@@ -132,6 +151,15 @@ const App: React.FC = () => {
       return null;
     }
   });
+  const [events, setEvents] = useState<Event[]>(() => {
+    try {
+      const savedEvents = window.localStorage.getItem('events');
+      return savedEvents ? JSON.parse(savedEvents) : [];
+    } catch (error) {
+      console.error("Could not parse events from localStorage", error);
+      return [];
+    }
+  });
 
   useEffect(() => {
     window.localStorage.setItem('notes', JSON.stringify(notes));
@@ -158,6 +186,10 @@ const App: React.FC = () => {
       window.localStorage.setItem('activeWorkspaceId', activeWorkspaceId);
     }
   }, [activeWorkspaceId]);
+
+  useEffect(() => {
+    window.localStorage.setItem('events', JSON.stringify(events));
+  }, [events]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -248,6 +280,31 @@ const App: React.FC = () => {
     setTasks(tasks.filter(task => task.id !== taskId));
   };
 
+  const handleDeleteAllTasks = () => {
+    setTasks([]);
+  };
+
+  const handleDeleteCompletedTasks = () => {
+    setTasks(tasks.filter(task => !task.completed));
+  };
+
+  const handleAddEvent = (event: Omit<Event, 'id' | 'createdAt'>) => {
+    const newEvent: Event = {
+      ...event,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+    };
+    setEvents(prevEvents => [newEvent, ...prevEvents]);
+  };
+
+  const handleUpdateEvent = (updatedEvent: Event) => {
+    setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+  };
+
+  const handleDeleteEvent = (eventId: string) => {
+    setEvents(events.filter(event => event.id !== eventId));
+  };
+
   const handleCreateWorkspace = (name: string, description: string = '') => {
     const newWorkspace: Workspace = {
       id: crypto.randomUUID(),
@@ -314,6 +371,13 @@ const App: React.FC = () => {
         return <ProjectsPage />;
       case 'Calendar':
         return <CalendarPage />;
+      case 'Events':
+        return <EventsPage
+          events={events}
+          onAddEvent={handleAddEvent}
+          onUpdateEvent={handleUpdateEvent}
+          onDeleteEvent={handleDeleteEvent}
+        />;
       case 'Planner':
         return <PlannerPage />;
       case 'Templates':
@@ -412,6 +476,9 @@ const App: React.FC = () => {
           currentPage={activePage}
           onTaskCreate={handleAddTask}
           onTaskUpdate={handleUpdateTask}
+          onTaskDelete={handleDeleteTask}
+          onTaskDeleteAll={handleDeleteAllTasks}
+          onTaskDeleteCompleted={handleDeleteCompletedTasks}
           onNoteCreate={(note) => {
             const newNote: Note = {
               id: crypto.randomUUID(),
@@ -420,8 +487,11 @@ const App: React.FC = () => {
               lastModified: Date.now(),
             };
             setNotes([newNote, ...notes]);
+            setActiveNoteId(newNote.id);
+            setActivePage('Notes');
             return newNote;
           }}
+          onEventCreate={handleAddEvent}
           tasks={tasks}
         />
       </div>

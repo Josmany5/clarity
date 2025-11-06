@@ -102,9 +102,9 @@ export const ChatHistoryPage: React.FC = () => {
   );
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] overflow-hidden">
+    <div className="flex h-[calc(100vh-8rem)] overflow-hidden relative">
       {/* Sessions List */}
-      <div className="w-80 border-r border-card-border flex flex-col bg-card-bg">
+      <div className="w-80 border-r border-card-border flex flex-col bg-card-bg relative z-10">
         <div className="p-4 border-b border-card-border">
           <h1 className="text-2xl font-bold text-text-primary mb-3">Chat History</h1>
           <div className="relative mb-3">
@@ -133,23 +133,29 @@ export const ChatHistoryPage: React.FC = () => {
         </div>
 
         {/* Session List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto relative" style={{ touchAction: 'auto' }}>
           {filteredSessions.length === 0 ? (
             <div className="p-8 text-center">
               <div className="text-4xl mb-3">💬</div>
               <p className="text-sm text-text-secondary">No conversations yet</p>
             </div>
           ) : (
-            <div className="p-2 space-y-1">
+            <div className="p-2 space-y-1 relative">
               {filteredSessions.map((session) => (
                 <button
                   key={session.id}
-                  onClick={() => setSelectedSession(session)}
-                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Clicked session:', session.id);
+                    setSelectedSession(session);
+                  }}
+                  className={`w-full text-left p-3 rounded-lg transition-colors cursor-pointer ${
                     selectedSession?.id === session.id
                       ? 'bg-accent/20 border border-accent/30'
                       : 'hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
                   }`}
+                  style={{ pointerEvents: 'auto' }}
                 >
                   <div className="flex items-start gap-2 mb-1">
                     <span className="text-lg">🤖</span>

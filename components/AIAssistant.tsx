@@ -19,11 +19,15 @@ interface AIAssistantProps {
   currentPage: string;
   onTaskCreate?: (task: any) => void;
   onTaskUpdate?: (task: any) => void;
+  onTaskDelete?: (taskId: string) => void;
+  onTaskDeleteAll?: () => void;
+  onTaskDeleteCompleted?: () => void;
   onNoteCreate?: (note: { title: string; content: string }) => any;
+  onEventCreate?: (event: any) => void;
   tasks?: any[];
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onNoteCreate, tasks = [] }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, tasks = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -39,8 +43,99 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [fileContent, setFileContent] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Robust JSON extraction function that handles nested braces
+  const extractJSON = (text: string, prefix: string): string | null => {
+    const startIndex = text.indexOf(prefix);
+    if (startIndex === -1) return null;
+
+    const jsonStart = text.indexOf('{', startIndex);
+    if (jsonStart === -1) return null;
+
+    let braceCount = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = jsonStart; i < text.length; i++) {
+      const char = text[i];
+
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+
+      if (char === '\\') {
+        escaped = true;
+        continue;
+      }
+
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+
+      if (!inString) {
+        if (char === '{') braceCount++;
+        if (char === '}') {
+          braceCount--;
+          if (braceCount === 0) {
+            return text.substring(jsonStart, i + 1);
+          }
+        }
+      }
+    }
+
+    return null;
+  };
+
+  // Robust JSON array extraction function that handles nested brackets
+  const extractJSONArray = (text: string, prefix: string): string | null => {
+    const startIndex = text.indexOf(prefix);
+    if (startIndex === -1) return null;
+
+    const jsonStart = text.indexOf('[', startIndex);
+    if (jsonStart === -1) return null;
+
+    let bracketCount = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = jsonStart; i < text.length; i++) {
+      const char = text[i];
+
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+
+      if (char === '\\') {
+        escaped = true;
+        continue;
+      }
+
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+
+      if (!inString) {
+        if (char === '[') bracketCount++;
+        if (char === ']') {
+          bracketCount--;
+          if (bracketCount === 0) {
+            return text.substring(jsonStart, i + 1);
+          }
+        }
+      }
+    }
+
+    return null;
+  };
 
   // Save messages to localStorage whenever they change
   useEffect(() => {
@@ -52,28 +147,86 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
+      return;
+    }
+
+    // Check file type
+    const allowedTypes = ['text/plain', 'text/csv', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Only .txt, .csv, .pdf, and .doc/.docx files are supported');
+      return;
+    }
+
+    setAttachedFile(file);
+
+    // Read file content
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const content = event.target?.result as string;
+      setFileContent(content);
+    };
+
+    if (file.type === 'text/plain' || file.type === 'text/csv') {
+      reader.readAsText(file);
+    } else {
+      // For PDF and DOC files, just store the file for now
+      // In production, you'd send this to a backend for processing
+      setFileContent(`[${file.name} - ${(file.size / 1024).toFixed(2)}KB]`);
+    }
+  };
+
+  const removeAttachment = () => {
+    setAttachedFile(null);
+    setFileContent('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if ((!input.trim() && !attachedFile) || isLoading) return;
+
+    // Build user message with file content if attached
+    let userContent = input.trim();
+    if (attachedFile && fileContent) {
+      userContent += `\n\n[Attached file: ${attachedFile.name}]\n${fileContent}`;
+    }
 
     const userMessage: Message = {
       role: 'user',
-      content: input.trim(),
+      content: attachedFile ? `${input.trim()}\n📎 ${attachedFile.name}` : input.trim(),
       timestamp: Date.now()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
+    const currentFileContent = fileContent;
+    const currentFileName = attachedFile?.name || '';
+    removeAttachment(); // Clear attachment after sending
     setIsLoading(true);
 
     try {
-      // Get AI response with conversation history
-      const response = await getAIResponse(input, currentPage, messages);
+      // Build prompt with file content
+      let prompt = input.trim();
+      if (currentFileContent) {
+        prompt += `\n\nI've attached a file (${currentFileName}) with the following content:\n\n${currentFileContent}\n\nPlease analyze this and help me with my request.`;
+      }
 
-      // Check for task creation
-      const tasksMatch = response.match(/TASKS_JSON:\s*(\[[\s\S]*?\])/);
-      if (tasksMatch && onTaskCreate) {
+      // Get AI response with conversation history
+      const response = await getAIResponse(prompt, currentPage, messages);
+
+      // Check for task creation using robust extraction
+      const tasksJSON = extractJSONArray(response, 'TASKS_JSON:');
+      if (tasksJSON && onTaskCreate) {
         try {
-          const tasksArray = JSON.parse(tasksMatch[1]);
+          const tasksArray = JSON.parse(tasksJSON);
           for (const taskData of tasksArray) {
             const subtasks = taskData.subtasks?.map((st: any) => ({
               id: crypto.randomUUID(),
@@ -93,25 +246,52 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
       }
 
-      // Check for note creation
-      const noteMatch = response.match(/NOTE_JSON:\s*(\{[\s\S]*?\})/);
+      // Check for note creation - simple extraction between markers
+      const noteMatch = response.match(/<<<NOTE_START>>>\s*([\s\S]*?)\s*<<<NOTE_END>>>/);
       if (noteMatch && onNoteCreate) {
         try {
-          const noteData = JSON.parse(noteMatch[1]);
+          const noteJSON = noteMatch[1].trim();
+          const noteData = JSON.parse(noteJSON);
+          console.log('📝 Creating note:', noteData);
           onNoteCreate({
             title: noteData.title,
-            content: noteData.content
+            content: noteData.content  // Content already has real newlines
           });
         } catch (error) {
           console.error('Failed to parse note JSON:', error);
+          console.error('Raw JSON string:', noteMatch[1]);
         }
       }
 
-      // Check for task update
-      const updateMatch = response.match(/TASK_UPDATE_JSON:\s*(\{[\s\S]*?\})/);
-      if (updateMatch && onTaskUpdate && tasks) {
+      // Check for event creation using robust extraction
+      const eventsJSON = extractJSONArray(response, 'EVENTS_JSON:');
+      if (eventsJSON && onEventCreate) {
         try {
-          const updateData = JSON.parse(updateMatch[1]);
+          console.log('📅 Event JSON found:', eventsJSON);
+          const eventsArray = JSON.parse(eventsJSON);
+          console.log('📅 Parsed events:', eventsArray);
+          for (const eventData of eventsArray) {
+            console.log('📅 Creating event:', eventData);
+            onEventCreate(eventData);
+          }
+        } catch (error) {
+          console.error('❌ Failed to parse events JSON:', error);
+          console.error('Raw JSON string:', eventsJSON);
+        }
+      } else {
+        if (!onEventCreate) {
+          console.warn('⚠️ Event creation handler not provided');
+        }
+        if (!eventsJSON) {
+          console.log('ℹ️ No EVENTS_JSON found in response');
+        }
+      }
+
+      // Check for task update using robust extraction
+      const updateJSON = extractJSON(response, 'TASK_UPDATE_JSON:');
+      if (updateJSON && onTaskUpdate && tasks) {
+        try {
+          const updateData = JSON.parse(updateJSON);
           console.log('📝 Task update request:', updateData);
           console.log('📋 Available tasks:', tasks.map(t => t.title));
 
@@ -149,15 +329,103 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
           }
         } catch (error) {
           console.error('Failed to parse task update JSON:', error);
+          console.error('Raw JSON string:', updateJSON);
         }
       }
 
-      // Remove JSON lines from display message
-      let displayMessage = response
-        .replace(/TASKS_JSON:\s*\[[\s\S]*?\]\n?/, '')
-        .replace(/NOTE_JSON:\s*\{[\s\S]*?\}\n?/, '')
-        .replace(/TASK_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/, '')
-        .trim();
+      // Check for task deletion using robust extraction
+      const deleteJSON = extractJSON(response, 'TASK_DELETE_JSON:');
+      if (deleteJSON && onTaskDelete && tasks) {
+        try {
+          const deleteData = JSON.parse(deleteJSON);
+          console.log('🗑️ Task deletion request:', deleteData);
+          console.log('📋 Available tasks:', tasks.map(t => t.title));
+
+          // Try to find the task - be more flexible with matching
+          const searchTerm = deleteData.taskTitle.toLowerCase();
+          const taskToDelete = tasks.find(t => {
+            const title = t.title.toLowerCase();
+            return title.includes(searchTerm) || searchTerm.includes(title);
+          });
+
+          if (taskToDelete) {
+            console.log('✅ Found task to delete:', taskToDelete.title);
+            onTaskDelete(taskToDelete.id);
+          } else {
+            console.warn('❌ Could not find task matching:', deleteData.taskTitle);
+          }
+        } catch (error) {
+          console.error('Failed to parse task deletion JSON:', error);
+          console.error('Raw JSON string:', deleteJSON);
+        }
+      }
+
+      // Check for delete all tasks
+      const deleteAllJSON = extractJSON(response, 'TASK_DELETE_ALL_JSON:');
+      if (deleteAllJSON && onTaskDeleteAll) {
+        try {
+          const deleteAllData = JSON.parse(deleteAllJSON);
+          if (deleteAllData.confirm) {
+            console.log('🗑️ Deleting all tasks');
+            onTaskDeleteAll();
+          }
+        } catch (error) {
+          console.error('Failed to parse delete all JSON:', error);
+        }
+      }
+
+      // Check for delete completed tasks
+      const deleteCompletedJSON = extractJSON(response, 'TASK_DELETE_COMPLETED_JSON:');
+      if (deleteCompletedJSON && onTaskDeleteCompleted) {
+        try {
+          const deleteCompletedData = JSON.parse(deleteCompletedJSON);
+          if (deleteCompletedData.confirm) {
+            console.log('🗑️ Deleting completed tasks');
+            onTaskDeleteCompleted();
+          }
+        } catch (error) {
+          console.error('Failed to parse delete completed JSON:', error);
+        }
+      }
+
+      // Remove action blocks from display message - keep only conversational text
+      let displayMessage = response;
+
+      // Remove task creation JSON
+      if (tasksJSON) {
+        displayMessage = displayMessage.replace(/TASKS_JSON:\s*\[[\s\S]*?\]\n?/g, '');
+      }
+
+      // Remove note creation block (everything between markers)
+      if (noteMatch) {
+        displayMessage = displayMessage.replace(/<<<NOTE_START>>>[\s\S]*?<<<NOTE_END>>>\n*/g, '');
+      }
+
+      // Remove event creation JSON
+      if (eventsJSON) {
+        displayMessage = displayMessage.replace(/EVENTS_JSON:\s*\[[\s\S]*?\]\n?/g, '');
+      }
+
+      // Remove task update JSON
+      if (updateJSON) {
+        displayMessage = displayMessage.replace(/TASK_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove task deletion JSON
+      if (deleteJSON) {
+        displayMessage = displayMessage.replace(/TASK_DELETE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove bulk deletion JSONs
+      if (deleteAllJSON) {
+        displayMessage = displayMessage.replace(/TASK_DELETE_ALL_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      if (deleteCompletedJSON) {
+        displayMessage = displayMessage.replace(/TASK_DELETE_COMPLETED_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      displayMessage = displayMessage.trim();
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -190,19 +458,40 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     }
 
     const recognition = startBrowserListening(
+      // onResult - final transcript
       (text) => {
         setInput(text);
         setIsListening(false);
       },
+      // onError
       (error) => {
         console.error('Speech recognition error:', error);
+        // Show error as a system message
+        const errorMessage: Message = {
+          role: 'assistant',
+          content: `🎤 ${error}`,
+          timestamp: Date.now()
+        };
+        setMessages(prev => [...prev, errorMessage]);
         setIsListening(false);
+      },
+      // onInterimResult - show what's being said in real-time
+      (interimText) => {
+        setInput(interimText);
       }
     );
 
     if (recognition) {
       recognitionRef.current = recognition;
       setIsListening(true);
+    } else {
+      // Show error if speech recognition not supported
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: '🎤 Speech recognition not supported in this browser. Try Chrome, Edge, or Safari.',
+        timestamp: Date.now()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
   };
 
@@ -234,7 +523,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       className={`fixed z-50 transition-all duration-300 ${
         isMinimized
           ? 'bottom-4 right-4 w-80 md:w-96 md:bottom-6 md:right-6'
-          : 'bottom-4 right-4 left-4 h-[70vh] md:left-auto md:w-96 md:h-[600px] md:bottom-6 md:right-6'
+          : 'bottom-4 right-4 left-4 top-4 md:left-auto md:w-[600px] md:top-4 md:bottom-4 md:right-6'
       }`}
     >
       <WidgetCard className="flex flex-col h-full shadow-2xl">
@@ -249,6 +538,21 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (window.confirm('Start a new chat? This will clear the conversation history.')) {
+                  setMessages([]);
+                  localStorage.removeItem('aiChatHistory');
+                }
+              }}
+              className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
+              aria-label="New Chat"
+              title="New Chat"
+            >
+              <svg className="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
             <button
               onClick={() => setIsMinimized(!isMinimized)}
               className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
@@ -277,20 +581,58 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         {!isMinimized && (
           <>
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.length === 0 && (
-                <div className="text-center text-text-secondary py-12">
-                  <div className="text-6xl mb-4">👋</div>
-                  <p className="font-semibold text-text-primary mb-2">Hey! I'm Wove</p>
-                  <p className="text-sm mb-3">Your AI assistant for everything</p>
-                  <div className="mt-4 space-y-2 text-sm text-left max-w-xs mx-auto">
-                    <p className="text-text-primary font-medium">I can help with:</p>
-                    <p className="text-xs">💡 Brainstorming ideas & planning</p>
-                    <p className="text-xs">💻 Coding & technical help</p>
-                    <p className="text-xs">📚 Learning & explaining concepts</p>
-                    <p className="text-xs">✅ Managing your tasks</p>
-                    <p className="text-xs">💬 General conversation & advice</p>
+                <div className="text-center text-text-secondary py-8 px-4">
+                  <div className="text-7xl mb-6">👋</div>
+                  <h2 className="text-2xl font-bold text-text-primary mb-3">Hey! I'm Wove</h2>
+                  <p className="text-base text-text-secondary mb-8">Your AI assistant for everything</p>
+
+                  <div className="mt-6 space-y-3 text-left max-w-md mx-auto">
+                    <p className="text-lg font-semibold text-text-primary mb-4">I can help with:</p>
+
+                    <div className="flex items-start gap-3 p-3 bg-black/5 dark:bg-white/5 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                      <span className="text-2xl">💡</span>
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">Brainstorming & Planning</p>
+                        <p className="text-xs text-text-secondary">Ideas, strategies, and project planning</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-black/5 dark:bg-white/5 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                      <span className="text-2xl">💻</span>
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">Coding & Technical Help</p>
+                        <p className="text-xs text-text-secondary">Debug code, learn programming, get solutions</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-black/5 dark:bg-white/5 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                      <span className="text-2xl">📚</span>
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">Learning & Explaining</p>
+                        <p className="text-xs text-text-secondary">Concepts, tutorials, step-by-step guides</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-black/5 dark:bg-white/5 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                      <span className="text-2xl">✅</span>
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">Managing Tasks & Events</p>
+                        <p className="text-xs text-text-secondary">Create tasks, schedule events, organize notes</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 bg-black/5 dark:bg-white/5 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                      <span className="text-2xl">💬</span>
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">Conversation & Advice</p>
+                        <p className="text-xs text-text-secondary">Chat about anything, get recommendations</p>
+                      </div>
+                    </div>
                   </div>
+
+                  <p className="text-xs text-text-secondary mt-8 opacity-75">Just start typing, attach a file, or use voice input!</p>
                 </div>
               )}
 
@@ -331,11 +673,33 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
 
             {/* Input */}
             <div className="p-4 border-t border-card-border">
+              {/* File attachment preview */}
+              {attachedFile && (
+                <div className="mb-2 p-2 bg-black/5 dark:bg-white/5 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-text-primary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                    <span className="truncate">{attachedFile.name}</span>
+                    <span className="text-xs text-text-secondary">({(attachedFile.size / 1024).toFixed(2)}KB)</span>
+                  </div>
+                  <button
+                    onClick={removeAttachment}
+                    className="p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded transition-colors"
+                    aria-label="Remove attachment"
+                  >
+                    <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
               <div className="flex items-center gap-2">
                 <button
                   onClick={startListening}
                   disabled={isLoading}
-                  className={`p-3 rounded-full transition-all ${
+                  className={`p-3 rounded-full transition-all flex-shrink-0 ${
                     isListening
                       ? 'bg-red-500 text-white animate-pulse'
                       : 'bg-black/10 dark:bg-white/10 text-text-primary hover:bg-black/20 dark:hover:bg-white/20'
@@ -348,20 +712,39 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
                   </svg>
                 </button>
 
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isLoading}
+                  className="p-3 rounded-full transition-all flex-shrink-0 bg-black/10 dark:bg-white/10 text-text-primary hover:bg-black/20 dark:hover:bg-white/20 disabled:opacity-50"
+                  aria-label="Attach file"
+                  title="Attach file (.txt, .csv, .pdf, .doc)"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".txt,.csv,.pdf,.doc,.docx"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder={isListening ? 'Listening...' : 'Ask me anything...'}
+                  placeholder={isListening ? 'Listening...' : attachedFile ? `Ask about ${attachedFile.name}...` : 'Ask me anything...'}
                   disabled={isLoading || isListening}
                   className="flex-1 bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent transition-all disabled:opacity-50"
                 />
 
                 <button
                   onClick={handleSend}
-                  disabled={!input.trim() || isLoading}
-                  className="p-3 bg-accent text-white rounded-full hover:bg-accent-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={(!input.trim() && !attachedFile) || isLoading}
+                  className="p-3 bg-accent text-white rounded-full hover:bg-accent-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                   aria-label="Send message"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -371,7 +754,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
               </div>
 
               <p className="text-xs text-text-secondary mt-2 text-center">
-                {isListening ? 'Speak now...' : 'Type or use voice input'}
+                {isListening ? 'Speak now...' : attachedFile ? `File attached: ${attachedFile.name}` : 'Type, attach a file, or use voice input'}
               </p>
             </div>
           </>

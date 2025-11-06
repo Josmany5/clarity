@@ -8,8 +8,15 @@ interface CalendarEvent {
   title: string;
   date: string;
   time?: string;
-  type: 'task' | 'project';
+  endTime?: string;
+  type: 'task' | 'project' | 'event';
+  eventType?: 'class' | 'meeting' | 'appointment' | 'other';
   completed?: boolean;
+  recurring?: {
+    frequency: 'daily' | 'weekly' | 'monthly';
+    daysOfWeek?: number[];
+    endDate?: string;
+  };
 }
 
 export const CalendarPage: React.FC = () => {
@@ -48,6 +55,24 @@ export const CalendarPage: React.FC = () => {
             type: 'project',
           });
         }
+      });
+    } catch {}
+
+    // Load events (classes, meetings, appointments)
+    try {
+      const storedEvents = JSON.parse(localStorage.getItem('events') || '[]');
+      storedEvents.forEach((event: any) => {
+        // Add single or first occurrence
+        events.push({
+          id: event.id,
+          title: event.title,
+          date: event.startDate,
+          time: event.startTime,
+          endTime: event.endTime,
+          type: 'event',
+          eventType: event.type,
+          recurring: event.recurring,
+        });
       });
     } catch {}
 

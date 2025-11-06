@@ -43,6 +43,47 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const [showFormatting, setShowFormatting] = React.useState(true); // Always show toolbar by default
 
+  // Convert markdown to HTML if content looks like markdown
+  const convertMarkdownToHTML = (text: string): string => {
+    if (!text) return '';
+
+    // If already HTML, return as-is
+    if (text.includes('<p>') || text.includes('<h1>') || text.includes('<h2>')) {
+      return text;
+    }
+
+    // Simple markdown to HTML conversion
+    let html = text;
+
+    // Headers
+    html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Italic
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Unordered lists
+    html = html.replace(/^- (.*?)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*?<\/li>\n?)+/g, '<ul>$&</ul>');
+    html = html.replace(/<\/ul>\n?<ul>/g, '');
+
+    // Paragraphs (any line not already wrapped)
+    html = html.split('\n\n').map(para => {
+      if (para.trim() && !para.match(/^<[hul]/)) {
+        return `<p>${para}</p>`;
+      }
+      return para;
+    }).join('');
+
+    return html;
+  };
+
+  const initialContent = React.useMemo(() => convertMarkdownToHTML(content), []);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -64,7 +105,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         nested: true,
       }),
     ],
-    content,
+    content: initialContent,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
@@ -74,6 +115,20 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       },
     },
   });
+
+  // Update editor content when content prop changes
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      const html = convertMarkdownToHTML(content);
+      editor.commands.setContent(html);
+
+      // Scroll to top when content changes
+      const editorElement = document.querySelector('.flex-1.overflow-y-auto.p-6');
+      if (editorElement) {
+        editorElement.scrollTop = 0;
+      }
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;

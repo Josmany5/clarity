@@ -58,6 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
     { id: 'Workspaces', icon: <WorkspaceIcon />, label: 'Workspaces' },
     { id: 'Notes', icon: <NoteIcon />, label: 'Notes' },
     { id: 'Tasks', icon: <HeartIcon />, label: 'Tasks' },
+    { id: 'Events', icon: <CalendarIcon />, label: 'Events' },
     { id: 'Projects', icon: <ProjectIcon />, label: 'Projects' },
     { id: 'Calendar', icon: <CalendarIcon />, label: 'Calendar' },
     { id: 'Planner', icon: <PlannerIcon />, label: 'Planner' },

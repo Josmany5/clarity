@@ -106,7 +106,9 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                     {note.title || 'Untitled'}
                   </h3>
                   <p className="text-sm text-text-secondary truncate">
-                    {note.content || 'No content'}
+                    {note.content
+                      ? note.content.replace(/#{1,6}\s/g, '').replace(/\*\*/g, '').replace(/\*/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1').slice(0, 100)
+                      : 'No content'}
                   </p>
                   <p className="text-xs text-text-secondary mt-1">
                     {new Date(note.lastModified).toLocaleDateString()}
@@ -149,11 +151,13 @@ export const NotesPage: React.FC<NotesPageProps> = ({
             </div>
 
             {/* Editor Content */}
-            <RichTextEditor
-              content={editContent}
-              onChange={handleContentChange}
-              placeholder="Start writing your note..."
-            />
+            <div className="flex-1 overflow-hidden">
+              <RichTextEditor
+                content={editContent}
+                onChange={handleContentChange}
+                placeholder="Start writing your note..."
+              />
+            </div>
 
             {/* Editor Footer */}
             <div className="p-4 border-t border-card-border text-xs text-text-secondary">
