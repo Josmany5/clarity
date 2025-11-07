@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import type { Task, Subtask, TaskList } from '../App';
-import { DateTimePicker } from './DateTimePicker';
 
 interface TasksPageProps {
   tasks: Task[];
@@ -616,20 +615,208 @@ export const TasksPage: React.FC<TasksPageProps> = ({
         </div>
       )}
 
-      {/* Date Time Picker Modal */}
+      {/* Task Scheduling Modal */}
       {schedulingTask && (
-        <DateTimePicker
-          value={schedulingTask.dueDate && schedulingTask.dueTime ? { date: schedulingTask.dueDate, time: schedulingTask.dueTime } : undefined}
-          onChange={(value) => {
-            if (value) {
-              onUpdateTask({ ...schedulingTask, dueDate: value.date, dueTime: value.time });
-            } else {
-              onUpdateTask({ ...schedulingTask, dueDate: undefined, dueTime: undefined });
-            }
-          }}
-          onClose={() => setSchedulingTask(null)}
-          title="Schedule Task"
-        />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
+          <div className="bg-card-bg border border-card-border rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-text-primary">Schedule Task</h3>
+              <button
+                onClick={() => setSchedulingTask(null)}
+                className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const dueDate = formData.get('dueDate') as string;
+              const startDate = formData.get('startDate') as string;
+              const endDate = formData.get('endDate') as string;
+              const dueTime = formData.get('dueTime') as string;
+              const estimatedTime = formData.get('estimatedTime') as string;
+              const recurring = (formData.get('recurring') as string) === 'on';
+              const recurringFrequency = formData.get('recurringFrequency') as 'daily' | 'weekly' | 'monthly';
+              const recurringEndDate = formData.get('recurringEndDate') as string;
+
+              // Get selected days of week
+              const recurringDays: number[] = [];
+              if (recurring && recurringFrequency === 'weekly') {
+                for (let i = 0; i < 7; i++) {
+                  if (formData.get(`day-${i}`) === 'on') {
+                    recurringDays.push(i);
+                  }
+                }
+              }
+
+              onUpdateTask({
+                ...schedulingTask,
+                dueDate: dueDate || undefined,
+                startDate: startDate || undefined,
+                endDate: endDate || undefined,
+                dueTime: dueTime || undefined,
+                estimatedTime: estimatedTime ? parseInt(estimatedTime) : undefined,
+                recurring: recurring ? {
+                  frequency: recurringFrequency,
+                  daysOfWeek: recurringDays.length > 0 ? recurringDays : undefined,
+                  endDate: recurringEndDate || undefined,
+                } : undefined,
+              });
+              setSchedulingTask(null);
+            }} className="space-y-4">
+              {/* Due Date & Time */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Due Date</label>
+                  <input
+                    type="date"
+                    name="dueDate"
+                    defaultValue={schedulingTask.dueDate || ''}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Due Time</label>
+                  <input
+                    type="time"
+                    name="dueTime"
+                    defaultValue={schedulingTask.dueTime || ''}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Multi-day Task Range */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Start Date (for multi-day tasks)</label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    defaultValue={schedulingTask.startDate || ''}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">End Date (for multi-day tasks)</label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    defaultValue={schedulingTask.endDate || ''}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Estimated Time */}
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-2">Estimated Time (minutes)</label>
+                <input
+                  type="number"
+                  name="estimatedTime"
+                  defaultValue={schedulingTask.estimatedTime || ''}
+                  min="0"
+                  step="15"
+                  placeholder="e.g., 30, 60, 90"
+                  className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                />
+              </div>
+
+              {/* Recurring */}
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="recurring"
+                    defaultChecked={!!schedulingTask.recurring}
+                    className="w-5 h-5 accent-accent"
+                    id="recurring-checkbox"
+                  />
+                  <span className="text-sm font-semibold text-text-primary">Recurring Task</span>
+                </label>
+              </div>
+
+              {/* Recurring Options (show when recurring is checked) */}
+              <div id="recurring-options" className="space-y-4 p-4 bg-black/5 dark:bg-white/5 rounded-lg">
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Frequency</label>
+                  <select
+                    name="recurringFrequency"
+                    defaultValue={schedulingTask.recurring?.frequency || 'weekly'}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                    id="recurring-frequency"
+                  >
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
+
+                {/* Days of Week (for weekly) */}
+                <div id="days-of-week">
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Repeat On</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                      <label key={index} className="cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name={`day-${index}`}
+                          defaultChecked={schedulingTask.recurring?.daysOfWeek?.includes(index)}
+                          className="peer hidden"
+                        />
+                        <div className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors bg-black/10 dark:bg-white/10 text-text-secondary peer-checked:bg-accent peer-checked:text-white">
+                          {day}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Recurrence End Date (Optional)</label>
+                  <input
+                    type="date"
+                    name="recurringEndDate"
+                    defaultValue={schedulingTask.recurring?.endDate || ''}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onUpdateTask({
+                      ...schedulingTask,
+                      dueDate: undefined,
+                      dueTime: undefined,
+                      startDate: undefined,
+                      endDate: undefined,
+                      estimatedTime: undefined,
+                      recurring: undefined,
+                    });
+                    setSchedulingTask(null);
+                  }}
+                  className="flex-1 px-6 py-3 bg-black/10 dark:bg-white/10 text-text-primary rounded-lg font-semibold hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
+                >
+                  Clear Schedule
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors"
+                >
+                  Save Schedule
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
