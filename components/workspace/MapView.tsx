@@ -94,11 +94,11 @@ export const MapView: React.FC<MapViewProps> = ({
       emoji = task?.completed ? '✅' : '☐';
     } else if (entity.type === 'project') {
       label = 'Project';
-      bgColor = '#ec4899';
+      bgColor = '#f97316';
       emoji = '📁';
     } else if (entity.type === 'goal') {
       label = 'Goal';
-      bgColor = '#06b6d4';
+      bgColor = '#eab308';
       emoji = '🎯';
     }
 
@@ -564,6 +564,114 @@ export const MapView: React.FC<MapViewProps> = ({
     }, 50);
   };
 
+  const handleCreateProject = () => {
+    if (!reactFlowInstance || !contextMenu) return;
+
+    const bounds = document.querySelector('.react-flow')?.getBoundingClientRect();
+    if (!bounds) return;
+
+    const position = reactFlowInstance.project({
+      x: contextMenu.x - bounds.left,
+      y: contextMenu.y - bounds.top,
+    });
+
+    const newEntity = {
+      id: crypto.randomUUID(),
+      type: 'project' as const,
+      entityId: 'new-project',
+      position: { x: position.x, y: position.y },
+      links: [],
+    };
+
+    const newNode: Node = {
+      id: newEntity.id,
+      type: 'custom',
+      position: newEntity.position,
+      style: { width: 220, height: 140 },
+      data: {
+        label: 'New Project',
+        emoji: '📁',
+        type: 'project',
+        bgColor: '#f97316',
+        onEdit: (newLabel: string) => handleNodeEdit(newEntity.id, newLabel),
+        onDelete: () => handleNodeDelete(newEntity.id),
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+
+    onUpdateWorkspace({
+      ...workspace,
+      entities: [...workspace.entities, newEntity],
+    });
+
+    setContextMenu(null);
+
+    // Zoom out 4 clicks instead of fitting view
+    setTimeout(() => {
+      if (reactFlowInstance) {
+        reactFlowInstance.zoomOut({ duration: 300 });
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 350);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 700);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 1050);
+      }
+    }, 50);
+  };
+
+  const handleCreateGoal = () => {
+    if (!reactFlowInstance || !contextMenu) return;
+
+    const bounds = document.querySelector('.react-flow')?.getBoundingClientRect();
+    if (!bounds) return;
+
+    const position = reactFlowInstance.project({
+      x: contextMenu.x - bounds.left,
+      y: contextMenu.y - bounds.top,
+    });
+
+    const newEntity = {
+      id: crypto.randomUUID(),
+      type: 'goal' as const,
+      entityId: 'new-goal',
+      position: { x: position.x, y: position.y },
+      links: [],
+    };
+
+    const newNode: Node = {
+      id: newEntity.id,
+      type: 'custom',
+      position: newEntity.position,
+      style: { width: 220, height: 140 },
+      data: {
+        label: 'New Goal',
+        emoji: '🎯',
+        type: 'goal',
+        bgColor: '#eab308',
+        onEdit: (newLabel: string) => handleNodeEdit(newEntity.id, newLabel),
+        onDelete: () => handleNodeDelete(newEntity.id),
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+
+    onUpdateWorkspace({
+      ...workspace,
+      entities: [...workspace.entities, newEntity],
+    });
+
+    setContextMenu(null);
+
+    // Zoom out 4 clicks instead of fitting view
+    setTimeout(() => {
+      if (reactFlowInstance) {
+        reactFlowInstance.zoomOut({ duration: 300 });
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 350);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 700);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 1050);
+      }
+    }, 50);
+  };
+
   const handleCloseContextMenu = () => {
     setContextMenu(null);
   };
@@ -756,6 +864,20 @@ export const MapView: React.FC<MapViewProps> = ({
           >
             <span className="text-xl">☐</span>
             <span className="font-medium">Task</span>
+          </button>
+          <button
+            onClick={handleCreateProject}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary flex items-center gap-3 transition-colors"
+          >
+            <span className="text-xl">📁</span>
+            <span className="font-medium">Project</span>
+          </button>
+          <button
+            onClick={handleCreateGoal}
+            className="w-full text-left px-4 py-2 hover:bg-black/10 dark:hover:bg-white/10 text-text-primary flex items-center gap-3 transition-colors"
+          >
+            <span className="text-xl">🎯</span>
+            <span className="font-medium">Goal</span>
           </button>
           <div className="border-t border-card-border my-2"></div>
           <button

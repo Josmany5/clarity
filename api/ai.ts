@@ -56,9 +56,20 @@ async function handleChat(req: VercelRequest, res: VercelResponse, data: any) {
       body: JSON.stringify({
         contents: [{ parts: [{ text: fullPrompt }] }],
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 1024,
-        }
+          temperature: 0.8,  // Balanced for natural yet coherent responses
+          topP: 0.95,         // Nucleus sampling for better quality
+          topK: 40,           // Limits token choices for coherence
+          maxOutputTokens: 2048,  // Doubled for more comprehensive responses
+        },
+        // Enable Google Search grounding for real-time information
+        tools: [{
+          googleSearchRetrieval: {
+            dynamicRetrievalConfig: {
+              mode: "MODE_DYNAMIC",
+              dynamicThreshold: 0.7  // Balance between search and knowledge
+            }
+          }
+        }]
       })
     }
   );

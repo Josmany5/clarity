@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HomeIcon, NoteIcon, HeartIcon, ProjectIcon, CalendarIcon, SettingsIcon, MenuIcon, PlannerIcon, TemplatesIcon, SystemsIcon, HistoryIcon, WorkspaceIcon, ChatIcon } from './Icons';
+import { HomeIcon, NoteIcon, HeartIcon, ProjectIcon, CalendarIcon, SettingsIcon, MenuIcon, PlannerIcon, TemplatesIcon, SystemsIcon, HistoryIcon, WorkspaceIcon, ChatIcon, GoalIcon } from './Icons';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -60,8 +60,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
     { id: 'Tasks', icon: <HeartIcon />, label: 'Tasks' },
     { id: 'Events', icon: <CalendarIcon />, label: 'Events' },
     { id: 'Projects', icon: <ProjectIcon />, label: 'Projects' },
+    { id: 'Goals', icon: <GoalIcon />, label: 'Goals' },
     { id: 'Calendar', icon: <CalendarIcon />, label: 'Calendar' },
     { id: 'Planner', icon: <PlannerIcon />, label: 'Planner' },
+    { id: 'Workflows', icon: <TemplatesIcon />, label: 'Workflows' },
+    { id: 'Routines', icon: <SystemsIcon />, label: 'Routines' },
     { id: 'Templates', icon: <TemplatesIcon />, label: 'Templates' },
     { id: 'Systems', icon: <SystemsIcon />, label: 'Systems' },
     { id: 'History', icon: <HistoryIcon />, label: 'History' },

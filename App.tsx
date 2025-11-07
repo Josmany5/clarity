@@ -9,6 +9,8 @@ import { ProjectsPage } from './components/ProjectsPage';
 import { CalendarPage } from './components/CalendarPage';
 import { SettingsPage } from './components/SettingsPage';
 import { PlannerPage } from './components/PlannerPage';
+import { WorkflowsPage } from './components/WorkflowsPage';
+import { RoutinesPage } from './components/RoutinesPage';
 import { TemplatesPage } from './components/TemplatesPage';
 import { SystemsPage } from './components/SystemsPage';
 import { HistoryPage } from './components/HistoryPage';
@@ -16,6 +18,7 @@ import { WorkspacesPage } from './components/WorkspacesPage';
 import { ChatHistoryPage } from './components/ChatHistoryPage';
 import { EventsPage } from './components/EventsPage';
 import { SearchResultsPage } from './components/SearchResultsPage';
+import { GoalsPage } from './components/GoalsPage';
 import { AIAssistant } from './components/AIAssistant';
 import { FloatingTimer } from './components/FloatingTimer';
 
@@ -542,6 +545,13 @@ const App: React.FC = () => {
         />;
       case 'Projects':
         return <ProjectsPage />;
+      case 'Goals':
+        return <GoalsPage
+          goals={goals}
+          onAddGoal={handleAddGoal}
+          onUpdateGoal={handleUpdateGoal}
+          onDeleteGoal={handleDeleteGoal}
+        />;
       case 'Calendar':
         return <CalendarPage
           notes={notes}
@@ -560,6 +570,10 @@ const App: React.FC = () => {
         />;
       case 'Planner':
         return <PlannerPage />;
+      case 'Workflows':
+        return <WorkflowsPage />;
+      case 'Routines':
+        return <RoutinesPage />;
       case 'Templates':
         return <TemplatesPage />;
       case 'Systems':
