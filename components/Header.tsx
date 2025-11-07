@@ -12,7 +12,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ title, themeMode, toggleTheme, searchQuery, onSearchChange }) => {
   return (
     <header className="flex-shrink-0 flex items-center justify-between p-4 md:px-8 md:py-6 gap-4">
-      <div className="flex items-center">
+      <div className="flex items-center pl-12 lg:pl-0">
          <h1 className="text-2xl md:text-3xl font-bold text-text-primary whitespace-nowrap">{title}</h1>
       </div>
 
