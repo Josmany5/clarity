@@ -401,9 +401,14 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       // Remove action blocks from display message - keep only conversational text
       let displayMessage = response;
 
-      // Remove task creation JSON
+      // Remove task creation JSON - use exact extracted string
       if (tasksJSON) {
-        displayMessage = displayMessage.replace(/TASKS_JSON:\s*\[[\s\S]*?\]\n?/g, '');
+        const taskMarker = 'TASKS_JSON:';
+        const startIdx = displayMessage.indexOf(taskMarker);
+        if (startIdx !== -1) {
+          const endIdx = startIdx + taskMarker.length + tasksJSON.length;
+          displayMessage = displayMessage.slice(0, startIdx) + displayMessage.slice(endIdx);
+        }
       }
 
       // Remove note creation block (everything between markers)
@@ -411,9 +416,14 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         displayMessage = displayMessage.replace(/<<<NOTE_START>>>[\s\S]*?<<<NOTE_END>>>\n*/g, '');
       }
 
-      // Remove event creation JSON
+      // Remove event creation JSON - use exact extracted string
       if (eventsJSON) {
-        displayMessage = displayMessage.replace(/EVENTS_JSON:\s*\[[\s\S]*?\]\n?/g, '');
+        const eventMarker = 'EVENTS_JSON:';
+        const startIdx = displayMessage.indexOf(eventMarker);
+        if (startIdx !== -1) {
+          const endIdx = startIdx + eventMarker.length + eventsJSON.length;
+          displayMessage = displayMessage.slice(0, startIdx) + displayMessage.slice(endIdx);
+        }
       }
 
       // Remove task update JSON

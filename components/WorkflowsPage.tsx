@@ -370,7 +370,6 @@ export const WorkflowsPage: React.FC = () => {
     return matchesType && matchesSearch;
   });
 
-  const popularWorkflows = filteredWorkflows.filter(t => t.popular);
 
   const categories = [
     { id: 'work', name: 'Work & Business', icon: '💼', workflows: filteredWorkflows.filter(t => t.category === 'work') },
@@ -436,73 +435,6 @@ export const WorkflowsPage: React.FC = () => {
           </div>
         </div>
       </WidgetCard>
-
-      {/* Popular Workflows */}
-      {popularWorkflows.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <span>🔥</span> Popular Workflows
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularWorkflows.map((workflow) => (
-              <WidgetCard key={workflow.id}>
-                <div className="p-6 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="text-3xl">{workflow.icon}</div>
-                      <div>
-                        <h3 className="font-bold text-text-primary">{workflow.name}</h3>
-                        <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-semibold border ${typeColors[workflow.type]}`}>
-                          {workflow.type}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-text-secondary">{workflow.description}</p>
-
-                  {/* Content Preview */}
-                  <div className="bg-black/5 dark:bg-white/5 rounded-lg p-3 space-y-1">
-                    <p className="text-xs font-semibold text-text-secondary uppercase">Preview</p>
-                    {workflow.type === 'note' || workflow.type === 'project' ? (
-                      <div className="text-sm text-text-primary">
-                        <p className="font-medium">{workflow.content.title}</p>
-                        <ul className="ml-4 mt-1 space-y-0.5">
-                          {workflow.content.sections.slice(0, 3).map((section: string, idx: number) => (
-                            <li key={idx} className="text-xs text-text-secondary">• {section}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : workflow.type === 'task' ? (
-                      <div className="text-sm text-text-primary">
-                        <p className="font-medium">{workflow.content.title}</p>
-                        <p className="text-xs text-text-secondary mt-1">{workflow.content.fields.length} fields</p>
-                      </div>
-                    ) : (
-                      <div className="text-sm text-text-primary">
-                        <p className="font-medium">{workflow.content.name}</p>
-                        <p className="text-xs text-text-secondary mt-1">{workflow.content.entities.length} entities</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-2">
-                    <button className="flex-1 px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm">
-                      Use Workflow
-                    </button>
-                    <button className="px-4 py-2 bg-black/10 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors text-sm">
-                      ⋯
-                    </button>
-                  </div>
-                </div>
-              </WidgetCard>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Categories */}
       {categories.length > 0 ? (

@@ -31,6 +31,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
     description: '',
     type: 'class' as Event['type'],
     startDate: '',
+    endDate: '',
     startTime: '',
     endTime: '',
     location: '',
@@ -62,6 +63,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
       description: formData.description,
       type: formData.type,
       startDate: formData.startDate,
+      endDate: formData.endDate || undefined,
       startTime: formData.startTime,
       endTime: formData.endTime,
       location: formData.location,
@@ -89,6 +91,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
       description: '',
       type: 'class',
       startDate: '',
+      endDate: '',
       startTime: '',
       endTime: '',
       location: '',
@@ -106,6 +109,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
       description: event.description || '',
       type: event.type,
       startDate: event.startDate,
+      endDate: event.endDate || '',
       startTime: event.startTime,
       endTime: event.endTime,
       location: event.location || '',
@@ -345,9 +349,9 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
               </div>
 
               {/* Date & Time */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-2">Date *</label>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">Start Date *</label>
                   <input
                     type="date"
                     value={formData.startDate}
@@ -356,6 +360,19 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
                     required
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-2">End Date (optional, for multi-day events)</label>
+                  <input
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                    min={formData.startDate}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-text-primary mb-2">Start Time *</label>
                   <input

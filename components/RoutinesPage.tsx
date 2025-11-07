@@ -419,7 +419,6 @@ export const RoutinesPage: React.FC = () => {
     return matchesType && matchesActive;
   });
 
-  const popularRoutines = filteredRoutines.filter(s => s.popular);
 
   const categories = [
     { id: 'work', name: 'Work & Business', icon: '💼', routines: filteredRoutines.filter(s => s.category === 'work') },
@@ -534,83 +533,6 @@ export const RoutinesPage: React.FC = () => {
         </div>
       </WidgetCard>
 
-      {/* Popular Routines */}
-      {popularRoutines.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <span>🔥</span> Popular Routines
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {popularRoutines.map((routine) => (
-              <WidgetCard key={routine.id}>
-                <div className="p-6 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="text-4xl">{routine.icon}</div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-text-primary">{routine.name}</h3>
-                          {routine.streak > 0 && (
-                            <span className="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded-full text-xs font-bold">
-                              🔥 {routine.streak}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold border ${typeColors[routine.type]}`}>
-                            {routine.type}
-                          </span>
-                          <span className="text-xs text-text-secondary">{routine.frequency}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => toggleRoutineActive(routine.id)}
-                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
-                        routine.active
-                          ? 'bg-green-500/20 text-green-400'
-                          : 'bg-gray-500/20 text-gray-400'
-                      }`}
-                    >
-                      {routine.active ? 'Active' : 'Inactive'}
-                    </button>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-text-secondary">{routine.description}</p>
-
-                  {/* Steps */}
-                  <div className="bg-black/5 dark:bg-white/5 rounded-lg p-4 space-y-2">
-                    <p className="text-xs font-semibold text-text-secondary uppercase">Steps</p>
-                    <ol className="space-y-1.5">
-                      {routine.steps.map((step, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-text-primary">
-                          <span className="font-bold text-accent">{idx + 1}.</span>
-                          <span>{step}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-2">
-                    <button className="flex-1 px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm">
-                      Execute
-                    </button>
-                    <button className="px-4 py-2 bg-black/10 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors text-sm">
-                      Edit
-                    </button>
-                    <button className="px-4 py-2 bg-black/10 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors text-sm">
-                      ⋯
-                    </button>
-                  </div>
-                </div>
-              </WidgetCard>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Categories */}
       {categories.length > 0 ? (

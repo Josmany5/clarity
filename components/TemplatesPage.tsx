@@ -273,7 +273,6 @@ export const TemplatesPage: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const popularTemplates = filteredTemplates.filter(t => t.popular);
 
   const categories = [
     { id: 'business', name: 'Business Documents', icon: '💼', templates: filteredTemplates.filter(t => t.category === 'business') },
@@ -334,52 +333,6 @@ export const TemplatesPage: React.FC = () => {
       </WidgetCard>
 
       {/* Popular Templates */}
-      {popularTemplates.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <span>🔥</span> Popular Templates
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularTemplates.map((template) => (
-              <WidgetCard key={template.id}>
-                <div className="p-6 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="text-3xl">{template.icon}</div>
-                      <div>
-                        <h3 className="font-bold text-text-primary">{template.name}</h3>
-                        <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-semibold border ${categoryColors[template.category]}`}>
-                          {template.category}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-text-secondary">{template.description}</p>
-
-                  {/* Preview */}
-                  <div className="bg-black/5 dark:bg-white/5 rounded-lg p-3 space-y-1">
-                    <p className="text-xs font-semibold text-text-secondary uppercase">What's Included</p>
-                    <p className="text-sm text-text-primary">{template.preview}</p>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-2">
-                    <button className="flex-1 px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm">
-                      Use Template
-                    </button>
-                    <button className="px-4 py-2 bg-black/10 dark:bg-white/10 text-text-primary rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors text-sm">
-                      Preview
-                    </button>
-                  </div>
-                </div>
-              </WidgetCard>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Categories */}
       {categories.length > 0 ? (

@@ -317,7 +317,6 @@ export const SystemsPage: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const popularSystems = filteredSystems.filter(s => s.popular);
 
   const allCategories = Array.from(new Set(systems.map(s => s.category)));
   const categories = allCategories.map(cat => ({
@@ -381,66 +380,6 @@ export const SystemsPage: React.FC = () => {
       </WidgetCard>
 
       {/* Popular Systems */}
-      {popularSystems.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <span>🔥</span> Popular Systems
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {popularSystems.map((system) => (
-              <WidgetCard key={system.id}>
-                <div className="p-6 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start gap-3">
-                    <div className="text-4xl">{system.icon}</div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg text-text-primary">{system.name}</h3>
-                      <p className="text-xs text-accent font-medium mt-1">{system.category}</p>
-                      <p className="text-sm text-text-secondary mt-2">{system.description}</p>
-                    </div>
-                  </div>
-
-                  {/* How It Works */}
-                  <div className="bg-black/5 dark:bg-white/5 rounded-lg p-4 space-y-2">
-                    <p className="text-xs font-semibold text-text-secondary uppercase">How It Works</p>
-                    <p className="text-sm text-text-primary">{system.howItWorks}</p>
-                  </div>
-
-                  {/* Key Principles */}
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-text-secondary uppercase">Key Principles</p>
-                    <div className="flex flex-wrap gap-2">
-                      {system.keyPrinciples.map((principle, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-accent/20 text-accent rounded-full text-xs font-medium">
-                          {principle}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Benefits */}
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-text-secondary uppercase">Benefits</p>
-                    <ul className="grid grid-cols-2 gap-2">
-                      {system.benefits.map((benefit, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-text-primary">
-                          <span className="text-green-400">✓</span>
-                          <span>{benefit}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Action */}
-                  <button className="w-full px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent-secondary transition-colors text-sm">
-                    Learn More
-                  </button>
-                </div>
-              </WidgetCard>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Categories */}
       {categories.length > 0 ? (

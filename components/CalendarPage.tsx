@@ -62,18 +62,27 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
       }
     });
 
-    // Add events
+    // Add events (expand multi-day events)
     propEvents.forEach((event: Event) => {
-      events.push({
-        id: event.id,
-        title: event.title,
-        date: event.startDate,
-        time: event.startTime,
-        endTime: event.endTime,
-        type: 'event',
-        eventType: event.type,
-        recurring: event.recurring,
-      });
+      const startDate = parseLocalDate(event.startDate);
+      const endDate = event.endDate ? parseLocalDate(event.endDate) : startDate;
+
+      // For each day in the range, create a calendar event entry
+      const currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        events.push({
+          id: event.id,
+          title: event.title,
+          date: dateStr,
+          time: event.startTime,
+          endTime: event.endTime,
+          type: 'event',
+          eventType: event.type,
+          recurring: event.recurring,
+        });
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
     });
 
     return events.sort((a, b) => {
