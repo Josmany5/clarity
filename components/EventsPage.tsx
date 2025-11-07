@@ -142,7 +142,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="max-w-[98%] mx-auto space-y-4 md:space-y-6 px-2 sm:px-4 lg:px-6 pb-6">
+    <div className="space-y-4 md:space-y-6 pb-6">
       {/* Header */}
       <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

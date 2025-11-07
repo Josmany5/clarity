@@ -98,7 +98,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="max-w-[98%] mx-auto space-y-4 md:space-y-6 px-2 sm:px-4 md:px-4 lg:px-6 pb-6">
+    <div className="space-y-4 md:space-y-6 pb-6">
       {/* Calendar - Full Width */}
       <AdvancedCalendar
         events={events}

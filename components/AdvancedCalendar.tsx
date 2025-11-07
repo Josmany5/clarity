@@ -150,10 +150,24 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
                 <div>{day}</div>
                 {dayEvents.length > 0 && (
                   <div className="mt-auto flex gap-1 justify-center w-full">
-                    <div
-                      className="w-2 h-2 rounded-full bg-accent"
-                      title={`${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''}`}
-                    />
+                    {dayEvents.some(e => e.type === 'task') && (
+                      <div
+                        className="w-2 h-2 rounded-full bg-blue-500"
+                        title={`${dayEvents.filter(e => e.type === 'task').length} task${dayEvents.filter(e => e.type === 'task').length > 1 ? 's' : ''}`}
+                      />
+                    )}
+                    {dayEvents.some(e => e.type === 'project') && (
+                      <div
+                        className="w-2 h-2 rounded-full bg-purple-500"
+                        title={`${dayEvents.filter(e => e.type === 'project').length} project${dayEvents.filter(e => e.type === 'project').length > 1 ? 's' : ''}`}
+                      />
+                    )}
+                    {dayEvents.some(e => e.type === 'event') && (
+                      <div
+                        className="w-2 h-2 rounded-full bg-orange-500"
+                        title={`${dayEvents.filter(e => e.type === 'event').length} event${dayEvents.filter(e => e.type === 'event').length > 1 ? 's' : ''}`}
+                      />
+                    )}
                   </div>
                 )}
               </button>

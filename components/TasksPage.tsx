@@ -181,7 +181,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
   };
 
   return (
-    <div className="max-w-[98%] mx-auto space-y-4 md:space-y-6 px-2 sm:px-4 md:px-4 lg:px-8 pb-6">
+    <div className="space-y-4 md:space-y-6 pb-6">
       {/* Quick Add */}
       <div className="bg-card-bg backdrop-blur-xl rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-card-border shadow-glass">
         <form onSubmit={handleAddTask} className="flex gap-2 sm:gap-3">

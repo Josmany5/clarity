@@ -85,7 +85,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Add Project Form */}
       <div className="bg-card-bg backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-card-border shadow-glass">
         <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-4">Create New Project</h2>
