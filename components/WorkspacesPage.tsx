@@ -185,7 +185,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
 
             {/* View Mode Toolbar */}
             {activeWorkspace && (
-              <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1.5 rounded-lg flex-wrap">
+              <div className="flex items-center gap-1.5 sm:gap-2 bg-black/5 dark:bg-white/5 p-1.5 rounded-lg flex-wrap">
                 {[
                   { mode: 'map' as ViewMode, label: '2D Map', icon: '🗺️', shortLabel: 'Map' },
                   { mode: 'list' as ViewMode, label: 'List', icon: '📋', shortLabel: 'List' },
@@ -197,15 +197,16 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
                   <button
                     key={mode}
                     onClick={() => handleViewModeChange(mode)}
-                    className={`px-2 md:px-3 py-1.5 md:py-2 rounded-lg font-semibold transition-all text-xs md:text-sm flex items-center gap-1 md:gap-2 ${
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-semibold transition-all text-xs sm:text-sm flex items-center gap-1 sm:gap-2 ${
                       activeWorkspace.viewMode === mode
                         ? 'bg-accent text-white shadow-lg'
                         : 'text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-primary'
                     }`}
                     title={label}
+                    aria-label={label}
                   >
                     <span>{icon}</span>
-                    <span className="hidden sm:inline">{shortLabel}</span>
+                    <span className="hidden md:inline">{shortLabel}</span>
                   </button>
                 ))}
               </div>
@@ -214,16 +215,16 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
 
           {/* Action Buttons */}
           {activeWorkspace && (
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-card-border">
+            <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-card-border">
               <button
                 onClick={() => setShowCreateEntityModal(true)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 text-xs sm:text-sm whitespace-nowrap"
               >
                 + Create New
               </button>
               <button
                 onClick={() => setShowEntityPicker(!showEntityPicker)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs sm:text-sm whitespace-nowrap"
               >
                 + Add Existing
               </button>
@@ -233,7 +234,7 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
                     onDeleteWorkspace(activeWorkspace.id);
                   }
                 }}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
+                className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 text-xs sm:text-sm whitespace-nowrap"
               >
                 Delete Workspace
               </button>

@@ -354,112 +354,118 @@ export const TasksPage: React.FC<TasksPageProps> = ({
               return (
                 <div
                   key={task.id}
-                  className={`bg-card-bg backdrop-blur-xl rounded-lg p-4 border border-card-border shadow-glass transition-all hover:shadow-lg ${
+                  className={`bg-card-bg backdrop-blur-xl rounded-lg p-3 sm:p-4 border border-card-border shadow-glass transition-all hover:shadow-lg ${
                     priorityColors[priority]
                   } ${task.completed ? 'opacity-60' : ''}`}
                 >
-                  <div className="flex items-start gap-4">
-                    {/* Checkbox */}
-                    <button
-                      onClick={() => toggleComplete(task)}
-                      className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mt-1 transition-all focus:outline-none focus:ring-2 focus:ring-accent ${
-                        task.completed
-                          ? 'bg-accent border-accent'
-                          : 'border-text-secondary hover:border-accent'
-                      }`}
-                      aria-label={task.completed ? 'Mark incomplete' : 'Mark complete'}
-                    >
-                      {task.completed && (
-                        <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
+                  <div className="flex flex-col gap-3">
+                    {/* Row 1: Checkbox + Task Content */}
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      {/* Checkbox */}
+                      <button
+                        onClick={() => toggleComplete(task)}
+                        className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 mt-0.5 sm:mt-1 transition-all focus:outline-none focus:ring-2 focus:ring-accent ${
+                          task.completed
+                            ? 'bg-accent border-accent'
+                            : 'border-text-secondary hover:border-accent'
+                        }`}
+                        aria-label={task.completed ? 'Mark incomplete' : 'Mark complete'}
+                      >
+                        {task.completed && (
+                          <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                            <path d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
 
-                    {/* Task Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className={`text-lg text-text-primary ${task.completed ? 'line-through' : ''}`}>
-                          {task.title}
-                        </p>
-                        {task.subtasks && task.subtasks.length > 0 && (
-                          <span className="text-xs text-text-secondary bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded-full">
-                            {task.subtasks.filter(st => st.completed).length}/{task.subtasks.length}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3 mt-1">
-                        {task.dueDate && (
-                          <p className="text-xs text-text-secondary">
-                            📅 {new Date(`${task.dueDate}${task.dueTime ? `T${task.dueTime}` : ''}`).toLocaleString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                              ...(task.dueTime && { hour: 'numeric', minute: '2-digit' })
-                            })}
+                      {/* Task Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className={`text-base sm:text-lg text-text-primary ${task.completed ? 'line-through' : ''}`}>
+                            {task.title}
                           </p>
-                        )}
-                        <p className="text-xs text-text-secondary">
-                          {task.estimatedTime ? (
-                            <span>⏱️ {formatEstimatedTime(task.estimatedTime)}</span>
-                          ) : (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setExpandedTaskId(task.id);
-                              }}
-                              className="text-purple-400 hover:text-purple-300 underline"
-                            >
-                              + Add time estimate
-                            </button>
+                          {task.subtasks && task.subtasks.length > 0 && (
+                            <span className="text-xs text-text-secondary bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded-full">
+                              {task.subtasks.filter(st => st.completed).length}/{task.subtasks.length}
+                            </span>
                           )}
-                        </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1">
+                          {task.dueDate && (
+                            <p className="text-xs text-text-secondary">
+                              📅 {new Date(`${task.dueDate}${task.dueTime ? `T${task.dueTime}` : ''}`).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                ...(task.dueTime && { hour: 'numeric', minute: '2-digit' })
+                              })}
+                            </p>
+                          )}
+                          <p className="text-xs text-text-secondary">
+                            {task.estimatedTime ? (
+                              <span>⏱️ {formatEstimatedTime(task.estimatedTime)}</span>
+                            ) : (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedTaskId(task.id);
+                                }}
+                                className="text-purple-400 hover:text-purple-300 underline"
+                              >
+                                + Add time estimate
+                              </button>
+                            )}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Priority Dropdown */}
-                    <select
-                      value={priority}
-                      onChange={(e) => setPriority(task, e.target.value as any)}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-accent ${
-                        priorityBadges[priority]
-                      }`}
-                      aria-label="Priority"
-                    >
-                      <option value="none">Normal</option>
-                      <option value="important">Important</option>
-                      <option value="urgent">Urgent</option>
-                      <option value="critical">Critical</option>
-                    </select>
+                    {/* Row 2: Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-2 pl-8 sm:pl-10">
+                      {/* Priority Dropdown */}
+                      <select
+                        value={priority}
+                        onChange={(e) => setPriority(task, e.target.value as any)}
+                        className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-accent ${
+                          priorityBadges[priority]
+                        }`}
+                        aria-label="Priority"
+                      >
+                        <option value="none">Normal</option>
+                        <option value="important">Important</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="critical">Critical</option>
+                      </select>
 
-                    {/* Expand Button */}
-                    <button
-                      onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
-                      className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-                      aria-label="Expand task"
-                    >
-                      {expandedTaskId === task.id ? '▲' : '▼'} Details
-                    </button>
+                      {/* Expand Button */}
+                      <button
+                        onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                        className="px-2 sm:px-3 py-1 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap"
+                        aria-label="Expand task"
+                      >
+                        {expandedTaskId === task.id ? '▲' : '▼'} <span className="hidden sm:inline">Details</span>
+                      </button>
 
-                    {/* Schedule Button */}
-                    <button
-                      onClick={() => setSchedulingTask(task)}
-                      className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-                      aria-label="Schedule task"
-                    >
-                      📅 Schedule
-                    </button>
+                      {/* Schedule Button */}
+                      <button
+                        onClick={() => setSchedulingTask(task)}
+                        className="px-2 sm:px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap"
+                        aria-label="Schedule task"
+                      >
+                        📅 <span className="hidden sm:inline">Schedule</span>
+                      </button>
 
-                    {/* Delete */}
-                    <button
-                      onClick={() => handleDelete(task)}
-                      className="text-text-secondary hover:text-red-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent rounded"
-                      aria-label="Delete"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+                      {/* Delete */}
+                      <button
+                        onClick={() => handleDelete(task)}
+                        className="text-text-secondary hover:text-red-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent rounded"
+                        aria-label="Delete"
+                      >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Expanded View - Subtasks and Estimated Time */}
