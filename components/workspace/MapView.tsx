@@ -499,9 +499,14 @@ export const MapView: React.FC<MapViewProps> = ({
 
     setContextMenu(null);
 
-    // Auto-fit view to show the new node
+    // Zoom out 4 clicks instead of fitting view
     setTimeout(() => {
-      reactFlowInstance.fitView({ padding: 0.2, duration: 500 });
+      if (reactFlowInstance) {
+        reactFlowInstance.zoomOut({ duration: 300 });
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 350);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 700);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 1050);
+      }
     }, 50);
   };
 
@@ -548,9 +553,14 @@ export const MapView: React.FC<MapViewProps> = ({
 
     setContextMenu(null);
 
-    // Auto-fit view to show the new node
+    // Zoom out 4 clicks instead of fitting view
     setTimeout(() => {
-      reactFlowInstance.fitView({ padding: 0.2, duration: 500 });
+      if (reactFlowInstance) {
+        reactFlowInstance.zoomOut({ duration: 300 });
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 350);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 700);
+        setTimeout(() => reactFlowInstance.zoomOut({ duration: 300 }), 1050);
+      }
     }, 50);
   };
 
@@ -585,9 +595,12 @@ export const MapView: React.FC<MapViewProps> = ({
 
   const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge) => {
     _event.preventDefault();
+    // Center the menu on screen instead of at click position
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
     setContextMenu({
-      x: _event.clientX,
-      y: _event.clientY,
+      x: screenWidth / 2 - 100, // Center horizontally (100px is half of menu width ~200px)
+      y: screenHeight / 2 - 150, // Center vertically
       type: 'edge',
       edgeId: edge.id,
     });
@@ -634,7 +647,7 @@ export const MapView: React.FC<MapViewProps> = ({
   };
 
   return (
-    <div className="w-full bg-black/5 dark:bg-white/5 rounded-lg overflow-hidden relative h-[600px] md:h-[700px] lg:h-[900px]">
+    <div className="w-full bg-black/5 dark:bg-white/5 rounded-lg overflow-hidden relative h-[480px] md:h-[560px] lg:h-[720px]">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -678,7 +691,6 @@ export const MapView: React.FC<MapViewProps> = ({
         defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
       >
         {showGrid && <Background variant={BackgroundVariant.Dots} gap={20} size={1} />}
-        <Controls />
         <MiniMap
           nodeColor={(node) => {
             return (node.data.bgColor as string) || '#3b82f6';
@@ -687,114 +699,45 @@ export const MapView: React.FC<MapViewProps> = ({
           style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}
         />
 
-        {/* Control Panel - Collapsible */}
+        {/* Control Panel - Vertical Sidebar */}
         <Panel position="top-right">
-          {!showCanvasTools ? (
-            // Minimized Toggle Button
+          <div className="flex flex-col gap-2">
             <button
-              onClick={() => setShowCanvasTools(true)}
-              className="bg-card-bg border border-card-border rounded-lg shadow-lg p-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-              title="Show Canvas Tools"
+              onClick={handleFitView}
+              className="bg-white/90 dark:bg-gray-800/90 border border-card-border rounded-lg shadow-lg p-2.5 hover:bg-accent hover:text-white transition-all backdrop-blur-xl text-text-primary"
+              title="Fit View"
             >
-              <span className="text-lg">🛠️</span>
+              <span className="text-lg">🎯</span>
             </button>
-          ) : (
-            // Expanded Panel
-            <div className="bg-card-bg border border-card-border rounded-lg shadow-lg p-3 space-y-2 min-w-[200px]">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-bold text-text-primary">Canvas Tools</div>
-                <button
-                  onClick={() => setShowCanvasTools(false)}
-                  className="text-text-secondary hover:text-text-primary text-lg leading-none"
-                  title="Hide Canvas Tools"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Edge Type Selector */}
-              <div className="space-y-1">
-                <label className="text-xs text-text-secondary">Connection Style</label>
-                <select
-                  value={edgeType}
-                  onChange={(e) => setEdgeType(e.target.value as any)}
-                  className="w-full text-xs px-2 py-1 bg-black/5 dark:bg-white/5 text-text-primary rounded border border-card-border focus:outline-none focus:ring-2 focus:ring-accent"
-                >
-                  <option value="default">Bezier</option>
-                  <option value="smoothstep">Smooth Step</option>
-                  <option value="step">Step</option>
-                  <option value="straight">Straight</option>
-                </select>
-              </div>
-
-              {/* Toggle Options */}
-              <div className="space-y-1 pt-2 border-t border-card-border">
-                <label className="flex items-center gap-2 text-xs text-text-primary cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={snapToGrid}
-                    onChange={(e) => setSnapToGrid(e.target.checked)}
-                    className="rounded"
-                  />
-                  Snap to Grid
-                </label>
-                <label className="flex items-center gap-2 text-xs text-text-primary cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showGrid}
-                    onChange={(e) => setShowGrid(e.target.checked)}
-                    className="rounded"
-                  />
-                  Show Grid
-                </label>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-1 pt-2 border-t border-card-border">
-                <button
-                  onClick={handleFitView}
-                  className="w-full text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                >
-                  🎯 Fit View
-                </button>
-                <button
-                  onClick={handleZoomIn}
-                  className="w-full text-xs px-2 py-1 bg-black/10 dark:bg-white/10 text-text-primary rounded hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
-                >
-                  ➕ Zoom In
-                </button>
-                <button
-                  onClick={handleZoomOut}
-                  className="w-full text-xs px-2 py-1 bg-black/10 dark:bg-white/10 text-text-primary rounded hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
-                >
-                  ➖ Zoom Out
-                </button>
-                <button
-                  onClick={handleExportImage}
-                  className="w-full text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                >
-                  📸 Export Image
-                </button>
-              </div>
-
-              {/* Info */}
-              <div className="pt-2 border-t border-card-border text-xs text-text-secondary">
-                <div>Nodes: {nodes.length}</div>
-                <div>Connections: {edges.length}</div>
-                <div className="mt-1 text-[10px] space-y-1">
-                  <p>💡 Shift+Drag to multi-select</p>
-                  <p>💡 Click line + Delete to remove</p>
-                </div>
-              </div>
-            </div>
-          )}
+            <button
+              onClick={handleZoomIn}
+              className="bg-white/90 dark:bg-gray-800/90 border border-card-border rounded-lg shadow-lg p-2.5 hover:bg-accent hover:text-white transition-all backdrop-blur-xl text-text-primary"
+              title="Zoom In"
+            >
+              <span className="text-lg">➕</span>
+            </button>
+            <button
+              onClick={handleZoomOut}
+              className="bg-white/90 dark:bg-gray-800/90 border border-card-border rounded-lg shadow-lg p-2.5 hover:bg-accent hover:text-white transition-all backdrop-blur-xl text-text-primary"
+              title="Zoom Out"
+            >
+              <span className="text-lg">➖</span>
+            </button>
+            <button
+              onClick={() => setShowGrid(!showGrid)}
+              className={`border border-card-border rounded-lg shadow-lg p-2.5 hover:bg-accent hover:text-white transition-all backdrop-blur-xl ${showGrid ? 'bg-accent text-white' : 'bg-white/90 dark:bg-gray-800/90 text-text-primary'}`}
+              title={showGrid ? "Grid: ON" : "Grid: OFF"}
+            >
+              <span className="text-lg">⊞</span>
+            </button>
+          </div>
         </Panel>
       </ReactFlow>
 
       {/* Context Menu */}
       {contextMenu && contextMenu.type === 'canvas' && (
         <div
-          className="absolute bg-card-bg border border-card-border rounded-lg shadow-2xl py-2 z-50 min-w-[200px]"
+          className="absolute bg-card-bg/80 backdrop-blur-xl border border-card-border rounded-lg shadow-2xl py-2 z-50 min-w-[200px]"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
           <div className="px-3 py-2 text-xs font-bold text-text-secondary uppercase border-b border-card-border mb-2">

@@ -371,6 +371,7 @@ const App: React.FC = () => {
       createdAt: Date.now(),
     };
     setTasks(prevTasks => [newTask, ...prevTasks]);
+    setActivePage('Tasks'); // Auto-navigate to Tasks page like Notes
   };
 
   const handleUpdateTask = (updatedTask: Task) => {

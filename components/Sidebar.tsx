@@ -69,18 +69,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
     { id: 'Settings', icon: <SettingsIcon />, label: 'Settings' },
   ];
 
-  const sidebarContent = (collapsed: boolean = false) => (
+  const sidebarContent = (collapsed: boolean = false, isMobile: boolean = false) => (
     <div className="flex flex-col h-full bg-sidebar-bg backdrop-blur-2xl p-4 border-r border-sidebar-border overflow-hidden">
       <div className={`flex items-center mb-6 flex-shrink-0 ${collapsed ? 'justify-center' : 'pl-2'}`}>
-         <button
-           onClick={toggleCollapse}
-           className="p-2 bg-black/10 dark:bg-white/10 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-         >
-           <MenuIcon className="w-6 h-6 text-text-primary"/>
-         </button>
-         {!collapsed && <h1 className="text-2xl font-bold text-text-primary ml-3">Prose</h1>}
+         {!isMobile && (
+           <button
+             onClick={toggleCollapse}
+             className="p-2 bg-black/10 dark:bg-white/10 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+           >
+             <MenuIcon className="w-6 h-6 text-text-primary"/>
+           </button>
+         )}
+         {!collapsed && <h1 className={`text-2xl font-bold text-text-primary ${!isMobile ? 'ml-3' : ''}`}>Prose</h1>}
       </div>
       <nav aria-label="Main navigation" className="flex-1 overflow-y-auto sidebar-scroll">
         <ul role="list" className="space-y-1">
@@ -173,7 +175,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
           }`}
         >
           <div className="w-72 h-full">
-            {sidebarContent(false)}
+            {sidebarContent(false, true)}
           </div>
           <div className="flex-1 bg-black/50" onClick={() => setIsOpen(false)}></div>
         </div>

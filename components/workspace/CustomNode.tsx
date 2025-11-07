@@ -121,7 +121,13 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
         {data.fullContent && (
           <div className="mt-2">
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+              }}
               className="text-sm text-white/80 hover:text-white underline"
             >
               {isExpanded ? 'Show less' : 'Show more'}
@@ -138,7 +144,13 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
         <div className="flex items-center gap-2 mt-3 pt-2 border-t border-white/20">
           {data.onCustomize && (
             <button
-              onClick={data.onCustomize}
+              onClick={(e) => {
+                e.stopPropagation();
+                data.onCustomize?.();
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+              }}
               className="px-2 py-1 text-sm bg-white/20 hover:bg-white/30 rounded transition-colors"
               title="Customize Node"
             >
@@ -147,7 +159,13 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
           )}
           {data.onDelete && (
             <button
-              onClick={data.onDelete}
+              onClick={(e) => {
+                e.stopPropagation();
+                data.onDelete?.();
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+              }}
               className="px-2 py-1 text-sm bg-red-500/30 hover:bg-red-500/50 rounded transition-colors"
               title="Delete"
             >

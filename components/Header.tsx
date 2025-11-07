@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({ title, themeMode, toggleTheme, s
             type="search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search notes..."
+            placeholder="Search..."
             className="w-full bg-black/5 dark:bg-white/5 text-text-primary placeholder-text-secondary rounded-full py-2.5 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200 border border-transparent"
             aria-label="Search notes"
           />

@@ -10,6 +10,15 @@ interface EventsPageProps {
   onDeleteEvent: (id: string) => void;
 }
 
+// Convert 24-hour time to 12-hour format
+const formatTime12Hour = (time24: string): string => {
+  const [hours, minutes] = time24.split(':');
+  const hour = parseInt(hours);
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minutes} ${period}`;
+};
+
 export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUpdateEvent, onDeleteEvent }) => {
   const [view, setView] = useState<'list' | 'week' | 'month'>('list');
   const [filter, setFilter] = useState<'all' | 'class' | 'meeting' | 'appointment' | 'other'>('all');
@@ -233,7 +242,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, onAddEvent, onUp
 
                   <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-text-secondary">
                     <span>📅 {parseLocalDate(event.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-                    <span>🕒 {event.startTime} - {event.endTime}</span>
+                    <span>🕒 {formatTime12Hour(event.startTime)} - {formatTime12Hour(event.endTime)}</span>
                     {event.location && <span>📍 {event.location}</span>}
                     {event.recurring && (
                       <span className="px-2 py-0.5 bg-orange-500/20 text-orange-400 rounded-full text-xs font-semibold">

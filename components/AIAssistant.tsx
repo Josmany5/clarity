@@ -142,10 +142,20 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     localStorage.setItem('aiChatHistory', JSON.stringify(messages));
   }, [messages]);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Auto-scroll to bottom when chat opens
+  useEffect(() => {
+    if (isOpen && messages.length > 0) {
+      // Use setTimeout to ensure DOM is rendered
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+      }, 100);
+    }
+  }, [isOpen, messages.length]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -424,6 +434,16 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       if (deleteCompletedJSON) {
         displayMessage = displayMessage.replace(/TASK_DELETE_COMPLETED_JSON:\s*\{[\s\S]*?\}\n?/g, '');
       }
+
+      // Catch-all: Remove any remaining JSON blocks (arrays or objects)
+      displayMessage = displayMessage.replace(/```json[\s\S]*?```/g, ''); // Remove JSON code blocks
+      displayMessage = displayMessage.replace(/\{[\s]*"[^"]+":[\s\S]*?\}/g, (match) => {
+        // Only remove if it looks like a complete JSON object (contains quotes and colons)
+        if (match.includes('"') && match.includes(':')) {
+          return '';
+        }
+        return match;
+      });
 
       displayMessage = displayMessage.trim();
 

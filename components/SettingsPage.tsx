@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { WidgetCard } from './WidgetCard';
 import { SettingsIcon } from './Icons';
-import { setUsePremiumVoice as saveVoicePreference } from '../services/AIService';
 
 interface SettingsPageProps {
   themeStyle: 'minimalist' | 'glass' | 'terminal' | 'pastel';
@@ -11,20 +10,6 @@ interface SettingsPageProps {
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({ themeStyle, themeMode, onThemeStyleChange, onThemeModeChange }) => {
-  const [usePremiumVoice, setUsePremiumVoice] = useState(false);
-
-  // Load existing preference
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('usePremiumVoice') === 'true';
-      setUsePremiumVoice(saved);
-    } catch {}
-  }, []);
-
-  const handleTogglePremiumVoice = (value: boolean) => {
-    setUsePremiumVoice(value);
-    saveVoicePreference(value);
-  };
 
   const themes = [
     { id: 'minimalist' as const, name: 'Minimalist', description: 'Clean modern design', icon: '✨' },
@@ -57,53 +42,6 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ themeStyle, themeMod
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* AI Assistant */}
-      <WidgetCard>
-        <div className="p-6">
-          <div className="flex items-center mb-6">
-            <span className="text-3xl mr-3">🤖</span>
-            <h2 className="text-2xl font-bold text-text-primary">AI Assistant</h2>
-          </div>
-          <div className="space-y-4">
-            <div className="p-4 bg-blue-500/10 border-l-4 border-blue-500 rounded-lg">
-              <p className="text-sm text-text-primary font-semibold mb-2">Voice-Powered AI</p>
-              <p className="text-sm text-text-secondary">
-                Click the AI button in the bottom-right corner to chat with your AI assistant. Use voice input to create tasks, ask questions, and get insights about your productivity.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 p-4 bg-black/5 dark:bg-white/5 rounded-lg">
-              <input
-                type="checkbox"
-                id="premiumVoice"
-                checked={usePremiumVoice}
-                onChange={(e) => handleTogglePremiumVoice(e.target.checked)}
-                className="w-5 h-5"
-              />
-              <label htmlFor="premiumVoice" className="flex-1 cursor-pointer">
-                <span className="font-semibold text-text-primary block">Enable Premium Voice (ElevenLabs)</span>
-                <span className="text-xs text-text-secondary">
-                  High-quality AI voice responses. Requires server configuration.
-                </span>
-              </label>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              <div className="p-3 bg-green-500/10 rounded-lg text-center">
-                <div className="text-2xl mb-1">🎤</div>
-                <div className="text-xs text-text-secondary">Voice Input</div>
-                <div className="text-sm font-semibold text-text-primary mt-1">FREE</div>
-              </div>
-              <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-                <div className="text-2xl mb-1">🧠</div>
-                <div className="text-xs text-text-secondary">AI Intelligence</div>
-                <div className="text-sm font-semibold text-text-primary mt-1">Gemini 1.5</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </WidgetCard>
-
       {/* Appearance Settings */}
       <WidgetCard>
         <div className="p-6">
@@ -289,31 +227,6 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ themeStyle, themeMod
               <li>8 theme combinations (4 styles × light/dark modes)</li>
               <li>Local data storage</li>
             </ul>
-          </div>
-        </div>
-      </WidgetCard>
-
-      {/* Keyboard Shortcuts */}
-      <WidgetCard>
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-text-primary mb-4">Keyboard Shortcuts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="flex justify-between p-2 bg-black/5 dark:bg-white/5 rounded">
-              <span className="text-text-secondary">New Note</span>
-              <kbd className="px-2 py-1 bg-black/10 dark:bg-white/10 rounded text-text-primary font-mono">Ctrl+N</kbd>
-            </div>
-            <div className="flex justify-between p-2 bg-black/5 dark:bg-white/5 rounded">
-              <span className="text-text-secondary">Search</span>
-              <kbd className="px-2 py-1 bg-black/10 dark:bg-white/10 rounded text-text-primary font-mono">Ctrl+K</kbd>
-            </div>
-            <div className="flex justify-between p-2 bg-black/5 dark:bg-white/5 rounded">
-              <span className="text-text-secondary">Toggle Dark Mode</span>
-              <kbd className="px-2 py-1 bg-black/10 dark:bg-white/10 rounded text-text-primary font-mono">Ctrl+D</kbd>
-            </div>
-            <div className="flex justify-between p-2 bg-black/5 dark:bg-white/5 rounded">
-              <span className="text-text-secondary">Dashboard</span>
-              <kbd className="px-2 py-1 bg-black/10 dark:bg-white/10 rounded text-text-primary font-mono">Ctrl+H</kbd>
-            </div>
           </div>
         </div>
       </WidgetCard>
