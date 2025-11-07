@@ -86,7 +86,7 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
 
   const getEventsForDate = (date: Date) => {
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    return events.filter(event => event.date === dateStr);
+    return events.filter(event => event.date === dateStr && !event.completed);
   };
 
   const getEventColor = (event: CalendarEvent) => {
@@ -150,13 +150,10 @@ export const AdvancedCalendar: React.FC<AdvancedCalendarProps> = ({
                 <div>{day}</div>
                 {dayEvents.length > 0 && (
                   <div className="mt-auto flex gap-1 justify-center w-full">
-                    {dayEvents.slice(0, 3).map((event, i) => (
-                      <div
-                        key={i}
-                        className={`w-1.5 h-1.5 rounded-full ${getEventColor(event)}`}
-                        title={event.title}
-                      />
-                    ))}
+                    <div
+                      className="w-2 h-2 rounded-full bg-accent"
+                      title={`${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''}`}
+                    />
                   </div>
                 )}
               </button>

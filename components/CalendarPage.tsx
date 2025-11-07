@@ -98,7 +98,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="max-w-[95%] mx-auto space-y-4 md:space-y-6 px-4 md:px-4 lg:px-8 pb-6">
+    <div className="max-w-[98%] mx-auto space-y-4 md:space-y-6 px-2 sm:px-4 md:px-4 lg:px-6 pb-6">
       {/* Calendar - Full Width */}
       <AdvancedCalendar
         events={events}
@@ -157,7 +157,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
           <div className="p-4 md:p-6">
             <h3 className="text-lg md:text-xl font-bold text-text-primary mb-4">Upcoming Events</h3>
             <div className="space-y-2">
-              {events.slice(0, 5).map((event) => (
+              {events.filter(event => !event.completed).slice(0, 5).map((event) => (
                 <button
                   key={event.id}
                   onClick={() => handleEventClick(event.id, event.type)}
@@ -166,13 +166,13 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{event.type === 'task' ? '✓' : '📁'}</span>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium text-text-primary truncate ${event.completed ? 'line-through' : ''}`}>{event.title}</p>
+                      <p className="text-sm font-medium text-text-primary truncate">{event.title}</p>
                       <p className="text-xs text-text-secondary">{parseLocalDate(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}{event.time && ` • ${new Date(`2000-01-01T${event.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}</p>
                     </div>
                   </div>
                 </button>
               ))}
-              {events.length === 0 && (<p className="text-sm text-text-secondary text-center py-4">No upcoming events</p>)}
+              {events.filter(event => !event.completed).length === 0 && (<p className="text-sm text-text-secondary text-center py-4">No upcoming events</p>)}
             </div>
           </div>
         </WidgetCard>

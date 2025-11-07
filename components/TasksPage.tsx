@@ -25,7 +25,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
 }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [view, setView] = useState<'list' | 'matrix'>('matrix');
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('active');
   const [selectedListId, setSelectedListId] = useState<string>('all');
   const [schedulingTask, setSchedulingTask] = useState<Task | null>(null);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
@@ -249,10 +249,10 @@ export const TasksPage: React.FC<TasksPageProps> = ({
           </div>
         )}
 
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2">
           <button
             onClick={() => setSelectedListId('all')}
-            className={`px-3 py-1 rounded-lg font-medium text-sm whitespace-nowrap cursor-pointer ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-sm sm:text-base whitespace-nowrap cursor-pointer ${
               selectedListId === 'all'
                 ? 'bg-accent text-white'
                 : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'
@@ -266,7 +266,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
               <button
                 key={list.id}
                 onClick={() => setSelectedListId(list.id)}
-                className={`px-3 py-1 rounded-lg font-medium text-sm whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-sm sm:text-base whitespace-nowrap flex items-center gap-2 cursor-pointer ${
                   selectedListId === list.id
                     ? 'text-white'
                     : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'
@@ -285,16 +285,6 @@ export const TasksPage: React.FC<TasksPageProps> = ({
       {/* View Toggle & Filters */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-4">
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
-              filter === 'all'
-                ? 'bg-accent text-white'
-                : 'bg-black/5 dark:bg-white/5 text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            All ({tasks.length})
-          </button>
           <button
             onClick={() => setFilter('active')}
             className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
@@ -421,7 +411,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
                     </div>
 
                     {/* Row 2: Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-2 pl-8 sm:pl-10">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 pl-8 sm:pl-10">
                       {/* Priority Dropdown */}
                       <select
                         value={priority}
@@ -435,6 +425,21 @@ export const TasksPage: React.FC<TasksPageProps> = ({
                         <option value="important">Important</option>
                         <option value="urgent">Urgent</option>
                         <option value="critical">Critical</option>
+                      </select>
+
+                      {/* List Assignment Dropdown */}
+                      <select
+                        value={task.listId || 'inbox'}
+                        onChange={(e) => onUpdateTask({ ...task, listId: e.target.value })}
+                        className="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 focus:outline-none focus:ring-2 focus:ring-accent"
+                        aria-label="Assign to list"
+                      >
+                        <option value="inbox">📥 Inbox</option>
+                        {taskLists.map(list => (
+                          <option key={list.id} value={list.id}>
+                            {list.icon} {list.name}
+                          </option>
+                        ))}
                       </select>
 
                       {/* Expand Button */}
