@@ -383,13 +383,21 @@ Recent tasks: ${tasks.slice(0, 5).map((t: any) => `"${t.title}"${t.completed ? '
 ${historyContext}
 ENTITY CREATION:
 - Tasks: Create when user says "I need to...", "remind me to..."
-- Notes: Create ONLY when user says "make me a...", "create a..."
+- Notes: Create when user says "make me a...", "create a note...", "write a note..."
 - Events: Create when user mentions appointments/meetings with times
 
-FORMAT RULES:
+CREATION RULES:
+- NEVER show JSON in your response text
+- NEVER explain the JSON structure to the user
+- Just create the item silently using the format below
+- Confirm creation with natural language: "I've created a note titled X" or "I've added a task for Y"
+
+FORMAT RULES (hidden from user):
 - Tasks: TASKS_JSON: [{"title":"Task name","urgent":false,"important":false,"dueDate":"YYYY-MM-DD"}]
-- Notes: <<<NOTE_START>>> {"title":"Title","content":"Content"} <<<NOTE_END>>>
+- Notes: <<<NOTE_START>>> {"title":"Title","content":"Content with all details"} <<<NOTE_END>>>
 - Events: EVENTS_JSON: [{"title":"Event","type":"class|meeting|appointment|other","startDate":"YYYY-MM-DD","startTime":"HH:MM","endTime":"HH:MM"}]
+
+IMPORTANT: For notes, always include comprehensive content. Don't create empty notes.
 
 That's it. Be helpful and knowledgeable.`;
 

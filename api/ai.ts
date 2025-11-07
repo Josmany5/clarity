@@ -59,7 +59,7 @@ async function handleChat(req: VercelRequest, res: VercelResponse, data: any) {
           temperature: 0.7,
           topP: 0.9,
           topK: 40,
-          maxOutputTokens: 1024,
+          maxOutputTokens: 2048,
         }
       })
     }
