@@ -351,7 +351,7 @@ export const getAIResponse = async (
   const fullDate = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   const currentTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
-  const context = `You are Wove AI, a helpful and knowledgeable assistant integrated into the Wove productivity app.
+  const context = `You are Prose AI, a helpful and knowledgeable assistant integrated into the Prose productivity app.
 
 YOU CAN HELP WITH:
 1. GENERAL KNOWLEDGE - Answer questions about any topic: science, history, programming, math, current events, etc.
