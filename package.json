@@ -11,7 +11,10 @@
     "dev:vite": "vite",
     "dev:api": "node server.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:ai-leak": "node tests/ai-json-leak-detection.test.cjs",
+    "test:ai-leak:verbose": "node tests/ai-json-leak-detection.test.cjs --verbose",
+    "test:ai-leak:category": "node tests/ai-json-leak-detection.test.cjs --category"
   },
   "dependencies": {
     "@tiptap/extension-code-block-lowlight": "^3.10.1",

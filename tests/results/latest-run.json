@@ -1,0 +1,853 @@
+{
+  "timestamp": "2025-11-08T01:10:30.203Z",
+  "results": [
+    {
+      "testId": "TC001",
+      "category": "simple_entity_creation",
+      "name": "Create simple task",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 1,
+        "detectionTime": 0,
+        "totalTime": 2
+      },
+      "details": {
+        "originalLength": 164,
+        "cleanedLength": 60,
+        "removedChars": 104,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC002",
+      "category": "simple_entity_creation",
+      "name": "Create simple note",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 1,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 168,
+        "cleanedLength": 55,
+        "removedChars": 113,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC003",
+      "category": "simple_entity_creation",
+      "name": "Create simple event",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 192,
+        "cleanedLength": 74,
+        "removedChars": 118,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC004",
+      "category": "simple_entity_creation",
+      "name": "Create task with minimal fields",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 60,
+        "cleanedLength": 23,
+        "removedChars": 37,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC005",
+      "category": "simple_entity_creation",
+      "name": "Create note with plain text only",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 113,
+        "cleanedLength": 17,
+        "removedChars": 96,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC006",
+      "category": "complex_content",
+      "name": "Note with JavaScript code block",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 300,
+        "cleanedLength": 74,
+        "removedChars": 226,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC007",
+      "category": "complex_content",
+      "name": "Note with JSON code example",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 285,
+        "cleanedLength": 58,
+        "removedChars": 227,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC008",
+      "category": "complex_content",
+      "name": "Note with nested lists",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 300,
+        "cleanedLength": 35,
+        "removedChars": 265,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC009",
+      "category": "complex_content",
+      "name": "Note with tables",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 318,
+        "cleanedLength": 50,
+        "removedChars": 268,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC010",
+      "category": "complex_content",
+      "name": "Note with mixed markdown",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 260,
+        "cleanedLength": 34,
+        "removedChars": 226,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC011",
+      "category": "complex_content",
+      "name": "Task with long description containing braces",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 257,
+        "cleanedLength": 37,
+        "removedChars": 220,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC012",
+      "category": "complex_content",
+      "name": "Event with complex recurring pattern",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 252,
+        "cleanedLength": 59,
+        "removedChars": 193,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC013",
+      "category": "complex_content",
+      "name": "Note with mathematical formulas",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 208,
+        "cleanedLength": 18,
+        "removedChars": 190,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC014",
+      "category": "complex_content",
+      "name": "Content with escaped characters",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 243,
+        "cleanedLength": 37,
+        "removedChars": 206,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC015",
+      "category": "multiple_entities",
+      "name": "Create 3 tasks at once",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 225,
+        "cleanedLength": 67,
+        "removedChars": 158,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC016",
+      "category": "multiple_entities",
+      "name": "Create 2 notes at once",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 282,
+        "cleanedLength": 39,
+        "removedChars": 243,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC017",
+      "category": "multiple_entities",
+      "name": "Create task + event simultaneously",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 235,
+        "cleanedLength": 41,
+        "removedChars": 194,
+        "extractedCount": 2
+      }
+    },
+    {
+      "testId": "TC018",
+      "category": "multiple_entities",
+      "name": "Mixed: task + note + event",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 337,
+        "cleanedLength": 47,
+        "removedChars": 290,
+        "extractedCount": 3
+      }
+    },
+    {
+      "testId": "TC019",
+      "category": "conversational_queries",
+      "name": "What is React?",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 292,
+        "cleanedLength": 292,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC020",
+      "category": "conversational_queries",
+      "name": "Explain async/await",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 437,
+        "cleanedLength": 437,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC021",
+      "category": "conversational_queries",
+      "name": "How do I organize my tasks?",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 682,
+        "cleanedLength": 682,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC022",
+      "category": "conversational_queries",
+      "name": "General knowledge question",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 198,
+        "cleanedLength": 198,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC023",
+      "category": "conversational_queries",
+      "name": "Code debugging help",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 436,
+        "cleanedLength": 436,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC024",
+      "category": "conversational_queries",
+      "name": "Math problem solving",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 190,
+        "cleanedLength": 190,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC025",
+      "category": "mixed_requests",
+      "name": "Create note AND explain React hooks",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 778,
+        "cleanedLength": 391,
+        "removedChars": 387,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC026",
+      "category": "mixed_requests",
+      "name": "Add task and suggest where to start",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 630,
+        "cleanedLength": 558,
+        "removedChars": 72,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC027",
+      "category": "mixed_requests",
+      "name": "Schedule meeting and suggest agenda",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 568,
+        "cleanedLength": 412,
+        "removedChars": 156,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC028",
+      "category": "mixed_requests",
+      "name": "Create note with code AND debug it",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 783,
+        "cleanedLength": 516,
+        "removedChars": 267,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC029",
+      "category": "mixed_requests",
+      "name": "Create tasks for project AND estimate timeline",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 1,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 877,
+        "cleanedLength": 542,
+        "removedChars": 335,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC030",
+      "category": "edge_cases",
+      "name": "Malformed JSON in response",
+      "passed": false,
+      "issues": [
+        {
+          "type": "json_leak",
+          "severity": "high",
+          "patterns": [
+            {
+              "pattern": "TASKS_JSON marker",
+              "severity": "high",
+              "sample": "TASKS_JSON: ["
+            }
+          ]
+        }
+      ],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 122,
+        "cleanedLength": 50,
+        "removedChars": 72,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC031",
+      "category": "edge_cases",
+      "name": "JSON with unescaped quotes",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 111,
+        "cleanedLength": 13,
+        "removedChars": 98,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC032",
+      "category": "edge_cases",
+      "name": "Very long JSON content",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 1449,
+        "cleanedLength": 64,
+        "removedChars": 1385,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC033",
+      "category": "edge_cases",
+      "name": "Empty content fields",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 78,
+        "cleanedLength": 23,
+        "removedChars": 55,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC034",
+      "category": "edge_cases",
+      "name": "Unicode and emoji in JSON",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 194,
+        "cleanedLength": 25,
+        "removedChars": 169,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC035",
+      "category": "edge_cases",
+      "name": "JSON with newlines in strings",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 233,
+        "cleanedLength": 24,
+        "removedChars": 209,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC036",
+      "category": "edge_cases",
+      "name": "Multiple JSON blocks of same type",
+      "passed": false,
+      "issues": [
+        {
+          "type": "json_leak",
+          "severity": "high",
+          "patterns": [
+            {
+              "pattern": "TASKS_JSON marker",
+              "severity": "high",
+              "sample": "TASKS_JSON: ["
+            }
+          ]
+        }
+      ],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 123,
+        "cleanedLength": 74,
+        "removedChars": 49,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC037",
+      "category": "edge_cases",
+      "name": "JSON-like text in explanation",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 301,
+        "cleanedLength": 230,
+        "removedChars": 71,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC038",
+      "category": "boundary_tests",
+      "name": "Very short response",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 5,
+        "cleanedLength": 5,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC039",
+      "category": "boundary_tests",
+      "name": "Response with no JSON markers",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 119,
+        "cleanedLength": 119,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC040",
+      "category": "boundary_tests",
+      "name": "Response with only JSON no conversational text",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 65,
+        "cleanedLength": 1,
+        "removedChars": 64,
+        "extractedCount": 1
+      }
+    },
+    {
+      "testId": "TC041",
+      "category": "boundary_tests",
+      "name": "Empty response",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 0
+      },
+      "details": {
+        "originalLength": 0,
+        "cleanedLength": 0,
+        "removedChars": 0,
+        "extractedCount": 0
+      }
+    },
+    {
+      "testId": "TC042",
+      "category": "edge_cases",
+      "name": "AI explaining JSON format itself",
+      "passed": true,
+      "issues": [],
+      "performance": {
+        "cleaningTime": 0,
+        "detectionTime": 0,
+        "totalTime": 1
+      },
+      "details": {
+        "originalLength": 413,
+        "cleanedLength": 234,
+        "removedChars": 179,
+        "extractedCount": 1
+      }
+    }
+  ],
+  "analysis": {
+    "summary": {
+      "totalTests": 42,
+      "passed": 40,
+      "failed": 2,
+      "categories": {
+        "simple_entity_creation": {
+          "total": 5,
+          "passed": 5,
+          "failed": 0
+        },
+        "complex_content": {
+          "total": 9,
+          "passed": 9,
+          "failed": 0
+        },
+        "multiple_entities": {
+          "total": 4,
+          "passed": 4,
+          "failed": 0
+        },
+        "conversational_queries": {
+          "total": 6,
+          "passed": 6,
+          "failed": 0
+        },
+        "mixed_requests": {
+          "total": 5,
+          "passed": 5,
+          "failed": 0
+        },
+        "edge_cases": {
+          "total": 9,
+          "passed": 7,
+          "failed": 2
+        },
+        "boundary_tests": {
+          "total": 4,
+          "passed": 4,
+          "failed": 0
+        }
+      }
+    },
+    "leakPatterns": {
+      "TASKS_JSON marker": [
+        "TC030",
+        "TC036"
+      ]
+    },
+    "failedTests": [
+      {
+        "id": "TC030",
+        "name": "Malformed JSON in response",
+        "category": "edge_cases",
+        "issues": [
+          "json_leak [high]"
+        ]
+      },
+      {
+        "id": "TC036",
+        "name": "Multiple JSON blocks of same type",
+        "category": "edge_cases",
+        "issues": [
+          "json_leak [high]"
+        ]
+      }
+    ]
+  }
+}

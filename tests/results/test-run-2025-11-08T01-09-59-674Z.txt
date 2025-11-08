@@ -1,0 +1,13 @@
+================================================================================
+AI JSON Leak Detection Test Run - 11/7/2025, 8:09:59 PM
+================================================================================
+
+Total Tests: 42
+Passed: 40
+Failed: 2
+
+Failed Tests:
+  - TC030: Malformed JSON in response (json_leak [high])
+  - TC036: Multiple JSON blocks of same type (json_leak [high])
+
+================================================================================

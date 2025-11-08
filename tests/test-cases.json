@@ -1,0 +1,296 @@
+[
+  {
+    "id": "TC001",
+    "category": "simple_entity_creation",
+    "name": "Create simple task",
+    "mockResponse": "I'll create that task for you.\n\nTASKS_JSON: [{\"title\":\"Buy groceries\",\"dueDate\":\"2025-11-08\",\"urgent\":false,\"important\":false,\"tags\":[]}]\n\nYour task has been added!",
+    "expectedDisplay": "I'll create that task for you.\n\nYour task has been added!"
+  },
+  {
+    "id": "TC002",
+    "category": "simple_entity_creation",
+    "name": "Create simple note",
+    "mockResponse": "I've created a note for you.\n\n<<<NOTE_START>>>\n{\"title\":\"Meeting Notes\",\"content\":\"Discussed Q4 goals and budget allocation.\"}\n<<<NOTE_END>>>\n\nYour note has been saved!",
+    "expectedDisplay": "I've created a note for you.\n\nYour note has been saved!"
+  },
+  {
+    "id": "TC003",
+    "category": "simple_entity_creation",
+    "name": "Create simple event",
+    "mockResponse": "I'll schedule that for you.\n\nEVENTS_JSON: [{\"title\":\"Team Meeting\",\"type\":\"meeting\",\"startDate\":\"2025-11-10\",\"startTime\":\"14:00\",\"endTime\":\"15:00\"}]\n\nYour event has been added to the calendar!",
+    "expectedDisplay": "I'll schedule that for you.\n\nYour event has been added to the calendar!"
+  },
+  {
+    "id": "TC004",
+    "category": "simple_entity_creation",
+    "name": "Create task with minimal fields",
+    "mockResponse": "Task created!\n\nTASKS_JSON: [{\"title\":\"Call dentist\"}]\n\nDone!",
+    "expectedDisplay": "Task created!\n\nDone!"
+  },
+  {
+    "id": "TC005",
+    "category": "simple_entity_creation",
+    "name": "Create note with plain text only",
+    "mockResponse": "Here's your note.\n\n<<<NOTE_START>>>\n{\"title\":\"Quick Note\",\"content\":\"Remember to check the mail.\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Here's your note."
+  },
+  {
+    "id": "TC006",
+    "category": "complex_content",
+    "name": "Note with JavaScript code block",
+    "mockResponse": "I've created a note about React hooks!\n\n<<<NOTE_START>>>\n{\"title\":\"React Hooks Guide\",\"content\":\"# useState\\n\\nThe useState hook manages state:\\n\\n```javascript\\nconst [count, setCount] = useState(0);\\n```\\n\\nUse it for component state management.\"}\n<<<NOTE_END>>>\n\nYour comprehensive guide is ready!",
+    "expectedDisplay": "I've created a note about React hooks!\n\nYour comprehensive guide is ready!"
+  },
+  {
+    "id": "TC007",
+    "category": "complex_content",
+    "name": "Note with JSON code example",
+    "mockResponse": "I've created a note explaining JSON!\n\n<<<NOTE_START>>>\n{\"title\":\"JSON Format Guide\",\"content\":\"JSON (JavaScript Object Notation) example:\\n\\n```json\\n{\\n  \\\"name\\\": \\\"John\\\",\\n  \\\"age\\\": 30\\n}\\n```\\n\\nJSON uses key-value pairs with double quotes.\"}\n<<<NOTE_END>>>\n\nYour guide is ready!",
+    "expectedDisplay": "I've created a note explaining JSON!\n\nYour guide is ready!"
+  },
+  {
+    "id": "TC008",
+    "category": "complex_content",
+    "name": "Note with nested lists",
+    "mockResponse": "Created your project planning note!\n\n<<<NOTE_START>>>\n{\"title\":\"Project Plan\",\"content\":\"# Project Phases\\n\\n1. Planning\\n   - Define scope\\n   - Set timeline\\n   - Assign resources\\n\\n2. Execution\\n   - Sprint 1: Backend\\n   - Sprint 2: Frontend\\n   - Sprint 3: Testing\\n\\n3. Launch\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Created your project planning note!"
+  },
+  {
+    "id": "TC009",
+    "category": "complex_content",
+    "name": "Note with tables",
+    "mockResponse": "Here's your comparison table note!\n\n<<<NOTE_START>>>\n{\"title\":\"Framework Comparison\",\"content\":\"| Framework | Pros | Cons |\\n|-----------|------|------|\\n| React | Fast, flexible | Steep learning curve |\\n| Vue | Easy to learn | Smaller ecosystem |\\n| Angular | Full-featured | Heavy |\"}\n<<<NOTE_END>>>\n\nTable created!",
+    "expectedDisplay": "Here's your comparison table note!\n\nTable created!"
+  },
+  {
+    "id": "TC010",
+    "category": "complex_content",
+    "name": "Note with mixed markdown",
+    "mockResponse": "I've created a comprehensive note!\n\n<<<NOTE_START>>>\n{\"title\":\"Study Guide\",\"content\":\"# Important Concepts\\n\\n**Bold text** and *italic text*\\n\\n> This is a quote\\n\\n- List item 1\\n- List item 2\\n\\n[Link](https://example.com)\\n\\n`inline code`\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "I've created a comprehensive note!"
+  },
+  {
+    "id": "TC011",
+    "category": "complex_content",
+    "name": "Task with long description containing braces",
+    "mockResponse": "Task created!\n\nTASKS_JSON: [{\"title\":\"Review code\",\"description\":\"Check the function { validateUser() } and ensure it handles edge cases like {empty strings, null values, undefined}. Also verify error handling.\",\"dueDate\":\"2025-11-15\"}]\n\nAdded to your list!",
+    "expectedDisplay": "Task created!\n\nAdded to your list!"
+  },
+  {
+    "id": "TC012",
+    "category": "complex_content",
+    "name": "Event with complex recurring pattern",
+    "mockResponse": "Recurring event scheduled!\n\nEVENTS_JSON: [{\"title\":\"Yoga Class\",\"type\":\"class\",\"startDate\":\"2025-11-11\",\"startTime\":\"07:00\",\"endTime\":\"08:00\",\"recurring\":{\"frequency\":\"weekly\",\"daysOfWeek\":[1,3,5],\"endDate\":\"2026-01-31\"}}]\n\nYour weekly schedule is set!",
+    "expectedDisplay": "Recurring event scheduled!\n\nYour weekly schedule is set!"
+  },
+  {
+    "id": "TC013",
+    "category": "complex_content",
+    "name": "Note with mathematical formulas",
+    "mockResponse": "Math note created!\n\n<<<NOTE_START>>>\n{\"title\":\"Quadratic Formula\",\"content\":\"The quadratic formula is:\\n\\nx = (-b ± √(b² - 4ac)) / 2a\\n\\nUse it to solve equations of the form ax² + bx + c = 0\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Math note created!"
+  },
+  {
+    "id": "TC014",
+    "category": "complex_content",
+    "name": "Content with escaped characters",
+    "mockResponse": "Note with special characters created!\n\n<<<NOTE_START>>>\n{\"title\":\"Special Chars\",\"content\":\"Here are some special characters:\\n\\n\\\"Quotes\\\"\\n'Apostrophes'\\n\\\\Backslashes\\\\\\n\\nUse escape sequences: \\\\n for newline, \\\\t for tab.\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Note with special characters created!"
+  },
+  {
+    "id": "TC015",
+    "category": "multiple_entities",
+    "name": "Create 3 tasks at once",
+    "mockResponse": "I'll create all three tasks for you!\n\nTASKS_JSON: [{\"title\":\"Morning workout\",\"dueDate\":\"2025-11-08\"},{\"title\":\"Team standup\",\"dueDate\":\"2025-11-08\"},{\"title\":\"Code review\",\"dueDate\":\"2025-11-08\"}]\n\nAll tasks have been added!",
+    "expectedDisplay": "I'll create all three tasks for you!\n\nAll tasks have been added!"
+  },
+  {
+    "id": "TC016",
+    "category": "multiple_entities",
+    "name": "Create 2 notes at once",
+    "mockResponse": "Creating both notes!\n\n<<<NOTE_START>>>\n{\"title\":\"Meeting Summary\",\"content\":\"Discussed project timeline and deliverables.\"}\n<<<NOTE_END>>>\n\n<<<NOTE_START>>>\n{\"title\":\"Action Items\",\"content\":\"1. Update documentation\\n2. Schedule follow-up meeting\"}\n<<<NOTE_END>>>\n\nBoth notes saved!",
+    "expectedDisplay": "Creating both notes!\n\nBoth notes saved!"
+  },
+  {
+    "id": "TC017",
+    "category": "multiple_entities",
+    "name": "Create task + event simultaneously",
+    "mockResponse": "Creating both!\n\nTASKS_JSON: [{\"title\":\"Prepare presentation\",\"dueDate\":\"2025-11-12\"}]\n\nEVENTS_JSON: [{\"title\":\"Presentation Meeting\",\"type\":\"meeting\",\"startDate\":\"2025-11-13\",\"startTime\":\"10:00\",\"endTime\":\"11:00\"}]\n\nBoth items created!",
+    "expectedDisplay": "Creating both!\n\nBoth items created!"
+  },
+  {
+    "id": "TC018",
+    "category": "multiple_entities",
+    "name": "Mixed: task + note + event",
+    "mockResponse": "Creating all items!\n\nTASKS_JSON: [{\"title\":\"Research competitors\"}]\n\n<<<NOTE_START>>>\n{\"title\":\"Competitor Analysis\",\"content\":\"Key competitors: CompanyA, CompanyB, CompanyC\"}\n<<<NOTE_END>>>\n\nEVENTS_JSON: [{\"title\":\"Strategy Meeting\",\"type\":\"meeting\",\"startDate\":\"2025-11-15\",\"startTime\":\"14:00\",\"endTime\":\"16:00\"}]\n\nEverything is ready!",
+    "expectedDisplay": "Creating all items!\n\nEverything is ready!"
+  },
+  {
+    "id": "TC019",
+    "category": "conversational_queries",
+    "name": "What is React?",
+    "mockResponse": "React is a JavaScript library for building user interfaces, developed by Facebook. It allows developers to create reusable UI components and efficiently update the DOM through a virtual DOM implementation. React uses a declarative programming style and follows a component-based architecture.",
+    "expectedDisplay": "React is a JavaScript library for building user interfaces, developed by Facebook. It allows developers to create reusable UI components and efficiently update the DOM through a virtual DOM implementation. React uses a declarative programming style and follows a component-based architecture."
+  },
+  {
+    "id": "TC020",
+    "category": "conversational_queries",
+    "name": "Explain async/await",
+    "mockResponse": "Async/await is syntactic sugar built on top of Promises in JavaScript. The 'async' keyword makes a function return a Promise, while 'await' pauses execution until the Promise resolves. This makes asynchronous code look and behave more like synchronous code, improving readability.\n\nExample:\n```javascript\nasync function fetchData() {\n  const response = await fetch('/api/data');\n  const data = await response.json();\n  return data;\n}\n```",
+    "expectedDisplay": "Async/await is syntactic sugar built on top of Promises in JavaScript. The 'async' keyword makes a function return a Promise, while 'await' pauses execution until the Promise resolves. This makes asynchronous code look and behave more like synchronous code, improving readability.\n\nExample:\n```javascript\nasync function fetchData() {\n  const response = await fetch('/api/data');\n  const data = await response.json();\n  return data;\n}\n```"
+  },
+  {
+    "id": "TC021",
+    "category": "conversational_queries",
+    "name": "How do I organize my tasks?",
+    "mockResponse": "Here are some effective task organization strategies:\n\n1. **Eisenhower Matrix**: Categorize tasks as urgent/important, urgent/not important, not urgent/important, or not urgent/not important.\n\n2. **Time Blocking**: Allocate specific time slots for different types of work.\n\n3. **GTD (Getting Things Done)**: Capture everything, clarify what it means, organize by category, reflect regularly, and engage with tasks.\n\n4. **Priority Tagging**: Use tags like #urgent, #today, #this-week to quickly filter tasks.\n\n5. **Weekly Reviews**: Set aside time each week to review completed tasks and plan upcoming ones.\n\nWould you like me to create a task for you to set up any of these systems?",
+    "expectedDisplay": "Here are some effective task organization strategies:\n\n1. **Eisenhower Matrix**: Categorize tasks as urgent/important, urgent/not important, not urgent/important, or not urgent/not important.\n\n2. **Time Blocking**: Allocate specific time slots for different types of work.\n\n3. **GTD (Getting Things Done)**: Capture everything, clarify what it means, organize by category, reflect regularly, and engage with tasks.\n\n4. **Priority Tagging**: Use tags like #urgent, #today, #this-week to quickly filter tasks.\n\n5. **Weekly Reviews**: Set aside time each week to review completed tasks and plan upcoming ones.\n\nWould you like me to create a task for you to set up any of these systems?"
+  },
+  {
+    "id": "TC022",
+    "category": "conversational_queries",
+    "name": "General knowledge question",
+    "mockResponse": "The capital of France is Paris. It's located in the north-central part of the country along the Seine River and is known for landmarks like the Eiffel Tower, Louvre Museum, and Notre-Dame Cathedral.",
+    "expectedDisplay": "The capital of France is Paris. It's located in the north-central part of the country along the Seine River and is known for landmarks like the Eiffel Tower, Louvre Museum, and Notre-Dame Cathedral."
+  },
+  {
+    "id": "TC023",
+    "category": "conversational_queries",
+    "name": "Code debugging help",
+    "mockResponse": "The error \"Cannot read property 'map' of undefined\" typically occurs when you try to call .map() on something that's undefined or null.\n\nCommon causes:\n1. Data hasn't loaded yet (async issue)\n2. API returned null/undefined\n3. Wrong property name\n\nSolution:\n```javascript\n// Add optional chaining and default value\nconst items = data?.items || [];\nitems.map(item => ...)\n\n// Or conditional rendering\n{items && items.map(item => ...)}\n```",
+    "expectedDisplay": "The error \"Cannot read property 'map' of undefined\" typically occurs when you try to call .map() on something that's undefined or null.\n\nCommon causes:\n1. Data hasn't loaded yet (async issue)\n2. API returned null/undefined\n3. Wrong property name\n\nSolution:\n```javascript\n// Add optional chaining and default value\nconst items = data?.items || [];\nitems.map(item => ...)\n\n// Or conditional rendering\n{items && items.map(item => ...)}\n```"
+  },
+  {
+    "id": "TC024",
+    "category": "conversational_queries",
+    "name": "Math problem solving",
+    "mockResponse": "To solve 2x + 5 = 15:\n\nStep 1: Subtract 5 from both sides\n2x + 5 - 5 = 15 - 5\n2x = 10\n\nStep 2: Divide both sides by 2\n2x/2 = 10/2\nx = 5\n\nAnswer: x = 5\n\nVerification: 2(5) + 5 = 10 + 5 = 15 ✓",
+    "expectedDisplay": "To solve 2x + 5 = 15:\n\nStep 1: Subtract 5 from both sides\n2x + 5 - 5 = 15 - 5\n2x = 10\n\nStep 2: Divide both sides by 2\n2x/2 = 10/2\nx = 5\n\nAnswer: x = 5\n\nVerification: 2(5) + 5 = 10 + 5 = 15 ✓"
+  },
+  {
+    "id": "TC025",
+    "category": "mixed_requests",
+    "name": "Create note AND explain React hooks",
+    "mockResponse": "I've created a comprehensive note about React hooks!\n\n<<<NOTE_START>>>\n{\"title\":\"React Hooks Complete Guide\",\"content\":\"# React Hooks\\n\\n## useState\\nManages component state:\\n```javascript\\nconst [count, setCount] = useState(0);\\n```\\n\\n## useEffect\\nHandles side effects:\\n```javascript\\nuseEffect(() => {\\n  // runs after render\\n}, [dependencies]);\\n```\\n\\n## useContext\\nAccesses context values without prop drilling.\"}\n<<<NOTE_END>>>\n\nReact hooks are functions that let you use state and lifecycle features in functional components. The most common are useState (for state management), useEffect (for side effects), and useContext (for consuming context). They were introduced in React 16.8 to allow functional components to have the same capabilities as class components.",
+    "expectedDisplay": "I've created a comprehensive note about React hooks!\n\nReact hooks are functions that let you use state and lifecycle features in functional components. The most common are useState (for state management), useEffect (for side effects), and useContext (for consuming context). They were introduced in React 16.8 to allow functional components to have the same capabilities as class components."
+  },
+  {
+    "id": "TC026",
+    "category": "mixed_requests",
+    "name": "Add task and suggest where to start",
+    "mockResponse": "I've added the task to learn Python!\n\nTASKS_JSON: [{\"title\":\"Learn Python\",\"tags\":[\"education\",\"programming\"]}]\n\nHere's where to start:\n\n1. **Official Python Tutorial**: Begin with python.org/docs - it's free and comprehensive\n2. **Practice Platform**: Use replit.com or codecademy.com for interactive coding\n3. **First Project**: Build a simple calculator or to-do list app\n4. **Learning Path**: Start with basics (variables, loops, functions), then move to OOP concepts\n5. **Time Investment**: Dedicate 30-60 minutes daily for consistent progress\n\nWould you like me to create a structured learning plan with more specific tasks?",
+    "expectedDisplay": "I've added the task to learn Python!\n\nHere's where to start:\n\n1. **Official Python Tutorial**: Begin with python.org/docs - it's free and comprehensive\n2. **Practice Platform**: Use replit.com or codecademy.com for interactive coding\n3. **First Project**: Build a simple calculator or to-do list app\n4. **Learning Path**: Start with basics (variables, loops, functions), then move to OOP concepts\n5. **Time Investment**: Dedicate 30-60 minutes daily for consistent progress\n\nWould you like me to create a structured learning plan with more specific tasks?"
+  },
+  {
+    "id": "TC027",
+    "category": "mixed_requests",
+    "name": "Schedule meeting and suggest agenda",
+    "mockResponse": "Meeting scheduled!\n\nEVENTS_JSON: [{\"title\":\"Q4 Planning Meeting\",\"type\":\"meeting\",\"startDate\":\"2025-11-20\",\"startTime\":\"14:00\",\"endTime\":\"16:00\",\"location\":\"Conference Room A\"}]\n\nSuggested agenda:\n\n1. **Review Q3 Results** (20 mins)\n   - Key metrics and achievements\n   - Areas for improvement\n\n2. **Q4 Objectives** (30 mins)\n   - Set quarterly goals\n   - Define success metrics\n\n3. **Resource Allocation** (30 mins)\n   - Budget discussion\n   - Team capacity planning\n\n4. **Action Items** (20 mins)\n   - Assign responsibilities\n   - Set deadlines\n\n5. **Q&A** (20 mins)",
+    "expectedDisplay": "Meeting scheduled!\n\nSuggested agenda:\n\n1. **Review Q3 Results** (20 mins)\n   - Key metrics and achievements\n   - Areas for improvement\n\n2. **Q4 Objectives** (30 mins)\n   - Set quarterly goals\n   - Define success metrics\n\n3. **Resource Allocation** (30 mins)\n   - Budget discussion\n   - Team capacity planning\n\n4. **Action Items** (20 mins)\n   - Assign responsibilities\n   - Set deadlines\n\n5. **Q&A** (20 mins)"
+  },
+  {
+    "id": "TC028",
+    "category": "mixed_requests",
+    "name": "Create note with code AND debug it",
+    "mockResponse": "I've created the note with your code!\n\n<<<NOTE_START>>>\n{\"title\":\"Button Component Bug\",\"content\":\"```javascript\\nfunction Button({ onClick, children }) {\\n  return <button onClick={onClick}>{children}</button>;\\n}\\nexport default Button;\\n```\\n\\nIssue: Component not rendering properly.\"}\n<<<NOTE_END>>>\n\nThe code looks mostly correct, but the issue might be:\n\n1. **Missing React import**: Add `import React from 'react';` at the top\n2. **PropTypes validation**: Consider adding prop validation\n3. **Accessibility**: Add `type=\"button\"` attribute\n\nFixed version:\n```javascript\nimport React from 'react';\n\nfunction Button({ onClick, children, type = 'button' }) {\n  return (\n    <button type={type} onClick={onClick}>\n      {children}\n    </button>\n  );\n}\n\nexport default Button;\n```",
+    "expectedDisplay": "I've created the note with your code!\n\nThe code looks mostly correct, but the issue might be:\n\n1. **Missing React import**: Add `import React from 'react';` at the top\n2. **PropTypes validation**: Consider adding prop validation\n3. **Accessibility**: Add `type=\"button\"` attribute\n\nFixed version:\n```javascript\nimport React from 'react';\n\nfunction Button({ onClick, children, type = 'button' }) {\n  return (\n    <button type={type} onClick={onClick}>\n      {children}\n    </button>\n  );\n}\n\nexport default Button;\n```"
+  },
+  {
+    "id": "TC029",
+    "category": "mixed_requests",
+    "name": "Create tasks for project AND estimate timeline",
+    "mockResponse": "I've created all the tasks for your website project!\n\nTASKS_JSON: [{\"title\":\"Design homepage mockup\",\"estimatedTime\":480},{\"title\":\"Set up React project\",\"estimatedTime\":120},{\"title\":\"Build navigation component\",\"estimatedTime\":240},{\"title\":\"Create contact form\",\"estimatedTime\":180},{\"title\":\"Add responsive CSS\",\"estimatedTime\":300},{\"title\":\"Deploy to production\",\"estimatedTime\":120}]\n\nTimeline Estimate:\n\n**Phase 1: Design & Setup** (Week 1)\n- Design homepage mockup: 1 day\n- Set up React project: 2 hours\n\n**Phase 2: Development** (Weeks 2-3)\n- Navigation component: 4 hours\n- Contact form: 3 hours\n- Responsive CSS: 5 hours\n\n**Phase 3: Deployment** (Week 3)\n- Testing & fixes: 4 hours\n- Production deployment: 2 hours\n\n**Total: ~3 weeks** (assuming 10-15 hours per week)\n\nThis includes buffer time for testing and iterations. Would you like me to adjust any estimates?",
+    "expectedDisplay": "I've created all the tasks for your website project!\n\nTimeline Estimate:\n\n**Phase 1: Design & Setup** (Week 1)\n- Design homepage mockup: 1 day\n- Set up React project: 2 hours\n\n**Phase 2: Development** (Weeks 2-3)\n- Navigation component: 4 hours\n- Contact form: 3 hours\n- Responsive CSS: 5 hours\n\n**Phase 3: Deployment** (Week 3)\n- Testing & fixes: 4 hours\n- Production deployment: 2 hours\n\n**Total: ~3 weeks** (assuming 10-15 hours per week)\n\nThis includes buffer time for testing and iterations. Would you like me to adjust any estimates?"
+  },
+  {
+    "id": "TC030",
+    "category": "edge_cases",
+    "name": "Malformed JSON in response",
+    "mockResponse": "Creating your task!\n\nTASKS_JSON: [{\"title\":\"Review code\",\"description\":\"Check the validateUser() function}]\n\nTask created!",
+    "expectedDisplay": "Creating your task!\n\nTask created!"
+  },
+  {
+    "id": "TC031",
+    "category": "edge_cases",
+    "name": "JSON with unescaped quotes",
+    "mockResponse": "Note created!\n\n<<<NOTE_START>>>\n{\"title\":\"Quote Test\",\"content\":\"She said \"Hello\" to everyone.\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Note created!"
+  },
+  {
+    "id": "TC032",
+    "category": "edge_cases",
+    "name": "Very long JSON content",
+    "mockResponse": "Creating comprehensive note!\n\n<<<NOTE_START>>>\n{\"title\":\"Complete JavaScript Guide\",\"content\":\"# JavaScript Complete Reference\\n\\n## Variables\\nJavaScript has three ways to declare variables: var, let, and const. Use const by default, let when you need to reassign, and avoid var in modern code.\\n\\n## Functions\\nFunctions are first-class citizens in JavaScript. You can define them as function declarations, function expressions, or arrow functions. Arrow functions have lexical 'this' binding.\\n\\n## Objects\\nObjects are key-value pairs. Access properties with dot notation or bracket notation. Use Object.keys(), Object.values(), and Object.entries() for iteration.\\n\\n## Arrays\\nArrays are ordered collections. Use map(), filter(), reduce(), forEach() for functional operations. Avoid mutating methods like push() when working with React state.\\n\\n## Promises\\nPromises handle asynchronous operations. Use .then() and .catch() or async/await syntax. Always handle errors properly.\\n\\n## Classes\\nES6 classes provide syntactic sugar over prototypal inheritance. Use constructor, methods, getters, setters. Extend classes with extends keyword.\\n\\n## Modules\\nUse import/export for code organization. Default exports vs named exports. Dynamic imports with import() function.\\n\\n## Error Handling\\nUse try/catch blocks. Create custom error classes. Log errors appropriately. Graceful degradation.\"}\n<<<NOTE_END>>>\n\nYour comprehensive guide is ready!",
+    "expectedDisplay": "Creating comprehensive note!\n\nYour comprehensive guide is ready!"
+  },
+  {
+    "id": "TC033",
+    "category": "edge_cases",
+    "name": "Empty content fields",
+    "mockResponse": "Task created.\n\nTASKS_JSON: [{\"title\":\"Untitled Task\",\"description\":\"\"}]\n\nDone.",
+    "expectedDisplay": "Task created.\n\nDone."
+  },
+  {
+    "id": "TC034",
+    "category": "edge_cases",
+    "name": "Unicode and emoji in JSON",
+    "mockResponse": "Note with emojis created!\n\n<<<NOTE_START>>>\n{\"title\":\"Daily Goals 🎯\",\"content\":\"1. ☕ Morning coffee\\n2. 💻 Code review\\n3. 🏃‍♂️ Exercise\\n4. 📚 Read 30 mins\\n5. 🌙 Sleep early\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Note with emojis created!"
+  },
+  {
+    "id": "TC035",
+    "category": "edge_cases",
+    "name": "JSON with newlines in strings",
+    "mockResponse": "Multi-line note created!\n\n<<<NOTE_START>>>\n{\"title\":\"Meeting Minutes\",\"content\":\"Attendees:\\nJohn Smith\\nJane Doe\\nBob Johnson\\n\\nDiscussion:\\nReviewed Q3 results\\nDiscussed budget for Q4\\nPlanned team building event\"}\n<<<NOTE_END>>>",
+    "expectedDisplay": "Multi-line note created!"
+  },
+  {
+    "id": "TC036",
+    "category": "edge_cases",
+    "name": "Multiple JSON blocks of same type",
+    "mockResponse": "Creating all tasks!\n\nTASKS_JSON: [{\"title\":\"Task 1\"}]\n\nAnd here's another:\n\nTASKS_JSON: [{\"title\":\"Task 2\"}]\n\nBoth created!",
+    "expectedDisplay": "Creating all tasks!\n\nAnd here's another:\n\nBoth created!"
+  },
+  {
+    "id": "TC037",
+    "category": "edge_cases",
+    "name": "JSON-like text in explanation",
+    "mockResponse": "To create tasks programmatically, you would use the task creation API with JSON format like this:\n\n{\"title\": \"Your task name\", \"dueDate\": \"2025-11-15\", \"important\": true}\n\nHowever, I'm not creating an actual task right now, just showing you the format. Would you like me to create a real task for you?",
+    "expectedDisplay": "To create tasks programmatically, you would use the task creation API with JSON format like this:\n\nHowever, I'm not creating an actual task right now, just showing you the format. Would you like me to create a real task for you?"
+  },
+  {
+    "id": "TC038",
+    "category": "boundary_tests",
+    "name": "Very short response",
+    "mockResponse": "Done!",
+    "expectedDisplay": "Done!"
+  },
+  {
+    "id": "TC039",
+    "category": "boundary_tests",
+    "name": "Response with no JSON markers",
+    "mockResponse": "I understand you want to create a task, but I need more information. What should the task be called and when is it due?",
+    "expectedDisplay": "I understand you want to create a task, but I need more information. What should the task be called and when is it due?"
+  },
+  {
+    "id": "TC040",
+    "category": "boundary_tests",
+    "name": "Response with only JSON no conversational text",
+    "mockResponse": "TASKS_JSON: [{\"title\":\"Complete project\",\"dueDate\":\"2025-11-30\"}]",
+    "expectedDisplay": ""
+  },
+  {
+    "id": "TC041",
+    "category": "boundary_tests",
+    "name": "Empty response",
+    "mockResponse": "",
+    "expectedDisplay": ""
+  },
+  {
+    "id": "TC042",
+    "category": "edge_cases",
+    "name": "AI explaining JSON format itself",
+    "mockResponse": "The JSON format for creating notes looks like this:\n\n```json\n{\n  \"title\": \"Your note title\",\n  \"content\": \"Your note content here\"\n}\n```\n\nWrap it in <<<NOTE_START>>> and <<<NOTE_END>>> markers. The system will parse this and create the note automatically.\n\nFor tasks, use:\n```json\n[{\"title\": \"Task name\", \"dueDate\": \"YYYY-MM-DD\"}]\n```\n\nWould you like me to create an actual note or task for you using this format?",
+    "expectedDisplay": "The JSON format for creating notes looks like this:\n\nWrap it in <<<NOTE_START>>> and <<<NOTE_END>>> markers. The system will parse this and create the note automatically.\n\nFor tasks, use:\n\nWould you like me to create an actual note or task for you using this format?"
+  }
+]
