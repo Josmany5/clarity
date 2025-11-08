@@ -91,8 +91,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         codeBlock: false, // We'll use CodeBlockLowlight instead
         taskList: false, // We'll use TaskList extension instead
       }),
-      Underline,
-      Link.configure({
+      Underline, // StarterKit doesn't include Underline, so this is safe
+      Link.extend({ priority: 1000 }).configure({ // Override StarterKit's link with higher priority
         openOnClick: false,
         HTMLAttributes: {
           class: 'text-accent underline hover:text-accent-secondary',

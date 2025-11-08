@@ -262,7 +262,6 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         try {
           const noteJSON = noteMatch[1].trim();
           const noteData = JSON.parse(noteJSON);
-          console.log('📝 Creating note:', noteData);
           onNoteCreate({
             title: noteData.title,
             content: noteData.content  // Content already has real newlines
