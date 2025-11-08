@@ -1,0 +1,312 @@
+[
+  {
+    "id": "ADV_COUNT001",
+    "category": "advanced_count_queries",
+    "name": "Count after creating multiple tasks",
+    "setup": { "tasks": 5, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Create 3 more tasks: review PR, write tests, deploy. Then tell me how many tasks I have total.",
+    "expectedBehavior": "Should create 3 tasks, then report 8 total tasks"
+  },
+  {
+    "id": "ADV_COUNT002",
+    "category": "advanced_count_queries",
+    "name": "Count after deleting some tasks",
+    "setup": { "tasks": 10, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Delete task1, task2, and task3. How many tasks do I have now?",
+    "expectedBehavior": "Should delete 3 tasks, report 7 remaining"
+  },
+  {
+    "id": "ADV_COUNT003",
+    "category": "advanced_count_queries",
+    "name": "Count mixed entity types after operations",
+    "setup": { "tasks": 5, "events": 3, "notes": 2, "goals": 1 },
+    "userPrompt": "Add 2 more events and 1 task. What's my total count now?",
+    "expectedBehavior": "Should report 6 tasks, 5 events, 2 notes, 1 goal"
+  },
+  {
+    "id": "ADV_COUNT004",
+    "category": "advanced_count_queries",
+    "name": "Count only urgent tasks",
+    "setup": { "tasks": 10, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "How many urgent tasks do I have?",
+    "expectedBehavior": "Should count and report only urgent tasks from context"
+  },
+  {
+    "id": "ADV_COUNT005",
+    "category": "advanced_count_queries",
+    "name": "Count after delete all confirmation",
+    "setup": { "tasks": 15, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Delete all tasks. How many do I have left?",
+    "expectedBehavior": "Should report 0 tasks after deletion"
+  },
+  {
+    "id": "ADV_FORMAT001",
+    "category": "format_conversion",
+    "name": "Convert task to event",
+    "setup": { "tasks": 1, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Actually, that test task should be a meeting at 2pm tomorrow",
+    "expectedBehavior": "Should acknowledge conversion need (AI may ask for confirmation)"
+  },
+  {
+    "id": "ADV_FORMAT002",
+    "category": "format_conversion",
+    "name": "Convert event to task",
+    "setup": { "tasks": 0, "events": 1, "notes": 0, "goals": 0 },
+    "userPrompt": "Change that test event to a task instead, it's not really a scheduled meeting",
+    "expectedBehavior": "Should acknowledge conversion need"
+  },
+  {
+    "id": "ADV_FORMAT003",
+    "category": "format_conversion",
+    "name": "Task with time is NOT an event",
+    "userPrompt": "I need to finish the report by 5pm Friday",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK with dueDate and dueTime, NOT event"
+  },
+  {
+    "id": "ADV_FORMAT004",
+    "category": "format_conversion",
+    "name": "Multiple format changes in sequence",
+    "setup": { "tasks": 2, "events": 1, "notes": 0, "goals": 0 },
+    "userPrompt": "Make task1 urgent, change task2 to an event at 3pm, and update the event location to Room 5",
+    "expectedBehavior": "Should handle multiple different operations"
+  },
+  {
+    "id": "ADV_FORMAT005",
+    "category": "format_conversion",
+    "name": "Add time to existing task",
+    "setup": { "tasks": 1, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Update the test task to be due Friday at 3pm",
+    "expectedBehavior": "Should add dueDate and dueTime to existing task"
+  },
+  {
+    "id": "ADV_BATCH001",
+    "category": "batch_operations",
+    "name": "Create 20 tasks at once",
+    "userPrompt": "Create 20 tasks for me with titles task1 through task20",
+    "expectedBehavior": "Should create exactly 20 tasks, no duplicates"
+  },
+  {
+    "id": "ADV_BATCH002",
+    "category": "batch_operations",
+    "name": "Delete all tasks and all events",
+    "setup": { "tasks": 8, "events": 5, "notes": 3, "goals": 2 },
+    "userPrompt": "Clear all my tasks and events",
+    "expectedBehavior": "Should delete all tasks and events, keep notes and goals"
+  },
+  {
+    "id": "ADV_BATCH003",
+    "category": "batch_operations",
+    "name": "Mark multiple tasks urgent",
+    "setup": { "tasks": 5, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Mark task1, task2, and task3 as urgent",
+    "expectedBehavior": "Should update 3 tasks to urgent=true"
+  },
+  {
+    "id": "ADV_BATCH004",
+    "category": "batch_operations",
+    "name": "Create 10 events with different times",
+    "userPrompt": "Schedule 10 meetings: Monday-Friday at 9am and 2pm each day",
+    "expectedBehavior": "Should create exactly 10 events with correct times"
+  },
+  {
+    "id": "ADV_BATCH005",
+    "category": "batch_operations",
+    "name": "Update all tasks to add due date",
+    "setup": { "tasks": 5, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Set all tasks to be due next Friday",
+    "expectedBehavior": "Should update all 5 tasks with same dueDate"
+  },
+  {
+    "id": "ADV_BATCH006",
+    "category": "batch_operations",
+    "name": "Delete completed tasks only",
+    "setup": { "tasks": 10, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Delete all completed tasks",
+    "expectedBehavior": "Should only delete completed tasks, keep incomplete ones"
+  },
+  {
+    "id": "ADV_COMPLEX001",
+    "category": "complex_scenarios",
+    "name": "Chain of operations with counting",
+    "setup": { "tasks": 3, "events": 2, "notes": 1, "goals": 0 },
+    "userPrompt": "Add 5 tasks, delete 2 tasks, create 3 events, then tell me my totals",
+    "expectedBehavior": "Should execute all operations and report final counts"
+  },
+  {
+    "id": "ADV_COMPLEX002",
+    "category": "complex_scenarios",
+    "name": "Conditional operations",
+    "setup": { "tasks": 10, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "If I have more than 5 tasks, mark the oldest 3 as important",
+    "expectedBehavior": "Should check count and perform conditional update"
+  },
+  {
+    "id": "ADV_COMPLEX003",
+    "category": "complex_scenarios",
+    "name": "Create task with all possible fields",
+    "userPrompt": "Create urgent important task: Q4 Report due Friday Nov 15 at 5pm, estimated 3 hours, tags: work, deadline",
+    "expectedBehavior": "Task with all fields populated correctly"
+  },
+  {
+    "id": "ADV_COMPLEX004",
+    "category": "complex_scenarios",
+    "name": "Reorganize schedule",
+    "setup": { "tasks": 5, "events": 5, "notes": 0, "goals": 0 },
+    "userPrompt": "Move all events to next week and mark all tasks as due this Friday",
+    "expectedBehavior": "Should update all events' dates and all tasks' dueDates"
+  },
+  {
+    "id": "ADV_COMPLEX005",
+    "category": "complex_scenarios",
+    "name": "Create recurring events",
+    "userPrompt": "Schedule team standup every Monday at 9am for the next 4 weeks",
+    "expectedBehavior": "Should create 4 events or indicate recurring pattern"
+  },
+  {
+    "id": "ADV_EDGE001",
+    "category": "edge_cases_advanced",
+    "name": "Empty string task title",
+    "userPrompt": "Create a task with title ''",
+    "expectedBehavior": "Should handle gracefully or reject"
+  },
+  {
+    "id": "ADV_EDGE002",
+    "category": "edge_cases_advanced",
+    "name": "Duplicate task titles",
+    "setup": { "tasks": 1, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Create task: test task",
+    "expectedBehavior": "Should allow duplicate or warn user"
+  },
+  {
+    "id": "ADV_EDGE003",
+    "category": "edge_cases_advanced",
+    "name": "Delete non-existent task",
+    "setup": { "tasks": 2, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Delete the xyz task",
+    "expectedBehavior": "Should indicate task not found"
+  },
+  {
+    "id": "ADV_EDGE004",
+    "category": "edge_cases_advanced",
+    "name": "Update with conflicting fields",
+    "setup": { "tasks": 1, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Update test task to be urgent but not important, and also important",
+    "expectedBehavior": "Should handle conflicting instructions gracefully"
+  },
+  {
+    "id": "ADV_EDGE005",
+    "category": "edge_cases_advanced",
+    "name": "Task with past due date",
+    "userPrompt": "Create task due yesterday",
+    "expectedBehavior": "Should create task with past date or warn"
+  },
+  {
+    "id": "ADV_DISAMBIG001",
+    "category": "advanced_disambiguation",
+    "name": "Workshop vs work task",
+    "userPrompt": "Attend workshop on React testing next Tuesday 2pm",
+    "expectedEntityType": "event",
+    "expectedBehavior": "Should create EVENT (workshop = class/event), not task"
+  },
+  {
+    "id": "ADV_DISAMBIG002",
+    "category": "advanced_disambiguation",
+    "name": "Submit by deadline",
+    "userPrompt": "Submit application by midnight tonight",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK with deadline, not event"
+  },
+  {
+    "id": "ADV_DISAMBIG003",
+    "category": "advanced_disambiguation",
+    "name": "Call during specific time",
+    "userPrompt": "Call client between 2-3pm",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK (call = action), time is suggestion not appointment"
+  },
+  {
+    "id": "ADV_DISAMBIG004",
+    "category": "advanced_disambiguation",
+    "name": "Phone interview",
+    "userPrompt": "Phone interview with candidate tomorrow at 10am",
+    "expectedEntityType": "event",
+    "expectedBehavior": "Should create EVENT (interview = scheduled appointment)"
+  },
+  {
+    "id": "ADV_DISAMBIG005",
+    "category": "advanced_disambiguation",
+    "name": "Deadline with scheduled time",
+    "userPrompt": "Presentation due Monday, but I'm presenting at 2pm",
+    "expectedBehavior": "Should create both: TASK for preparation and EVENT for presentation"
+  },
+  {
+    "id": "ADV_LEAK001",
+    "category": "leak_prevention_advanced",
+    "name": "Create 15 tasks rapid fire",
+    "userPrompt": "Create tasks: alpha, beta, gamma, delta, epsilon, zeta, eta, theta, iota, kappa, lambda, mu, nu, xi, omicron",
+    "expectedBehavior": "Should create 15 tasks with no JSON visible in chat"
+  },
+  {
+    "id": "ADV_LEAK002",
+    "category": "leak_prevention_advanced",
+    "name": "Complex multi-operation with events and tasks",
+    "userPrompt": "Create 5 tasks for this week, schedule 3 meetings tomorrow, and delete 2 old tasks",
+    "expectedBehavior": "No JSON markers or brackets in cleaned response"
+  },
+  {
+    "id": "ADV_LEAK003",
+    "category": "leak_prevention_advanced",
+    "name": "Update 10 tasks at once",
+    "setup": { "tasks": 10, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Mark all 10 tasks as important and urgent",
+    "expectedBehavior": "No JSON leaks despite bulk operation"
+  },
+  {
+    "id": "ADV_LEAK004",
+    "category": "leak_prevention_advanced",
+    "name": "Mixed creates and deletes",
+    "setup": { "tasks": 5, "events": 3, "notes": 0, "goals": 0 },
+    "userPrompt": "Delete task1 and event1, create 3 new tasks and 2 new events",
+    "expectedBehavior": "Clean response with no JSON artifacts"
+  },
+  {
+    "id": "ADV_LEAK005",
+    "category": "leak_prevention_advanced",
+    "name": "Rapid sequence of commands",
+    "userPrompt": "Create task A. Delete task A. Create task B. Update task B to urgent. Delete task B.",
+    "expectedBehavior": "Should handle sequence without JSON leaks"
+  },
+  {
+    "id": "ADV_CONTEXT001",
+    "category": "context_awareness",
+    "name": "Reference previous count",
+    "setup": { "tasks": 7, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "I have 7 tasks right? Add 3 more to make it an even 10",
+    "expectedBehavior": "Should confirm count and create 3 tasks"
+  },
+  {
+    "id": "ADV_CONTEXT002",
+    "category": "context_awareness",
+    "name": "Relative updates",
+    "setup": { "tasks": 5, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "Make the first 3 tasks urgent",
+    "expectedBehavior": "Should update first 3 tasks based on order"
+  },
+  {
+    "id": "ADV_CONTEXT003",
+    "category": "context_awareness",
+    "name": "Workspace summary request",
+    "setup": { "tasks": 12, "events": 8, "notes": 5, "goals": 3 },
+    "userPrompt": "Give me a full summary of everything in my workspace",
+    "expectedBehavior": "Should report all counts: 12 tasks, 8 events, 5 notes, 3 goals"
+  },
+  {
+    "id": "ADV_CONTEXT004",
+    "category": "context_awareness",
+    "name": "Clean slate request",
+    "setup": { "tasks": 20, "events": 15, "notes": 10, "goals": 5 },
+    "userPrompt": "Delete everything, I want to start fresh",
+    "expectedBehavior": "Should ask for confirmation before deleting all data"
+  }
+]

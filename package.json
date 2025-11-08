@@ -14,7 +14,11 @@
     "preview": "vite preview",
     "test:ai-leak": "node tests/ai-json-leak-detection.test.cjs",
     "test:ai-leak:verbose": "node tests/ai-json-leak-detection.test.cjs --verbose",
-    "test:ai-leak:category": "node tests/ai-json-leak-detection.test.cjs --category"
+    "test:ai-leak:category": "node tests/ai-json-leak-detection.test.cjs --category",
+    "test:comprehensive": "node tests/comprehensive-ai-test.cjs",
+    "test:advanced": "node tests/comprehensive-ai-test-advanced.cjs",
+    "test:all": "npm run test:ai-leak && npm run test:comprehensive",
+    "test:all:advanced": "npm run test:advanced"
   },
   "dependencies": {
     "@tiptap/extension-code-block-lowlight": "^3.10.1",

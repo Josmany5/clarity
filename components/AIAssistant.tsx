@@ -538,6 +538,12 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       // Remove standalone closing bracket on its own line (Gemini sometimes outputs this after JSON arrays)
       displayMessage = displayMessage.replace(/^\s*\]\s*$/gm, '');
 
+      // Remove stray closing braces (from JSON objects)
+      displayMessage = displayMessage.replace(/^\s*\}\s*$/gm, '');
+
+      // Remove stray opening braces/brackets that might be left behind
+      displayMessage = displayMessage.replace(/^\s*[\{\[]\s*$/gm, '');
+
       // Remove "tool_code" text that appears when Gemini wraps JSON in code blocks
       displayMessage = displayMessage.replace(/\btool_code\b/g, '');
 

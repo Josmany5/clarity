@@ -1,0 +1,279 @@
+[
+  {
+    "id": "COUNT001",
+    "category": "data_count_accuracy",
+    "name": "Count with 0 items",
+    "setup": { "tasks": 0, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "How many tasks do I have?",
+    "expectedBehavior": "AI should report 0 tasks"
+  },
+  {
+    "id": "COUNT002",
+    "category": "data_count_accuracy",
+    "name": "Count with 1 task",
+    "setup": { "tasks": 1, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "How many tasks do I have?",
+    "expectedBehavior": "AI should report 1 task"
+  },
+  {
+    "id": "COUNT003",
+    "category": "data_count_accuracy",
+    "name": "Count with 5 tasks",
+    "setup": { "tasks": 5, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "How many tasks do I have?",
+    "expectedBehavior": "AI should report 5 tasks"
+  },
+  {
+    "id": "COUNT004",
+    "category": "data_count_accuracy",
+    "name": "Count with 10 tasks",
+    "setup": { "tasks": 10, "events": 0, "notes": 0, "goals": 0 },
+    "userPrompt": "How many tasks do I have?",
+    "expectedBehavior": "AI should report 10 tasks"
+  },
+  {
+    "id": "COUNT005",
+    "category": "data_count_accuracy",
+    "name": "Count multiple entity types",
+    "setup": { "tasks": 3, "events": 2, "notes": 4, "goals": 1 },
+    "userPrompt": "What do I have in my workspace?",
+    "expectedBehavior": "AI should report 3 tasks, 2 events, 4 notes, 1 goal"
+  },
+  {
+    "id": "DISAMBIG001",
+    "category": "task_event_disambiguation",
+    "name": "Task with time (remind me)",
+    "userPrompt": "Remind me to call John at 3pm",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK with dueTime 15:00, NOT an event"
+  },
+  {
+    "id": "DISAMBIG002",
+    "category": "task_event_disambiguation",
+    "name": "Event with schedule keyword",
+    "userPrompt": "Schedule meeting with John at 3pm",
+    "expectedEntityType": "event",
+    "expectedBehavior": "Should create EVENT with startTime 15:00"
+  },
+  {
+    "id": "DISAMBIG003",
+    "category": "task_event_disambiguation",
+    "name": "Explicit task keyword with time",
+    "userPrompt": "Task: finish report by Friday 5pm",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK with dueDate and dueTime, NOT event"
+  },
+  {
+    "id": "DISAMBIG004",
+    "category": "task_event_disambiguation",
+    "name": "Appointment keyword",
+    "userPrompt": "Appointment with dentist Tuesday 2pm",
+    "expectedEntityType": "event",
+    "expectedBehavior": "Should create EVENT type appointment"
+  },
+  {
+    "id": "DISAMBIG005",
+    "category": "task_event_disambiguation",
+    "name": "To-do with deadline time",
+    "userPrompt": "Add to-do: submit proposal by Monday 4pm",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK with dueTime, NOT event"
+  },
+  {
+    "id": "DISAMBIG006",
+    "category": "task_event_disambiguation",
+    "name": "Meeting keyword",
+    "userPrompt": "Meeting with team tomorrow at 10am",
+    "expectedEntityType": "event",
+    "expectedBehavior": "Should create EVENT type meeting"
+  },
+  {
+    "id": "DISAMBIG007",
+    "category": "task_event_disambiguation",
+    "name": "Need to with time",
+    "userPrompt": "I need to review code by 6pm today",
+    "expectedEntityType": "task",
+    "expectedBehavior": "Should create TASK, not event"
+  },
+  {
+    "id": "DISAMBIG008",
+    "category": "task_event_disambiguation",
+    "name": "Class keyword",
+    "userPrompt": "Yoga class Wednesday 7pm",
+    "expectedEntityType": "event",
+    "expectedBehavior": "Should create EVENT type class"
+  },
+  {
+    "id": "LEAK001",
+    "category": "json_leak_detection",
+    "name": "Single task creation",
+    "userPrompt": "Create task: buy groceries",
+    "expectedBehavior": "No JSON markers (TASKS_JSON:, {, }, [, ]) in chat response"
+  },
+  {
+    "id": "LEAK002",
+    "category": "json_leak_detection",
+    "name": "Single event creation",
+    "userPrompt": "Schedule dentist appointment tomorrow at 2pm",
+    "expectedBehavior": "No JSON markers in chat response"
+  },
+  {
+    "id": "LEAK003",
+    "category": "json_leak_detection",
+    "name": "Delete single task",
+    "userPrompt": "Delete the groceries task",
+    "expectedBehavior": "No TASK_DELETE_JSON: or JSON in chat"
+  },
+  {
+    "id": "LEAK004",
+    "category": "json_leak_detection",
+    "name": "Delete single event",
+    "userPrompt": "Delete the dentist appointment",
+    "expectedBehavior": "No EVENT_DELETE_JSON: or JSON in chat"
+  },
+  {
+    "id": "LEAK005",
+    "category": "json_leak_detection",
+    "name": "Update task with multiple fields",
+    "userPrompt": "Update the report task to be urgent and due Friday at 5pm",
+    "expectedBehavior": "No TASK_UPDATE_JSON: or JSON in chat"
+  },
+  {
+    "id": "LEAK006",
+    "category": "json_leak_detection",
+    "name": "Create 3 tasks at once",
+    "userPrompt": "Create 3 tasks: code review, write docs, test feature",
+    "expectedBehavior": "No JSON markers in chat response"
+  },
+  {
+    "id": "LEAK007",
+    "category": "json_leak_detection",
+    "name": "Create 2 events at once",
+    "userPrompt": "Schedule: team meeting Monday 10am, client call Tuesday 3pm",
+    "expectedBehavior": "No JSON markers in chat response"
+  },
+  {
+    "id": "LEAK008",
+    "category": "json_leak_detection",
+    "name": "Delete all tasks",
+    "userPrompt": "Delete all my tasks",
+    "expectedBehavior": "Should ask for confirmation, no JSON in initial response"
+  },
+  {
+    "id": "LEAK009",
+    "category": "json_leak_detection",
+    "name": "Delete all tasks confirmation",
+    "userPrompt": "yes",
+    "context": "User confirmed delete all tasks",
+    "expectedBehavior": "No TASK_DELETE_ALL_JSON: visible in chat"
+  },
+  {
+    "id": "MULTI001",
+    "category": "multi_operation",
+    "name": "Create exactly 10 tasks",
+    "userPrompt": "Create 10 tasks for me",
+    "expectedBehavior": "Should create exactly 10 tasks, not replicate existing ones"
+  },
+  {
+    "id": "MULTI002",
+    "category": "multi_operation",
+    "name": "Create 5 specific tasks",
+    "userPrompt": "Create 5 tasks: task1, task2, task3, task4, task5",
+    "expectedBehavior": "Should create exactly 5 tasks with those titles"
+  },
+  {
+    "id": "MULTI003",
+    "category": "multi_operation",
+    "name": "Delete all tasks and events",
+    "setup": { "tasks": 3, "events": 2 },
+    "userPrompt": "Delete all my tasks and events",
+    "expectedBehavior": "Should ask for confirmation for both"
+  },
+  {
+    "id": "MULTI004",
+    "category": "multi_operation",
+    "name": "Create 3 tasks and 2 events",
+    "userPrompt": "Create 3 tasks (task A, B, C) and 2 meetings (Monday 10am, Tuesday 2pm)",
+    "expectedBehavior": "Should create 3 tasks AND 2 events, correct types"
+  },
+  {
+    "id": "MULTI005",
+    "category": "multi_operation",
+    "name": "Update 2 tasks delete 1",
+    "setup": { "tasks": 3 },
+    "userPrompt": "Mark task1 and task2 as completed, delete task3",
+    "expectedBehavior": "Should update 2, delete 1"
+  },
+  {
+    "id": "CRUD001",
+    "category": "crud_operations",
+    "name": "Create task with all fields",
+    "userPrompt": "Create urgent important task: finish Q4 report due Friday 5pm estimated 2 hours",
+    "expectedBehavior": "Task with urgent=true, important=true, dueDate, dueTime=17:00, estimatedTime=120"
+  },
+  {
+    "id": "CRUD002",
+    "category": "crud_operations",
+    "name": "Create event with all fields",
+    "userPrompt": "Schedule team standup Monday 9am to 9:30am at Conference Room A, recurring weekly",
+    "expectedBehavior": "Event with startTime, endTime, location, recurring weekly"
+  },
+  {
+    "id": "CRUD003",
+    "category": "crud_operations",
+    "name": "Update task partial match",
+    "setup": { "tasks": 1 },
+    "userPrompt": "Update the report task to be due tomorrow",
+    "expectedBehavior": "Should find task with 'report' in title and update dueDate"
+  },
+  {
+    "id": "CRUD004",
+    "category": "crud_operations",
+    "name": "Delete task partial match",
+    "setup": { "tasks": 1 },
+    "userPrompt": "Delete the groceries task",
+    "expectedBehavior": "Should find and delete task with 'groceries' in title"
+  },
+  {
+    "id": "CRUD005",
+    "category": "crud_operations",
+    "name": "Create note with rich content",
+    "userPrompt": "Make a note about meeting: discussed budget, assigned tasks to team, next review Friday",
+    "expectedBehavior": "Note with title and content fields populated"
+  },
+  {
+    "id": "EDGE001",
+    "category": "edge_cases",
+    "name": "Very long task title",
+    "userPrompt": "Create task: This is a very long task title that contains a lot of text to test how the system handles extremely long inputs that might cause issues with JSON parsing or display",
+    "expectedBehavior": "Should handle long title without errors"
+  },
+  {
+    "id": "EDGE002",
+    "category": "edge_cases",
+    "name": "Special characters in title",
+    "userPrompt": "Create task: Review @john's PR #123 & update docs (v2.0)",
+    "expectedBehavior": "Should handle special characters correctly"
+  },
+  {
+    "id": "EDGE003",
+    "category": "edge_cases",
+    "name": "Unicode and emoji",
+    "userPrompt": "Create task: 🎯 Complete project ✅ by Friday 中文测试",
+    "expectedBehavior": "Should handle emoji and unicode"
+  },
+  {
+    "id": "EDGE004",
+    "category": "edge_cases",
+    "name": "Ambiguous request",
+    "userPrompt": "Add thing for tomorrow",
+    "expectedBehavior": "Should ask for clarification or make reasonable inference"
+  },
+  {
+    "id": "EDGE005",
+    "category": "edge_cases",
+    "name": "Conflicting instructions",
+    "userPrompt": "Create a task no wait make it an event actually just remind me",
+    "expectedBehavior": "Should handle gracefully, likely create task (last intent)"
+  }
+]
