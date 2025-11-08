@@ -1,0 +1,15 @@
+
+AI JSON Leak Detection Test Results
+====================================
+Timestamp: 2025-11-08T01:37:00.920Z
+Test Type: REAL AI API TESTING (not mocked)
+
+Summary:
+  Total: 30
+  Passed: 30
+  Failed: 0
+
+Failed Tests:
+
+
+Full results saved to: /Users/josmanyjuvier/Desktop/clarity-dashboard/tests/results/latest-run.json

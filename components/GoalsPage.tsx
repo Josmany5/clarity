@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Goal } from '../App';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface GoalsPageProps {
   goals: Goal[];
@@ -147,7 +148,7 @@ export const GoalsPage: React.FC<GoalsPageProps> = ({ goals, onAddGoal, onUpdate
               {goal.targetDate && (
                 <div className="flex items-center gap-2 text-sm text-text-secondary mb-3">
                   <span>🎯</span>
-                  <span>Target: {new Date(goal.targetDate).toLocaleDateString()}</span>
+                  <span>Target: {parseLocalDate(goal.targetDate).toLocaleDateString()}</span>
                 </div>
               )}
 

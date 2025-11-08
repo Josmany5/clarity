@@ -24,10 +24,13 @@ interface AIAssistantProps {
   onTaskDeleteCompleted?: () => void;
   onNoteCreate?: (note: { title: string; content: string }) => any;
   onEventCreate?: (event: any) => void;
+  onEventUpdate?: (event: any) => void;
+  onEventDelete?: (eventId: string) => void;
   tasks?: any[];
+  events?: any[];
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, tasks = [] }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, onEventUpdate, onEventDelete, tasks = [], events = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -49,20 +52,23 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
   const recognitionRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Robust JSON extraction function that handles nested braces
+  // Robust JSON extraction function that handles nested braces and code blocks
   const extractJSON = (text: string, prefix: string): string | null => {
-    const startIndex = text.indexOf(prefix);
+    // Remove code block wrappers if present
+    let cleanText = text.replace(/```(?:json|tool_code)?\n?/g, '').replace(/```/g, '');
+
+    const startIndex = cleanText.indexOf(prefix);
     if (startIndex === -1) return null;
 
-    const jsonStart = text.indexOf('{', startIndex);
+    const jsonStart = cleanText.indexOf('{', startIndex);
     if (jsonStart === -1) return null;
 
     let braceCount = 0;
     let inString = false;
     let escaped = false;
 
-    for (let i = jsonStart; i < text.length; i++) {
-      const char = text[i];
+    for (let i = jsonStart; i < cleanText.length; i++) {
+      const char = cleanText[i];
 
       if (escaped) {
         escaped = false;
@@ -93,20 +99,23 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     return null;
   };
 
-  // Robust JSON array extraction function that handles nested brackets
+  // Robust JSON array extraction function that handles nested brackets and code blocks
   const extractJSONArray = (text: string, prefix: string): string | null => {
-    const startIndex = text.indexOf(prefix);
+    // Remove code block wrappers if present
+    let cleanText = text.replace(/```(?:json|tool_code)?\n?/g, '').replace(/```/g, '');
+
+    const startIndex = cleanText.indexOf(prefix);
     if (startIndex === -1) return null;
 
-    const jsonStart = text.indexOf('[', startIndex);
+    const jsonStart = cleanText.indexOf('[', startIndex);
     if (jsonStart === -1) return null;
 
     let bracketCount = 0;
     let inString = false;
     let escaped = false;
 
-    for (let i = jsonStart; i < text.length; i++) {
-      const char = text[i];
+    for (let i = jsonStart; i < cleanText.length; i++) {
+      const char = cleanText[i];
 
       if (escaped) {
         escaped = false;
@@ -128,7 +137,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         if (char === ']') {
           bracketCount--;
           if (bracketCount === 0) {
-            return text.substring(jsonStart, i + 1);
+            return cleanText.substring(jsonStart, i + 1);
           }
         }
       }
@@ -229,8 +238,21 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         prompt += `\n\nI've attached a file (${currentFileName}) with the following content:\n\n${currentFileContent}\n\nPlease analyze this and help me with my request.`;
       }
 
-      // Get AI response with conversation history
-      const response = await getAIResponse(prompt, currentPage, messages);
+      // Get AI response with conversation history AND app context
+      const response = await getAIResponse(
+        prompt,
+        currentPage,
+        messages,
+        {
+          tasks: tasks || [],
+          notes: [],  // Will be passed in Step 5
+          events: [], // Will be passed in Step 5
+          goals: [],  // Will be passed in Step 5
+        }
+      );
+
+      // Debug: Log raw response to see what Gemini is actually sending
+      console.log('🔍 RAW GEMINI RESPONSE:', response);
 
       // Check for task creation using robust extraction
       const tasksJSON = extractJSONArray(response, 'TASKS_JSON:');
@@ -262,6 +284,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         try {
           const noteJSON = noteMatch[1].trim();
           const noteData = JSON.parse(noteJSON);
+          console.log('📝 Creating note:', noteData);
           onNoteCreate({
             title: noteData.title,
             content: noteData.content  // Content already has real newlines
@@ -280,6 +303,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
           const eventsArray = JSON.parse(eventsJSON);
           console.log('📅 Parsed events:', eventsArray);
           for (const eventData of eventsArray) {
+            // Add default color if missing
+            if (!eventData.color) {
+              eventData.color = '#3b82f6';
+            }
             console.log('📅 Creating event:', eventData);
             onEventCreate(eventData);
           }
@@ -293,6 +320,65 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
         if (!eventsJSON) {
           console.log('ℹ️ No EVENTS_JSON found in response');
+        }
+      }
+
+      // Check for event update using robust extraction
+      const eventUpdateJSON = extractJSON(response, 'EVENT_UPDATE_JSON:');
+      if (eventUpdateJSON && onEventUpdate && events) {
+        try {
+          const updateData = JSON.parse(eventUpdateJSON);
+          console.log('📅 Event update request:', updateData);
+          console.log('📋 Available events:', events.map(e => e.title));
+
+          // Try to find the event - be more flexible with matching
+          const searchTerm = updateData.eventTitle.toLowerCase();
+          const eventToUpdate = events.find(e => {
+            const title = e.title.toLowerCase();
+            return title.includes(searchTerm) || searchTerm.includes(title);
+          });
+
+          if (eventToUpdate) {
+            console.log('✅ Found event to update:', eventToUpdate.title);
+
+            console.log('🔄 Applying updates:', updateData.updates);
+            onEventUpdate({
+              ...eventToUpdate,
+              ...updateData.updates
+            });
+          } else {
+            console.warn('❌ Could not find event matching:', updateData.eventTitle);
+          }
+        } catch (error) {
+          console.error('Failed to parse event update JSON:', error);
+          console.error('Raw JSON string:', eventUpdateJSON);
+        }
+      }
+
+      // Check for event deletion using robust extraction
+      const eventDeleteJSON = extractJSON(response, 'EVENT_DELETE_JSON:');
+      if (eventDeleteJSON && onEventDelete && events) {
+        try {
+          const deleteData = JSON.parse(eventDeleteJSON);
+          console.log('🗑️ Event deletion request:', deleteData);
+          console.log('📋 Available events:', events.map(e => e.title));
+
+          // Try to find the event - be more flexible with matching
+          const searchTerm = deleteData.eventTitle.toLowerCase();
+          const eventToDelete = events.find(e => {
+            const title = e.title.toLowerCase();
+            return title.includes(searchTerm) || searchTerm.includes(title);
+          });
+
+          if (eventToDelete) {
+            console.log('✅ Found event to delete:', eventToDelete.title);
+            onEventDelete(eventToDelete.id);
+          } else {
+            console.warn('❌ Could not find event matching:', deleteData.eventTitle);
+          }
+        } catch (error) {
+          console.error('Failed to parse event delete JSON:', error);
+          console.error('Raw JSON string:', eventDeleteJSON);
         }
       }
 
@@ -425,6 +511,11 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
       }
 
+      // Remove event update JSON
+      if (eventUpdateJSON) {
+        displayMessage = displayMessage.replace(/EVENT_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
       // Remove task update JSON
       if (updateJSON) {
         displayMessage = displayMessage.replace(/TASK_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
@@ -444,15 +535,14 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         displayMessage = displayMessage.replace(/TASK_DELETE_COMPLETED_JSON:\s*\{[\s\S]*?\}\n?/g, '');
       }
 
-      // Catch-all: Remove any remaining JSON blocks (arrays or objects)
-      displayMessage = displayMessage.replace(/```json[\s\S]*?```/g, ''); // Remove JSON code blocks
-      displayMessage = displayMessage.replace(/\{[\s]*"[^"]+":[\s\S]*?\}/g, (match) => {
-        // Only remove if it looks like a complete JSON object (contains quotes and colons)
-        if (match.includes('"') && match.includes(':')) {
-          return '';
-        }
-        return match;
-      });
+      // Remove standalone closing bracket on its own line (Gemini sometimes outputs this after JSON arrays)
+      displayMessage = displayMessage.replace(/^\s*\]\s*$/gm, '');
+
+      // Remove "tool_code" text that appears when Gemini wraps JSON in code blocks
+      displayMessage = displayMessage.replace(/\btool_code\b/g, '');
+
+      // Remove conversation prefixes (Wove:, User:) that shouldn't appear in display
+      displayMessage = displayMessage.replace(/^(Wove|User):\s*/gm, '');
 
       displayMessage = displayMessage.trim();
 

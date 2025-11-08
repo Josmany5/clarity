@@ -1,7 +1,7 @@
 // AI Service - SECURE version using backend API
 // API keys are kept on the server, not exposed to clients
 
-import { parseLocalDate } from '../utils/dateUtils';
+import { buildSystemPrompt, type AIContext } from './AIInstructions';
 
 // ============= SPEECH TO TEXT (Client-side - FREE) =============
 
@@ -256,147 +256,78 @@ export const speak = async (text: string): Promise<void> => {
 // ============= SMART TASK CREATION =============
 
 export const parseTaskCommand = async (userInput: string): Promise<any> => {
-  const context = `You are a task parser for a productivity dashboard.
-Parse the user's natural language into a structured task.
-
-Current date: ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-
-Return ONLY a JSON object with these fields:
-{
-  "title": "task title",
-  "dueDate": "YYYY-MM-DD" (optional),
-  "dueTime": "HH:MM" in 24h format (optional),
-  "urgent": boolean,
-  "important": boolean,
-  "tags": ["tag1", "tag2"]
-}
-
-Examples:
-"Buy groceries tomorrow at 3pm urgent" → {"title":"Buy groceries","dueDate":"${getTomorrow()}","dueTime":"15:00","urgent":true,"important":false,"tags":[]}
-"Important meeting next Monday 10am" → {"title":"Important meeting","dueDate":"${getNextMonday()}","dueTime":"10:00","urgent":false,"important":true,"tags":[]}
-
-Parse this: "${userInput}"`;
-
-  const response = await askGemini(context);
-
-  try {
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-    throw new Error('No JSON found in response');
-  } catch (error) {
-    console.error('Failed to parse task:', error);
-    return {
-      title: userInput,
-      urgent: false,
-      important: false,
-      tags: []
-    };
-  }
-};
-
-// Helper functions
-const getTomorrow = (): string => {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0];
-};
-
-const getNextMonday = (): string => {
-  const date = new Date();
-  const day = date.getDay();
-  const diff = day === 0 ? 1 : 8 - day;
-  date.setDate(date.getDate() + diff);
-  return date.toISOString().split('T')[0];
+  return {
+    title: userInput,
+    urgent: false,
+    important: false,
+    tags: []
+  };
 };
 
 // ============= CONTEXT-AWARE ASSISTANCE =============
 
+interface AppContext {
+  tasks: any[];
+  notes: any[];
+  events: any[];
+  goals: any[];
+}
+
+function buildRecentActivity(appContext: AppContext): string[] {
+  const activities: string[] = [];
+
+  // Count incomplete and urgent tasks
+  const incompleteTasks = appContext.tasks.filter((t: any) => !t.completed).length;
+  const urgentTasks = appContext.tasks.filter((t: any) => t.urgent && !t.completed).length;
+
+  if (urgentTasks > 0) {
+    activities.push(`${urgentTasks} urgent tasks pending`);
+  }
+
+  // Count today's events
+  const today = new Date().toISOString().split('T')[0];
+  const todayEvents = appContext.events.filter((e: any) => e.startDate === today).length;
+  if (todayEvents > 0) {
+    activities.push(`${todayEvents} events today`);
+  }
+
+  // Count recent notes (updated in last 24 hours)
+  const recentNotes = appContext.notes.filter((n: any) =>
+    Date.now() - n.lastModified < 24 * 60 * 60 * 1000
+  ).length;
+  if (recentNotes > 0) {
+    activities.push(`${recentNotes} notes updated recently`);
+  }
+
+  return activities;
+}
+
 export const getAIResponse = async (
   userMessage: string,
   currentPage: string,
-  conversationHistory?: Array<{ role: string; content: string }>
+  conversationHistory?: Array<{ role: string; content: string }>,
+  appContext?: AppContext
 ): Promise<string> => {
-  const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-  const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+  // Build context for system prompt
+  const context: AIContext = {
+    currentPage,
+    taskCount: appContext?.tasks.length || 0,
+    noteCount: appContext?.notes.length || 0,
+    eventCount: appContext?.events.length || 0,
+    goalCount: appContext?.goals.length || 0,
+    recentActivity: appContext ? buildRecentActivity(appContext) : [],
+  };
 
-  // Calculate productivity stats
-  const completedTasks = tasks.filter((t: any) => t.completed);
-  const urgentTasks = tasks.filter((t: any) => t.urgent && !t.completed);
-  const importantTasks = tasks.filter((t: any) => t.important && !t.completed);
-  const overdueTasks = tasks.filter((t: any) => {
-    if (!t.dueDate || t.completed) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dueDate = parseLocalDate(t.dueDate);
-    return dueDate < today;
-  });
+  // Build system prompt with context
+  const systemPrompt = buildSystemPrompt(context);
 
-  // Weekly stats
-  const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-  const tasksThisWeek = tasks.filter((t: any) => t.createdAt > weekAgo);
-  const completedThisWeek = tasksThisWeek.filter((t: any) => t.completed);
+  // Build conversation history
+  const conversationText = conversationHistory
+    ?.map(m => `${m.role === 'user' ? 'User' : 'Wove'}: ${m.content}`)
+    .join('\n') || '';
 
-  // Build conversation history context (last 10 messages for better context)
-  const historyContext = conversationHistory && conversationHistory.length > 0
-    ? `\n\nCONVERSATION HISTORY (Recent context):\n${conversationHistory.slice(-10).map(msg =>
-        `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
-      ).join('\n')}\n`
-    : '';
+  // Full prompt = system instructions + history + current message
+  const fullPrompt = `${systemPrompt}\n\n${conversationText}\n\nUser: ${userMessage}`;
 
-  // Get current date/time info for accurate date calculations
-  const now = new Date();
-  const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
-  const fullDate = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  const currentTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-  const context = `You are Prose AI, a helpful and knowledgeable assistant integrated into the Prose productivity app.
-
-YOU CAN HELP WITH:
-1. GENERAL KNOWLEDGE - Answer questions about any topic: science, history, programming, math, current events, etc.
-2. APP ASSISTANCE - Help with tasks, notes, events, projects, goals, workflows, routines, templates, and productivity systems
-3. PROBLEM SOLVING - Debug code, explain concepts, provide advice, brainstorm ideas
-4. CREATION - Create tasks, notes, and events when users request them
-
-RESPONSE STYLE:
-- Be clear, concise, and helpful
-- Answer both general questions AND app-specific questions
-- Focus on facts and practical guidance
-- Direct answers to direct questions
-
-=== CURRENT DATE/TIME ===
-Today is: ${dayOfWeek}, ${fullDate}
-Current time: ${currentTime}
-ISO date: ${new Date().toISOString().split('T')[0]}
-
-=== CURRENT APP STATE ===
-You're on: ${currentPage}
-Tasks: ${tasks.length} total (${completedTasks.length} done, ${urgentTasks.length} urgent, ${overdueTasks.length} overdue)
-Notes: ${notes.length} total
-Recent tasks: ${tasks.slice(0, 5).map((t: any) => `"${t.title}"${t.completed ? ' ✓' : ''}`).join(', ') || 'none'}
-${historyContext}
-ENTITY CREATION (when explicitly requested):
-- Tasks: Create when user says "I need to...", "remind me to...", "add a task..."
-- Notes: Create when user says "make me a...", "create a note...", "write a note..."
-- Events: Create when user mentions appointments/meetings with times
-
-CREATION RULES:
-- NEVER show JSON in your response text
-- NEVER explain the JSON structure to the user
-- Just create the item silently using the format below
-- Confirm creation with natural language: "I've created a note titled X" or "I've added a task for Y"
-
-FORMAT RULES (hidden from user):
-- Tasks: TASKS_JSON: [{"title":"Task name","urgent":false,"important":false,"dueDate":"YYYY-MM-DD","startDate":"YYYY-MM-DD","endDate":"YYYY-MM-DD","recurring":{"frequency":"daily|weekly|monthly","daysOfWeek":[0,1,2],"endDate":"YYYY-MM-DD"}}]
-- Notes: <<<NOTE_START>>> {"title":"Title","content":"Content with all details"} <<<NOTE_END>>>
-- Events: EVENTS_JSON: [{"title":"Event","type":"class|meeting|appointment|other","startDate":"YYYY-MM-DD","endDate":"YYYY-MM-DD","startTime":"HH:MM","endTime":"HH:MM","recurring":{"frequency":"daily|weekly|monthly","daysOfWeek":[0,1,2],"endDate":"YYYY-MM-DD"}}]
-
-Note: startDate/endDate are for multi-day tasks/events. recurring is optional. daysOfWeek: 0=Sunday, 1=Monday, etc.
-
-IMPORTANT: For notes, always include comprehensive content. Don't create empty notes.
-
-You are knowledgeable about all topics, not just productivity. Help with anything the user needs.`;
-
-  return await askGemini(userMessage, context);
+  return await askGemini(fullPrompt);
 };

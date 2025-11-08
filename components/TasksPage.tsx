@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Task, Subtask, TaskList } from '../App';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface TasksPageProps {
   tasks: Task[];
@@ -23,7 +24,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
   onDeleteTaskList
 }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [view, setView] = useState<'list' | 'matrix'>('matrix');
+  const [view, setView] = useState<'list' | 'matrix'>('list');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('active');
   const [selectedListId, setSelectedListId] = useState<string>('all');
   const [schedulingTask, setSchedulingTask] = useState<Task | null>(null);
@@ -382,12 +383,20 @@ export const TasksPage: React.FC<TasksPageProps> = ({
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1">
                           {task.dueDate && (
                             <p className="text-xs text-text-secondary">
-                              📅 {new Date(`${task.dueDate}${task.dueTime ? `T${task.dueTime}` : ''}`).toLocaleString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                                ...(task.dueTime && { hour: 'numeric', minute: '2-digit' })
-                              })}
+                              📅 {task.dueTime
+                                ? new Date(`${task.dueDate}T${task.dueTime}`).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit'
+                                  })
+                                : parseLocalDate(task.dueDate).toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                  })
+                              }
                             </p>
                           )}
                           <p className="text-xs text-text-secondary">

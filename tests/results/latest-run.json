@@ -1,853 +1,641 @@
 {
-  "timestamp": "2025-11-08T01:10:30.203Z",
+  "timestamp": "2025-11-08T02:10:10.737Z",
+  "summary": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "byCategory": {
+      "simple_entity_creation": {
+        "total": 5,
+        "passed": 5
+      },
+      "complex_content": {
+        "total": 5,
+        "passed": 5
+      },
+      "multiple_entities": {
+        "total": 2,
+        "passed": 2
+      },
+      "conversational_queries": {
+        "total": 5,
+        "passed": 5
+      },
+      "info_withholding": {
+        "total": 6,
+        "passed": 6
+      },
+      "mixed_requests": {
+        "total": 2,
+        "passed": 2
+      },
+      "edge_cases": {
+        "total": 5,
+        "passed": 5
+      }
+    }
+  },
   "results": [
     {
-      "testId": "TC001",
-      "category": "simple_entity_creation",
+      "id": "TC001",
       "name": "Create simple task",
+      "category": "simple_entity_creation",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 1,
-        "detectionTime": 0,
-        "totalTime": 2
+      "timings": {
+        "aiCall": 1661,
+        "cleaning": 1,
+        "detection": 1,
+        "total": 1663
       },
-      "details": {
-        "originalLength": 164,
-        "cleanedLength": 60,
-        "removedChars": 104,
-        "extractedCount": 1
+      "rawResponse": "Great! To help you get ready for your grocery shopping trip tomorrow, I can offer some assistance. To give you the best advice, I need a little more information. Tell me:\n\n*   **What kind of groceries are you looking for?** (e.g., for the week, for a specific meal, for a party, just a few essentials)\n*   **Do you have a specific store in mind?** (This can help with store-specific tips or sales)\n*   **Do you have a budget in mind?**\n*   **Are there any dietary restrictions or preferences I should be aware of?** (e.g., vegetarian, vegan, gluten-free, allergies)\n*   **What's your general location or city?** (This can help with suggesting local stores or deals)\n*   **Is there anything you're particularly struggling with or need help with?** (e.g., meal planning, making a list, finding deals)\n\nOnce I have a better understanding of your needs, I can help you with things like:\n\n*   **Creating a grocery list.**\n*   **Suggesting meal ideas based on what you have or want to buy.**\n*   **Finding deals or coupons.**\n*   **Tips for efficient shopping.**\n*   **Ideas for using up ingredients to reduce waste.**\n\n**In the meantime, here are some general things you can start thinking about for tomorrow:**\n\n*   **Check your pantry and fridge:** See what you already have so you don't buy duplicates.\n*   **Plan your meals:** Think about what you want to eat for the next few days or the week.\n*   **Make a list:** This is crucial for staying organized and avoiding impulse buys.\n*   **Consider your budget.**\n\nLooking forward to hearing more so I can help you make your grocery shopping trip a success!",
+      "cleanedMessage": "Great! To help you get ready for your grocery shopping trip tomorrow, I can offer some assistance. To give you the best advice, I need a little more information. Tell me:\n\n*   **What kind of groceries are you looking for?** (e.g., for the week, for a specific meal, for a party, just a few essentials)\n*   **Do you have a specific store in mind?** (This can help with store-specific tips or sales)\n*   **Do you have a budget in mind?**\n*   **Are there any dietary restrictions or preferences I should be aware of?** (e.g., vegetarian, vegan, gluten-free, allergies)\n*   **What's your general location or city?** (This can help with suggesting local stores or deals)\n*   **Is there anything you're particularly struggling with or need help with?** (e.g., meal planning, making a list, finding deals)\n\nOnce I have a better understanding of your needs, I can help you with things like:\n\n*   **Creating a grocery list.**\n*   **Suggesting meal ideas based on what you have or want to buy.**\n*   **Finding deals or coupons.**\n*   **Tips for efficient shopping.**\n*   **Ideas for using up ingredients to reduce waste.**\n\n**In the meantime, here are some general things you can start thinking about for tomorrow:**\n\n*   **Check your pantry and fridge:** See what you already have so you don't buy duplicates.\n*   **Plan your meals:** Think about what you want to eat for the next few days or the week.\n*   **Make a list:** This is crucial for staying organized and avoiding impulse buys.\n*   **Consider your budget.**\n\nLooking forward to hearing more so I can help you make your grocery shopping trip a success!",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC002",
-      "category": "simple_entity_creation",
+      "id": "TC002",
       "name": "Create simple note",
+      "category": "simple_entity_creation",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 1,
-        "detectionTime": 0,
-        "totalTime": 1
+      "timings": {
+        "aiCall": 2101,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 2102
       },
-      "details": {
-        "originalLength": 168,
-        "cleanedLength": 55,
-        "removedChars": 113,
-        "extractedCount": 1
+      "rawResponse": "Here are a few options for your meeting notes, ranging from brief to slightly more detailed. Choose the one that best fits your needs:\n\n**Option 1: Concise & Direct**\n\nSubject: Meeting Notes - Today's Discussion\n\nDate: [Today's Date]\n\nKey Discussion Points:\n*   Q4 Goals\n*   Budget Allocation\n\n---\n\n**Option 2: Slightly More Detail**\n\nSubject: Meeting Notes - Q4 Goals & Budget Allocation\n\nDate: [Today's Date]\n\nToday's meeting focused on two primary areas:\n\n*   **Q4 Goals:** We reviewed and discussed our objectives for the fourth quarter. [Optional: Briefly mention if goals were finalized, discussed, or need further refinement].\n*   **Budget Allocation:** Decisions were made regarding the allocation of budget for Q4 initiatives. [Optional: Briefly mention if specific allocations were agreed upon or if further steps are needed].\n\n---\n\n**Option 3: For a More Formal Record**\n\nSubject: Meeting Minutes - Q4 Goals & Budget Allocation Discussion\n\nDate: [Today's Date]\nTime: [Time of Meeting]\nAttendees: [List of attendees, if applicable]\n\n**Summary of Discussion:**\n\nThe meeting held today centered on the strategic planning for the fourth quarter. Key topics addressed included:\n\n1.  **Q4 Goals:** A comprehensive discussion took place regarding the establishment and refinement of our objectives for the upcoming quarter. [Add a sentence here if there were specific outcomes, e.g., \"Key performance indicators were identified,\" or \"Alignment was achieved on core priorities.\"]\n\n2.  **Budget Allocation:** The allocation of the Q4 budget was a significant agenda item. [Add a sentence here about the outcome, e.g., \"Decisions were made to prioritize [specific areas],\" or \"A framework for budget distribution was agreed upon, with further details to follow.\"]\n\n**Next Steps/Action Items (if any):**\n*   [List any action items, owners, and deadlines]\n\n---\n\n**Remember to replace the bracketed information `[ ]` with your specific details.**\n\n**Pro-Tip:** If you want to make it even more useful, consider adding a sentence about any decisions made or action items assigned.",
+      "cleanedMessage": "Here are a few options for your meeting notes, ranging from brief to slightly more detailed. Choose the one that best fits your needs:\n\n**Option 1: Concise & Direct**\n\nSubject: Meeting Notes - Today's Discussion\n\nDate: [Today's Date]\n\nKey Discussion Points:\n*   Q4 Goals\n*   Budget Allocation\n\n---\n\n**Option 2: Slightly More Detail**\n\nSubject: Meeting Notes - Q4 Goals & Budget Allocation\n\nDate: [Today's Date]\n\nToday's meeting focused on two primary areas:\n\n*   **Q4 Goals:** We reviewed and discussed our objectives for the fourth quarter. [Optional: Briefly mention if goals were finalized, discussed, or need further refinement].\n*   **Budget Allocation:** Decisions were made regarding the allocation of budget for Q4 initiatives. [Optional: Briefly mention if specific allocations were agreed upon or if further steps are needed].\n\n---\n\n**Option 3: For a More Formal Record**\n\nSubject: Meeting Minutes - Q4 Goals & Budget Allocation Discussion\n\nDate: [Today's Date]\nTime: [Time of Meeting]\nAttendees: [List of attendees, if applicable]\n\n**Summary of Discussion:**\n\nThe meeting held today centered on the strategic planning for the fourth quarter. Key topics addressed included:\n\n1.  **Q4 Goals:** A comprehensive discussion took place regarding the establishment and refinement of our objectives for the upcoming quarter. [Add a sentence here if there were specific outcomes, e.g., \"Key performance indicators were identified,\" or \"Alignment was achieved on core priorities.\"]\n\n2.  **Budget Allocation:** The allocation of the Q4 budget was a significant agenda item. [Add a sentence here about the outcome, e.g., \"Decisions were made to prioritize [specific areas],\" or \"A framework for budget distribution was agreed upon, with further details to follow.\"]\n\n**Next Steps/Action Items (if any):**\n*   [List any action items, owners, and deadlines]\n\n---\n\n**Remember to replace the bracketed information `[ ]` with your specific details.**\n\n**Pro-Tip:** If you want to make it even more useful, consider adding a sentence about any decisions made or action items assigned.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC003",
-      "category": "simple_entity_creation",
+      "id": "TC003",
       "name": "Create simple event",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 192,
-        "cleanedLength": 74,
-        "removedChars": 118,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC004",
       "category": "simple_entity_creation",
-      "name": "Create task with minimal fields",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 916,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 916
       },
-      "details": {
-        "originalLength": 60,
-        "cleanedLength": 23,
-        "removedChars": 37,
-        "extractedCount": 1
+      "rawResponse": "Okay, I can help with that! To schedule the team meeting effectively, I need a little more information. Please tell me:\n\n1.  **What is the purpose of the meeting?** (e.g., Project X update, brainstorming session, weekly sync, problem-solving)\n2.  **What is the desired duration of the meeting?** (e.g., 30 minutes, 1 hour)\n3.  **Who should be invited to the meeting?** (Please list the names or roles of the attendees)\n4.  **Is there a specific platform you'd like to use for the meeting?** (e.g., Zoom, Google Meet, Microsoft Teams, in-person conference room)\n5.  **Are there any specific agenda items you'd like to include?**\n\nOnce I have this information, I can draft a meeting invitation for you.",
+      "cleanedMessage": "Okay, I can help with that! To schedule the team meeting effectively, I need a little more information. Please tell me:\n\n1.  **What is the purpose of the meeting?** (e.g., Project X update, brainstorming session, weekly sync, problem-solving)\n2.  **What is the desired duration of the meeting?** (e.g., 30 minutes, 1 hour)\n3.  **Who should be invited to the meeting?** (Please list the names or roles of the attendees)\n4.  **Is there a specific platform you'd like to use for the meeting?** (e.g., Zoom, Google Meet, Microsoft Teams, in-person conference room)\n5.  **Are there any specific agenda items you'd like to include?**\n\nOnce I have this information, I can draft a meeting invitation for you.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC005",
+      "id": "TC004",
+      "name": "Create task with minimal info",
       "category": "simple_entity_creation",
-      "name": "Create note with plain text only",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
+      "timings": {
+        "aiCall": 514,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 514
       },
-      "details": {
-        "originalLength": 113,
-        "cleanedLength": 17,
-        "removedChars": 96,
-        "extractedCount": 1
+      "rawResponse": "Okay, I'll remind you to call the dentist. When would you like to be reminded?",
+      "cleanedMessage": "Okay, I'll remind you to call the dentist. When would you like to be reminded?",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC006",
-      "category": "complex_content",
+      "id": "TC005",
+      "name": "Create note with plain text",
+      "category": "simple_entity_creation",
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 573,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 573
+      },
+      "rawResponse": "Here's your note:\n\n**Quick Note**\n\nRemember to check the mail",
+      "cleanedMessage": "Here's your note:\n\n**Quick Note**\n\nRemember to check the mail",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
+      }
+    },
+    {
+      "id": "TC006",
       "name": "Note with JavaScript code block",
+      "category": "complex_content",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 2687,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 2687
       },
-      "details": {
-        "originalLength": 300,
-        "cleanedLength": 74,
-        "removedChars": 226,
-        "extractedCount": 1
+      "rawResponse": "## React `useState` Hook: Managing Component State\n\nThe `useState` hook is a fundamental building block in React for managing **local state** within functional components. It allows you to declare variables that can be updated, and when they are updated, React will re-render the component to reflect the changes.\n\n**Key Concepts:**\n\n*   **Declaration:** You call `useState()` inside your functional component and provide an **initial value** for your state variable.\n*   **Return Value:** `useState()` returns an array with two elements:\n    1.  The **current state value**.\n    2.  A **function to update that state value**.\n*   **Re-rendering:** When you call the update function, React schedules a re-render of your component. The next time the component renders, it will have the new state value.\n\n**Syntax:**\n\n```javascript\nimport React, { useState } from 'react';\n\nfunction MyComponent() {\n  // Declare a state variable named 'count', initialized to 0\n  const [count, setCount] = useState(0);\n\n  // ... rest of your component\n}\n```\n\nIn this example:\n\n*   `count` is the **state variable** holding the current value.\n*   `setCount` is the **function** you call to change the value of `count`.\n*   `0` is the **initial value** of `count`.\n\n---\n\n### Code Example: A Simple Counter\n\nThis example demonstrates how to use `useState` to create a basic counter that increments when a button is clicked.\n\n```javascript\nimport React, { useState } from 'react';\n\nfunction Counter() {\n  // Declare a state variable 'count' and its updater function 'setCount'\n  // Initialize 'count' to 0\n  const [count, setCount] = useState(0);\n\n  // Function to handle incrementing the count\n  const handleIncrement = () => {\n    // Call setCount with the new value (current count + 1)\n    setCount(count + 1);\n  };\n\n  // Function to handle decrementing the count\n  const handleDecrement = () => {\n    // You can also pass a function to the updater if the new state depends on the previous state\n    setCount(prevCount => prevCount - 1);\n  };\n\n  return (\n    <div>\n      <h2>Counter Example</h2>\n      <p>Current Count: {count}</p>\n      <button onClick={handleIncrement}>Increment</button>\n      <button onClick={handleDecrement}>Decrement</button>\n    </div>\n  );\n}\n\nexport default Counter;\n```\n\n**Explanation:**\n\n1.  **`import React, { useState } from 'react';`**: We import `useState` from the `react` library.\n2.  **`const [count, setCount] = useState(0);`**:\n    *   We declare a state variable named `count` and initialize it to `0`.\n    *   `setCount` is the function provided by `useState` that we'll use to update the `count` value.\n3.  **`handleIncrement` function**: When the \"Increment\" button is clicked, this function is called. It calls `setCount(count + 1)`, which tells React to update the `count` state to its current value plus one. React then re-renders the `Counter` component.\n4.  **`handleDecrement` function**: This function demonstrates a more robust way to update state when the new state depends on the previous state. Instead of `setCount(count - 1)`, we use `setCount(prevCount => prevCount - 1)`. This ensures that even if multiple updates are batched, you're always working with the most recent state value.\n5.  **`{count}`**: Inside the JSX, we display the current value of the `count` state variable.\n\n**In Summary:**\n\n`useState` is your go-to hook for managing simple, local state within a React component. It's declarative, efficient, and forms the foundation for building interactive UIs.",
+      "cleanedMessage": "## React `useState` Hook: Managing Component State\n\nThe `useState` hook is a fundamental building block in React for managing **local state** within functional components. It allows you to declare variables that can be updated, and when they are updated, React will re-render the component to reflect the changes.\n\n**Key Concepts:**\n\n*   **Declaration:** You call `useState()` inside your functional component and provide an **initial value** for your state variable.\n*   **Return Value:** `useState()` returns an array with two elements:\n    1.  The **current state value**.\n    2.  A **function to update that state value**.\n*   **Re-rendering:** When you call the update function, React schedules a re-render of your component. The next time the component renders, it will have the new state value.\n\n**Syntax:**\n\n```javascript\nimport React, { useState } from 'react';\n\nfunction MyComponent() {\n  // Declare a state variable named 'count', initialized to 0\n  const [count, setCount] = useState(0);\n\n  // ... rest of your component\n}\n```\n\nIn this example:\n\n*   `count` is the **state variable** holding the current value.\n*   `setCount` is the **function** you call to change the value of `count`.\n*   `0` is the **initial value** of `count`.\n\n---\n\n### Code Example: A Simple Counter\n\nThis example demonstrates how to use `useState` to create a basic counter that increments when a button is clicked.\n\n```javascript\nimport React, { useState } from 'react';\n\nfunction Counter() {\n  // Declare a state variable 'count' and its updater function 'setCount'\n  // Initialize 'count' to 0\n  const [count, setCount] = useState(0);\n\n  // Function to handle incrementing the count\n  const handleIncrement = () => {\n    // Call setCount with the new value (current count + 1)\n    setCount(count + 1);\n  };\n\n  // Function to handle decrementing the count\n  const handleDecrement = () => {\n    // You can also pass a function to the updater if the new state depends on the previous state\n    setCount(prevCount => prevCount - 1);\n  };\n\n  return (\n    <div>\n      <h2>Counter Example</h2>\n      <p>Current Count: {count}</p>\n      <button onClick={handleIncrement}>Increment</button>\n      <button onClick={handleDecrement}>Decrement</button>\n    </div>\n  );\n}\n\nexport default Counter;\n```\n\n**Explanation:**\n\n1.  **`import React, { useState } from 'react';`**: We import `useState` from the `react` library.\n2.  **`const [count, setCount] = useState(0);`**:\n    *   We declare a state variable named `count` and initialize it to `0`.\n    *   `setCount` is the function provided by `useState` that we'll use to update the `count` value.\n3.  **`handleIncrement` function**: When the \"Increment\" button is clicked, this function is called. It calls `setCount(count + 1)`, which tells React to update the `count` state to its current value plus one. React then re-renders the `Counter` component.\n4.  **`handleDecrement` function**: This function demonstrates a more robust way to update state when the new state depends on the previous state. Instead of `setCount(count - 1)`, we use `setCount(prevCount => prevCount - 1)`. This ensures that even if multiple updates are batched, you're always working with the most recent state value.\n5.  **`{count}`**: Inside the JSX, we display the current value of the `count` state variable.\n\n**In Summary:**\n\n`useState` is your go-to hook for managing simple, local state within a React component. It's declarative, efficient, and forms the foundation for building interactive UIs.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC007",
-      "category": "complex_content",
+      "id": "TC007",
       "name": "Note with JSON code example",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 285,
-        "cleanedLength": 58,
-        "removedChars": 227,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC008",
       "category": "complex_content",
-      "name": "Note with nested lists",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 2531,
+        "cleaning": 1,
+        "detection": 0,
+        "total": 2532
       },
-      "details": {
-        "originalLength": 300,
-        "cleanedLength": 35,
-        "removedChars": 265,
-        "extractedCount": 1
+      "rawResponse": "## Understanding JSON: A Simple Explanation\n\nJSON (JavaScript Object Notation) is a lightweight data-interchange format that's easy for humans to read and write, and easy for machines to parse and generate. Think of it as a standardized way to organize and transmit data.\n\nIt's built on two fundamental structures:\n\n1.  **A collection of name/value pairs:** This is often referred to as an **object**. In JSON, objects are enclosed in curly braces `{}`. The \"names\" (keys) are always strings, and the \"values\" can be a variety of data types.\n\n2.  **An ordered list of values:** This is referred to as an **array**. In JSON, arrays are enclosed in square brackets `[]`.\n\n### Key Data Types in JSON:\n\n*   **Strings:** Text enclosed in double quotes (e.g., `\"John Doe\"`).\n*   **Numbers:** Integers or floating-point numbers (e.g., `42`, `3.14`).\n*   **Booleans:** `true` or `false`.\n*   **Objects:** As described above, collections of name/value pairs.\n*   **Arrays:** As described above, ordered lists of values.\n*   **Null:** Represents an empty or nonexistent value (`null`).\n\n### How it Works (Name/Value Pairs):\n\nWithin an object, you have **key-value pairs**. The key is always a string (enclosed in double quotes), followed by a colon `:`, and then the value. If you have multiple key-value pairs within an object, they are separated by commas `,`.\n\n### How it Works (Ordered Lists):\n\nWithin an array, you have a list of values, separated by commas `,`. The values in an array can be of different data types.\n\n---\n\n### Simple Example: Representing a Person\n\nLet's say we want to represent information about a person. Here's how we could do it using JSON:\n\n```json\n{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"age\": 30,\n  \"isStudent\": false,\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"Anytown\",\n    \"zipCode\": \"12345\"\n  },\n  \"phoneNumbers\": [\n    {\n      \"type\": \"home\",\n      \"number\": \"555-1234\"\n    },\n    {\n      \"type\": \"work\",\n      \"number\": \"555-5678\"\n    }\n  ],\n  \"notes\": null\n}\n```\n\n**Let's break down this example:**\n\n*   The entire structure is an **object** (starts and ends with `{}`).\n*   `\"firstName\": \"John\"`: A key `\"firstName\"` with a string value `\"John\"`.\n*   `\"lastName\": \"Doe\"`: A key `\"lastName\"` with a string value `\"Doe\"`.\n*   `\"age\": 30`: A key `\"age\"` with a number value `30`.\n*   `\"isStudent\": false`: A key `\"isStudent\"` with a boolean value `false`.\n*   `\"address\": { ... }`: A key `\"address\"` whose value is another **object** containing details about the address.\n    *   Inside the `address` object, we have keys like `\"street\"`, `\"city\"`, and `\"zipCode\"`, each with string values.\n*   `\"phoneNumbers\": [ ... ]`: A key `\"phoneNumbers\"` whose value is an **array**.\n    *   This array contains two **objects**, each representing a phone number with its `type` and `number`.\n*   `\"notes\": null`: A key `\"notes\"` with a `null` value, indicating no specific notes are present.\n\n---\n\nJSON is widely used in web APIs, configuration files, and data storage because of its simplicity and readability. It's a fundamental concept for anyone working with data on the web.",
+      "cleanedMessage": "## Understanding JSON: A Simple Explanation\n\nJSON (JavaScript Object Notation) is a lightweight data-interchange format that's easy for humans to read and write, and easy for machines to parse and generate. Think of it as a standardized way to organize and transmit data.\n\nIt's built on two fundamental structures:\n\n1.  **A collection of name/value pairs:** This is often referred to as an **object**. In JSON, objects are enclosed in curly braces `{}`. The \"names\" (keys) are always strings, and the \"values\" can be a variety of data types.\n\n2.  **An ordered list of values:** This is referred to as an **array**. In JSON, arrays are enclosed in square brackets `[]`.\n\n### Key Data Types in JSON:\n\n*   **Strings:** Text enclosed in double quotes (e.g., `\"John Doe\"`).\n*   **Numbers:** Integers or floating-point numbers (e.g., `42`, `3.14`).\n*   **Booleans:** `true` or `false`.\n*   **Objects:** As described above, collections of name/value pairs.\n*   **Arrays:** As described above, ordered lists of values.\n*   **Null:** Represents an empty or nonexistent value (`null`).\n\n### How it Works (Name/Value Pairs):\n\nWithin an object, you have **key-value pairs**. The key is always a string (enclosed in double quotes), followed by a colon `:`, and then the value. If you have multiple key-value pairs within an object, they are separated by commas `,`.\n\n### How it Works (Ordered Lists):\n\nWithin an array, you have a list of values, separated by commas `,`. The values in an array can be of different data types.\n\n---\n\n### Simple Example: Representing a Person\n\nLet's say we want to represent information about a person. Here's how we could do it using JSON:\n\n```json\n{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"age\": 30,\n  \"isStudent\": false,\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"Anytown\",\n    \"zipCode\": \"12345\"\n  },\n  \"phoneNumbers\": [\n    {\n      \"type\": \"home\",\n      \"number\": \"555-1234\"\n    },\n    {\n      \"type\": \"work\",\n      \"number\": \"555-5678\"\n    }\n  ],\n  \"notes\": null\n}\n```\n\n**Let's break down this example:**\n\n*   The entire structure is an **object** (starts and ends with `{}`).\n*   `\"firstName\": \"John\"`: A key `\"firstName\"` with a string value `\"John\"`.\n*   `\"lastName\": \"Doe\"`: A key `\"lastName\"` with a string value `\"Doe\"`.\n*   `\"age\": 30`: A key `\"age\"` with a number value `30`.\n*   `\"isStudent\": false`: A key `\"isStudent\"` with a boolean value `false`.\n*   `\"address\": { ... }`: A key `\"address\"` whose value is another **object** containing details about the address.\n    *   Inside the `address` object, we have keys like `\"street\"`, `\"city\"`, and `\"zipCode\"`, each with string values.\n*   `\"phoneNumbers\": [ ... ]`: A key `\"phoneNumbers\"` whose value is an **array**.\n    *   This array contains two **objects**, each representing a phone number with its `type` and `number`.\n*   `\"notes\": null`: A key `\"notes\"` with a `null` value, indicating no specific notes are present.\n\n---\n\nJSON is widely used in web APIs, configuration files, and data storage because of its simplicity and readability. It's a fundamental concept for anyone working with data on the web.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC009",
+      "id": "TC008",
+      "name": "Note with nested markdown lists",
       "category": "complex_content",
-      "name": "Note with tables",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 1459,
+        "cleaning": 1,
+        "detection": 0,
+        "total": 1460
       },
-      "details": {
-        "originalLength": 318,
-        "cleanedLength": 50,
-        "removedChars": 268,
-        "extractedCount": 1
+      "rawResponse": "Here's a note about project phases with nested bullet points:\n\n## Project Phases Overview\n\nProjects typically progress through distinct phases, each with specific objectives and activities. Understanding these phases helps in effective planning, execution, and management.\n\n*   **Planning**\n    *   **Requirements Gathering:**\n        *   Define project scope and objectives.\n        *   Identify stakeholder needs and expectations.\n        *   Document functional and non-functional requirements.\n        *   Prioritize features and functionalities.\n    *   **Design:**\n        *   Develop system architecture.\n        *   Create user interface (UI) and user experience (UX) designs.\n        *   Define database schema and data models.\n        *   Outline technical specifications and implementation details.\n\n*   **Development**\n    *   **Frontend Development:**\n        *   Implement user interfaces based on design specifications.\n        *   Develop interactive components and user flows.\n        *   Ensure cross-browser and cross-device compatibility.\n    *   **Backend Development:**\n        *   Build server-side logic and APIs.\n        *   Implement database interactions and data management.\n        *   Develop business logic and integrations with other systems.\n    *   **Testing:**\n        *   **Unit Testing:** Test individual components and functions.\n        *   **Integration Testing:** Verify interactions between different modules.\n        *   **System Testing:** Test the complete system against requirements.\n        *   **User Acceptance Testing (UAT):** Allow end-users to validate the system.\n\n*   **Launch**\n    *   **Deployment:**\n        *   Prepare the production environment.\n        *   Deploy the application/system to the live environment.\n        *   Perform final checks and configurations.\n    *   **Monitoring:**\n        *   Track system performance and availability.\n        *   Identify and resolve any post-launch issues.\n        *   Gather user feedback for future iterations.",
+      "cleanedMessage": "Here's a note about project phases with nested bullet points:\n\n## Project Phases Overview\n\nProjects typically progress through distinct phases, each with specific objectives and activities. Understanding these phases helps in effective planning, execution, and management.\n\n*   **Planning**\n    *   **Requirements Gathering:**\n        *   Define project scope and objectives.\n        *   Identify stakeholder needs and expectations.\n        *   Document functional and non-functional requirements.\n        *   Prioritize features and functionalities.\n    *   **Design:**\n        *   Develop system architecture.\n        *   Create user interface (UI) and user experience (UX) designs.\n        *   Define database schema and data models.\n        *   Outline technical specifications and implementation details.\n\n*   **Development**\n    *   **Frontend Development:**\n        *   Implement user interfaces based on design specifications.\n        *   Develop interactive components and user flows.\n        *   Ensure cross-browser and cross-device compatibility.\n    *   **Backend Development:**\n        *   Build server-side logic and APIs.\n        *   Implement database interactions and data management.\n        *   Develop business logic and integrations with other systems.\n    *   **Testing:**\n        *   **Unit Testing:** Test individual components and functions.\n        *   **Integration Testing:** Verify interactions between different modules.\n        *   **System Testing:** Test the complete system against requirements.\n        *   **User Acceptance Testing (UAT):** Allow end-users to validate the system.\n\n*   **Launch**\n    *   **Deployment:**\n        *   Prepare the production environment.\n        *   Deploy the application/system to the live environment.\n        *   Perform final checks and configurations.\n    *   **Monitoring:**\n        *   Track system performance and availability.\n        *   Identify and resolve any post-launch issues.\n        *   Gather user feedback for future iterations.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC010",
+      "id": "TC009",
+      "name": "Note with table",
       "category": "complex_content",
-      "name": "Note with mixed markdown",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 2158,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 2158
       },
-      "details": {
-        "originalLength": 260,
-        "cleanedLength": 34,
-        "removedChars": 226,
-        "extractedCount": 1
+      "rawResponse": "## Note: React vs. Vue Comparison\n\nHere's a quick comparison of React and Vue, two popular JavaScript frameworks for building user interfaces.\n\n---\n\n### Comparison Table: React vs. Vue\n\n| Feature           | React                                     | Vue                                        |\n| :---------------- | :---------------------------------------- | :----------------------------------------- |\n| **Templating**    | **JSX (JavaScript XML)**: HTML-like syntax embedded directly within JavaScript. | **Templates**: HTML-based syntax with directives (e.g., `v-bind`, `v-if`). |\n| **Learning Curve**| Generally considered to have a **steeper learning curve** due to JSX and its functional approach. | Generally considered **easier to learn**, especially for developers familiar with HTML and CSS. |\n| **Ecosystem**     | **Larger and more mature ecosystem**. Extensive libraries, tools, and community support. | Growing and robust ecosystem, but generally **smaller** than React's. |\n| **Component Structure** | Primarily uses JavaScript functions and classes for components. | Uses Single File Components (SFCs) which encapsulate template, script, and style. |\n| **State Management** | Flux architecture (e.g., Redux, Zustand, Context API). | Vuex (official) or Pinia (newer official). |\n| **Performance**   | Excellent performance with a virtual DOM. | Excellent performance with a virtual DOM, often comparable to React. |\n| **Flexibility**   | Highly flexible, allowing for more opinionated choices. | Offers a more opinionated structure, which can streamline development. |\n| **Tooling**       | Create React App (CRA), Next.js, Vite. | Vue CLI, Nuxt.js, Vite.                    |\n\n---\n\n### Key Takeaways:\n\n*   **JSX vs. Templates:** The fundamental difference lies in how you write your UI structure. React's JSX integrates logic and markup, while Vue's templates keep them more separate, resembling traditional HTML.\n*   **Ecosystem Size:** React's vast ecosystem means you'll find a solution for almost any problem readily available. Vue's ecosystem is strong and growing, but might require more digging for niche solutions.\n*   **Ease of Learning:** If you're new to front-end frameworks or have a strong HTML/CSS background, Vue often provides a smoother entry point. React's JSX and functional paradigm can take more time to grasp initially.\n\nThe choice between React and Vue often depends on team familiarity, project requirements, and personal preference. Both are excellent choices for modern web development.",
+      "cleanedMessage": "## Note: React vs. Vue Comparison\n\nHere's a quick comparison of React and Vue, two popular JavaScript frameworks for building user interfaces.\n\n---\n\n### Comparison Table: React vs. Vue\n\n| Feature           | React                                     | Vue                                        |\n| :---------------- | :---------------------------------------- | :----------------------------------------- |\n| **Templating**    | **JSX (JavaScript XML)**: HTML-like syntax embedded directly within JavaScript. | **Templates**: HTML-based syntax with directives (e.g., `v-bind`, `v-if`). |\n| **Learning Curve**| Generally considered to have a **steeper learning curve** due to JSX and its functional approach. | Generally considered **easier to learn**, especially for developers familiar with HTML and CSS. |\n| **Ecosystem**     | **Larger and more mature ecosystem**. Extensive libraries, tools, and community support. | Growing and robust ecosystem, but generally **smaller** than React's. |\n| **Component Structure** | Primarily uses JavaScript functions and classes for components. | Uses Single File Components (SFCs) which encapsulate template, script, and style. |\n| **State Management** | Flux architecture (e.g., Redux, Zustand, Context API). | Vuex (official) or Pinia (newer official). |\n| **Performance**   | Excellent performance with a virtual DOM. | Excellent performance with a virtual DOM, often comparable to React. |\n| **Flexibility**   | Highly flexible, allowing for more opinionated choices. | Offers a more opinionated structure, which can streamline development. |\n| **Tooling**       | Create React App (CRA), Next.js, Vite. | Vue CLI, Nuxt.js, Vite.                    |\n\n---\n\n### Key Takeaways:\n\n*   **JSX vs. Templates:** The fundamental difference lies in how you write your UI structure. React's JSX integrates logic and markup, while Vue's templates keep them more separate, resembling traditional HTML.\n*   **Ecosystem Size:** React's vast ecosystem means you'll find a solution for almost any problem readily available. Vue's ecosystem is strong and growing, but might require more digging for niche solutions.\n*   **Ease of Learning:** If you're new to front-end frameworks or have a strong HTML/CSS background, Vue often provides a smoother entry point. React's JSX and functional paradigm can take more time to grasp initially.\n\nThe choice between React and Vue often depends on team familiarity, project requirements, and personal preference. Both are excellent choices for modern web development.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC011",
+      "id": "TC010",
+      "name": "Task with special characters",
       "category": "complex_content",
-      "name": "Task with long description containing braces",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
+      "timings": {
+        "aiCall": 621,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 621
       },
-      "details": {
-        "originalLength": 257,
-        "cleanedLength": 37,
-        "removedChars": 220,
-        "extractedCount": 1
+      "rawResponse": "Okay, I've added the task: **Review client's feedback & prepare Q&A doc (don't forget!)**\n\nIs there anything else I can help you with?",
+      "cleanedMessage": "Okay, I've added the task: **Review client's feedback & prepare Q&A doc (don't forget!)**\n\nIs there anything else I can help you with?",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC012",
-      "category": "complex_content",
-      "name": "Event with complex recurring pattern",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 252,
-        "cleanedLength": 59,
-        "removedChars": 193,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC013",
-      "category": "complex_content",
-      "name": "Note with mathematical formulas",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 208,
-        "cleanedLength": 18,
-        "removedChars": 190,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC014",
-      "category": "complex_content",
-      "name": "Content with escaped characters",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 243,
-        "cleanedLength": 37,
-        "removedChars": 206,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC015",
+      "id": "TC011",
+      "name": "Create two tasks at once",
       "category": "multiple_entities",
-      "name": "Create 3 tasks at once",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
+      "timings": {
+        "aiCall": 1770,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 1771
       },
-      "details": {
-        "originalLength": 225,
-        "cleanedLength": 67,
-        "removedChars": 158,
-        "extractedCount": 1
+      "rawResponse": "Okay, I can help you with that!\n\nHere's a breakdown of what you need to do and some suggestions:\n\n**Tomorrow's To-Do List:**\n\n*   **Grocery Shopping:**\n    *   **What do you need?** Make a list! Think about meals for the next few days, any essentials you're running low on, and any specific items you've been wanting.\n    *   **Where will you shop?** Do you have a preferred grocery store?\n    *   **When will you go?** Consider your schedule and what time might be best to avoid crowds.\n\n*   **Call the Dentist:**\n    *   **What is the purpose of the call?** Are you making an appointment, rescheduling, asking a question, or following up on something?\n    *   **What information do you need to have ready?** Your name, date of birth, insurance information (if applicable), and the reason for your call.\n    *   **When will you call?** Check their office hours. Many dentists have specific times for appointment scheduling.\n\n**Tips for Success:**\n\n*   **Make a Combined List:** You can even combine your grocery list and a reminder for your dentist call on the same piece of paper or in your phone's notes app.\n*   **Set Reminders:** Set an alarm on your phone for when you want to call the dentist.\n*   **Prepare Your Grocery List in Advance:** The more organized your grocery list, the faster and more efficient your shopping trip will be.\n*   **Consider Online Ordering:** If you're short on time for groceries, you might consider online grocery shopping for pickup or delivery.\n\n**To help me help you more, could you tell me:**\n\n*   **Do you have a general idea of what groceries you need?**\n*   **Do you know the dentist's office name and phone number?**\n*   **Is there a specific time you'd prefer to call the dentist?**\n\nLet me know if you'd like me to help you create a grocery list or brainstorm some ideas!",
+      "cleanedMessage": "Okay, I can help you with that!\n\nHere's a breakdown of what you need to do and some suggestions:\n\n**Tomorrow's To-Do List:**\n\n*   **Grocery Shopping:**\n    *   **What do you need?** Make a list! Think about meals for the next few days, any essentials you're running low on, and any specific items you've been wanting.\n    *   **Where will you shop?** Do you have a preferred grocery store?\n    *   **When will you go?** Consider your schedule and what time might be best to avoid crowds.\n\n*   **Call the Dentist:**\n    *   **What is the purpose of the call?** Are you making an appointment, rescheduling, asking a question, or following up on something?\n    *   **What information do you need to have ready?** Your name, date of birth, insurance information (if applicable), and the reason for your call.\n    *   **When will you call?** Check their office hours. Many dentists have specific times for appointment scheduling.\n\n**Tips for Success:**\n\n*   **Make a Combined List:** You can even combine your grocery list and a reminder for your dentist call on the same piece of paper or in your phone's notes app.\n*   **Set Reminders:** Set an alarm on your phone for when you want to call the dentist.\n*   **Prepare Your Grocery List in Advance:** The more organized your grocery list, the faster and more efficient your shopping trip will be.\n*   **Consider Online Ordering:** If you're short on time for groceries, you might consider online grocery shopping for pickup or delivery.\n\n**To help me help you more, could you tell me:**\n\n*   **Do you have a general idea of what groceries you need?**\n*   **Do you know the dentist's office name and phone number?**\n*   **Is there a specific time you'd prefer to call the dentist?**\n\nLet me know if you'd like me to help you create a grocery list or brainstorm some ideas!",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC016",
+      "id": "TC012",
+      "name": "Create task and event",
       "category": "multiple_entities",
-      "name": "Create 2 notes at once",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 1366,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 1366
       },
-      "details": {
-        "originalLength": 282,
-        "cleanedLength": 39,
-        "removedChars": 243,
-        "extractedCount": 1
+      "rawResponse": "Okay, I've scheduled your dentist appointment for **Monday at 10:00 AM**.\n\nAnd here's your reminder to prepare for it:\n\n**Reminder: Dentist Appointment on Monday at 10:00 AM**\n\nTo make sure you're well-prepared, here are a few things to consider:\n\n*   **Gather your insurance information:** Have your insurance card or details ready.\n*   **Note any questions or concerns:** Jot down any questions you have for the dentist about your oral health, or any specific concerns you've been experiencing.\n*   **Think about your medical history:** Be prepared to mention any new medications you're taking or any significant changes to your health since your last visit.\n*   **Plan your travel:** Figure out how you'll get to the dentist's office and allow ample time for travel and parking.\n*   **Consider your morning routine:** If the appointment is early, think about what you'll need to do before you leave to be on time.\n\nI hope this helps! Let me know if you need anything else.",
+      "cleanedMessage": "Okay, I've scheduled your dentist appointment for **Monday at 10:00 AM**.\n\nAnd here's your reminder to prepare for it:\n\n**Reminder: Dentist Appointment on Monday at 10:00 AM**\n\nTo make sure you're well-prepared, here are a few things to consider:\n\n*   **Gather your insurance information:** Have your insurance card or details ready.\n*   **Note any questions or concerns:** Jot down any questions you have for the dentist about your oral health, or any specific concerns you've been experiencing.\n*   **Think about your medical history:** Be prepared to mention any new medications you're taking or any significant changes to your health since your last visit.\n*   **Plan your travel:** Figure out how you'll get to the dentist's office and allow ample time for travel and parking.\n*   **Consider your morning routine:** If the appointment is early, think about what you'll need to do before you leave to be on time.\n\nI hope this helps! Let me know if you need anything else.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC017",
-      "category": "multiple_entities",
-      "name": "Create task + event simultaneously",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 235,
-        "cleanedLength": 41,
-        "removedChars": 194,
-        "extractedCount": 2
-      }
-    },
-    {
-      "testId": "TC018",
-      "category": "multiple_entities",
-      "name": "Mixed: task + note + event",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
-      },
-      "details": {
-        "originalLength": 337,
-        "cleanedLength": 47,
-        "removedChars": 290,
-        "extractedCount": 3
-      }
-    },
-    {
-      "testId": "TC019",
+      "id": "TC013",
+      "name": "Question about general knowledge",
       "category": "conversational_queries",
-      "name": "What is React?",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 607,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 608
       },
-      "details": {
-        "originalLength": 292,
-        "cleanedLength": 292,
-        "removedChars": 0,
-        "extractedCount": 0
+      "rawResponse": "The capital of France is **Paris**.",
+      "cleanedMessage": "The capital of France is **Paris**.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC020",
+      "id": "TC014",
+      "name": "Question about programming",
       "category": "conversational_queries",
-      "name": "Explain async/await",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 3366,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3366
       },
-      "details": {
-        "originalLength": 437,
-        "cleanedLength": 437,
-        "removedChars": 0,
-        "extractedCount": 0
+      "rawResponse": "`async/await` in JavaScript is a modern and elegant way to handle asynchronous operations. It builds upon promises, making asynchronous code look and behave more like synchronous code, which significantly improves readability and maintainability.\n\nLet's break down how it works:\n\n**1. The Foundation: Promises**\n\nBefore `async/await`, JavaScript relied heavily on callbacks and then, more effectively, on promises to manage asynchronous tasks (like fetching data from an API, reading files, or setting timers).\n\n*   **Promises** represent the eventual result of an asynchronous operation. They can be in one of three states:\n    *   **Pending:** The operation is still in progress.\n    *   **Fulfilled (Resolved):** The operation completed successfully, and a value is available.\n    *   **Rejected:** The operation failed, and an error occurred.\n\n*   **`.then()` and `.catch()`:** Promises use `.then()` to handle the fulfilled state (accessing the result) and `.catch()` to handle the rejected state (handling errors). This can lead to \"callback hell\" or deeply nested `.then()` chains for sequential asynchronous operations.\n\n**2. The `async` Keyword: Declaring Asynchronous Functions**\n\nThe `async` keyword is placed before a function declaration. It signals that this function will perform asynchronous operations and will implicitly return a promise.\n\n```javascript\nasync function fetchData() {\n  // ... asynchronous operations here ...\n}\n```\n\n**Key characteristics of `async` functions:**\n\n*   **Always return a Promise:** Even if you `return` a regular value from an `async` function, JavaScript will wrap that value in a resolved promise.\n*   **Enable `await`:** The `async` keyword is a prerequisite for using the `await` keyword inside the function.\n\n**3. The `await` Keyword: Pausing Execution and Waiting for Promises**\n\nThe `await` keyword can only be used inside an `async` function. It's used to pause the execution of the `async` function until a promise settles (either resolves or rejects).\n\n```javascript\nasync function fetchData() {\n  try {\n    const response = await fetch('https://api.example.com/data'); // Pause here\n    const data = await response.json(); // Pause here again\n    console.log(data);\n    return data;\n  } catch (error) {\n    console.error('Error fetching data:', error);\n    throw error; // Re-throw the error if needed\n  }\n}\n```\n\n**How `await` works:**\n\n*   **Pauses Execution:** When JavaScript encounters `await`, it pauses the execution of the current `async` function. It *doesn't* block the entire JavaScript thread. Other code outside this `async` function can continue to run.\n*   **Waits for Promise Settlement:** It waits for the promise on its right-hand side to either resolve or reject.\n*   **Unwraps Resolved Value:** If the promise resolves, `await` unwraps the resolved value, and the execution of the `async` function resumes from that point.\n*   **Throws Rejected Error:** If the promise rejects, `await` throws the rejected error. This is why it's crucial to wrap `await` calls in `try...catch` blocks for error handling.\n\n**4. Error Handling with `try...catch`**\n\nSince `await` throws errors when a promise rejects, the standard `try...catch` block is the idiomatic way to handle errors in `async/await` code.\n\n```javascript\nasync function getUser(userId) {\n  try {\n    const response = await fetch(`/api/users/${userId}`);\n    if (!response.ok) {\n      throw new Error(`HTTP error! status: ${response.status}`);\n    }\n    const user = await response.json();\n    return user;\n  } catch (error) {\n    console.error(`Failed to get user ${userId}:`, error);\n    // Depending on your application, you might want to:\n    // - return null\n    // - throw error; // to let the caller handle it\n    // - return a default user object\n    throw error; // Re-throwing is common for letting the caller decide\n  }\n}\n```\n\n**5. How it Looks Synchronous (But Isn't)**\n\nThe beauty of `async/await` is that it allows you to write asynchronous code that reads like synchronous code.\n\n**Without `async/await` (using promises):**\n\n```javascript\nfunction fetchUserData() {\n  fetch('https://api.example.com/users')\n    .then(response => response.json())\n    .then(users => {\n      console.log('Users:', users);\n      return fetch",
+      "cleanedMessage": "`async/await` in JavaScript is a modern and elegant way to handle asynchronous operations. It builds upon promises, making asynchronous code look and behave more like synchronous code, which significantly improves readability and maintainability.\n\nLet's break down how it works:\n\n**1. The Foundation: Promises**\n\nBefore `async/await`, JavaScript relied heavily on callbacks and then, more effectively, on promises to manage asynchronous tasks (like fetching data from an API, reading files, or setting timers).\n\n*   **Promises** represent the eventual result of an asynchronous operation. They can be in one of three states:\n    *   **Pending:** The operation is still in progress.\n    *   **Fulfilled (Resolved):** The operation completed successfully, and a value is available.\n    *   **Rejected:** The operation failed, and an error occurred.\n\n*   **`.then()` and `.catch()`:** Promises use `.then()` to handle the fulfilled state (accessing the result) and `.catch()` to handle the rejected state (handling errors). This can lead to \"callback hell\" or deeply nested `.then()` chains for sequential asynchronous operations.\n\n**2. The `async` Keyword: Declaring Asynchronous Functions**\n\nThe `async` keyword is placed before a function declaration. It signals that this function will perform asynchronous operations and will implicitly return a promise.\n\n```javascript\nasync function fetchData() {\n  // ... asynchronous operations here ...\n}\n```\n\n**Key characteristics of `async` functions:**\n\n*   **Always return a Promise:** Even if you `return` a regular value from an `async` function, JavaScript will wrap that value in a resolved promise.\n*   **Enable `await`:** The `async` keyword is a prerequisite for using the `await` keyword inside the function.\n\n**3. The `await` Keyword: Pausing Execution and Waiting for Promises**\n\nThe `await` keyword can only be used inside an `async` function. It's used to pause the execution of the `async` function until a promise settles (either resolves or rejects).\n\n```javascript\nasync function fetchData() {\n  try {\n    const response = await fetch('https://api.example.com/data'); // Pause here\n    const data = await response.json(); // Pause here again\n    console.log(data);\n    return data;\n  } catch (error) {\n    console.error('Error fetching data:', error);\n    throw error; // Re-throw the error if needed\n  }\n}\n```\n\n**How `await` works:**\n\n*   **Pauses Execution:** When JavaScript encounters `await`, it pauses the execution of the current `async` function. It *doesn't* block the entire JavaScript thread. Other code outside this `async` function can continue to run.\n*   **Waits for Promise Settlement:** It waits for the promise on its right-hand side to either resolve or reject.\n*   **Unwraps Resolved Value:** If the promise resolves, `await` unwraps the resolved value, and the execution of the `async` function resumes from that point.\n*   **Throws Rejected Error:** If the promise rejects, `await` throws the rejected error. This is why it's crucial to wrap `await` calls in `try...catch` blocks for error handling.\n\n**4. Error Handling with `try...catch`**\n\nSince `await` throws errors when a promise rejects, the standard `try...catch` block is the idiomatic way to handle errors in `async/await` code.\n\n```javascript\nasync function getUser(userId) {\n  try {\n    const response = await fetch(`/api/users/${userId}`);\n    if (!response.ok) {\n      throw new Error(`HTTP error! status: ${response.status}`);\n    }\n    const user = await response.json();\n    return user;\n  } catch (error) {\n    console.error(`Failed to get user ${userId}:`, error);\n    // Depending on your application, you might want to:\n    // - return null\n    // - throw error; // to let the caller handle it\n    // - return a default user object\n    throw error; // Re-throwing is common for letting the caller decide\n  }\n}\n```\n\n**5. How it Looks Synchronous (But Isn't)**\n\nThe beauty of `async/await` is that it allows you to write asynchronous code that reads like synchronous code.\n\n**Without `async/await` (using promises):**\n\n```javascript\nfunction fetchUserData() {\n  fetch('https://api.example.com/users')\n    .then(response => response.json())\n    .then(users => {\n      console.log('Users:', users);\n      return fetch",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC021",
+      "id": "TC015",
+      "name": "Question about productivity",
       "category": "conversational_queries",
-      "name": "How do I organize my tasks?",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 3350,
+        "cleaning": 1,
+        "detection": 0,
+        "total": 3351
       },
-      "details": {
-        "originalLength": 682,
-        "cleanedLength": 682,
-        "removedChars": 0,
-        "extractedCount": 0
+      "rawResponse": "There's no single \"best\" way to prioritize tasks, as the ideal method often depends on your individual needs, the nature of your work, and your personal preferences. However, there are several highly effective strategies and frameworks you can combine and adapt to create your own optimal system.\n\nHere's a breakdown of the best ways to prioritize tasks, categorized for clarity:\n\n**I. Foundational Principles for Effective Prioritization:**\n\n*   **Clarity is King:** Before you can prioritize, you need to know exactly what your tasks are.\n    *   **Capture Everything:** Use a to-do list, notebook, or digital tool to get all your tasks out of your head.\n    *   **Break Down Large Tasks:** Overwhelming tasks are hard to prioritize. Break them into smaller, actionable steps.\n    *   **Define \"Done\":** For each task, know what success looks like. This prevents ambiguity and helps with estimation.\n*   **Understand Your Goals:** Prioritization is about aligning your actions with what truly matters.\n    *   **Long-Term Vision:** What are you trying to achieve in the next month, quarter, or year?\n    *   **Short-Term Objectives:** What needs to be done this week or today to move towards those long-term goals?\n*   **Be Realistic About Your Time and Energy:** Don't overcommit.\n    *   **Estimate Time:** Roughly estimate how long each task will take.\n    *   **Consider Your Energy Levels:** Some tasks require more mental or physical energy. Schedule them accordingly.\n\n**II. Popular Prioritization Frameworks & Methods:**\n\nThese frameworks provide structured ways to evaluate and rank your tasks.\n\n1.  **The Eisenhower Matrix (Urgent/Important Matrix):**\n    *   **Concept:** Divides tasks into four quadrants based on their urgency and importance.\n    *   **Quadrants:**\n        *   **Do First (Urgent & Important):** Crises, deadlines, pressing problems.\n        *   **Schedule (Important, Not Urgent):** Planning, relationship building, recreation, prevention.\n        *   **Delegate (Urgent, Not Important):** Interruptions, some meetings, busywork.\n        *   **Eliminate (Not Urgent & Not Important):** Time-wasters, distractions, trivial tasks.\n    *   **Best For:** Identifying what needs immediate attention, what can be planned, what can be outsourced, and what should be dropped.\n\n2.  **ABCDE Method:**\n    *   **Concept:** Assigns a letter grade to each task based on its importance.\n    *   **Grades:**\n        *   **A:** Must do (critical, serious consequences if not done).\n        *   **B:** Should do (important, minor consequences if not done).\n        *   **C:** Nice to do (no real consequences if not done).\n        *   **D:** Delegate (can be done by someone else).\n        *   **E:** Eliminate (can be dropped entirely).\n    *   **Best For:** A simple, hierarchical approach to ranking tasks. You often then work on A1, A2, etc., before moving to B tasks.\n\n3.  **MoSCoW Method:**\n    *   **Concept:** Primarily used in project management but adaptable for personal tasks. It categorizes requirements (or tasks) into four levels.\n    *   **Categories:**\n        *   **Must have:** Essential for success.\n        *   **Should have:** Important, but not critical.\n        *   **Could have:** Desirable, but not necessary.\n        *   **Won't have (this time):** Explicitly excluded.\n    *   **Best For:** When you have a clear set of deliverables and need to decide what's absolutely non-negotiable.\n\n4.  **Time Blocking/Timeboxing:**\n    *   **Concept:** Allocate specific blocks of time in your calendar for particular tasks or types of work.\n    *   **How it works:** Instead of just a to-do list, you schedule \"Deep Work: 9-11 AM,\" \"Emails: 1-1:30 PM,\" etc.\n    *   **Best For:** Ensuring that important but non-urgent tasks get dedicated time, improving focus, and preventing procrastination.\n\n5.  **Getting Things Done (GTD) Method (David Allen):**\n    *   **Concept:** A comprehensive system for managing workflow and capturing everything. It emphasizes processing your \"inbox\" regularly.\n    *   **Key Principles:** Capture, Clarify, Organize, Reflect, Engage.\n    *   **Prioritization within GTD:** Once tasks are clarified and organized into lists (e.g., \"Next Actions,\" \"Projects\"), you choose what to do based on context, time available,",
+      "cleanedMessage": "There's no single \"best\" way to prioritize tasks, as the ideal method often depends on your individual needs, the nature of your work, and your personal preferences. However, there are several highly effective strategies and frameworks you can combine and adapt to create your own optimal system.\n\nHere's a breakdown of the best ways to prioritize tasks, categorized for clarity:\n\n**I. Foundational Principles for Effective Prioritization:**\n\n*   **Clarity is King:** Before you can prioritize, you need to know exactly what your tasks are.\n    *   **Capture Everything:** Use a to-do list, notebook, or digital tool to get all your tasks out of your head.\n    *   **Break Down Large Tasks:** Overwhelming tasks are hard to prioritize. Break them into smaller, actionable steps.\n    *   **Define \"Done\":** For each task, know what success looks like. This prevents ambiguity and helps with estimation.\n*   **Understand Your Goals:** Prioritization is about aligning your actions with what truly matters.\n    *   **Long-Term Vision:** What are you trying to achieve in the next month, quarter, or year?\n    *   **Short-Term Objectives:** What needs to be done this week or today to move towards those long-term goals?\n*   **Be Realistic About Your Time and Energy:** Don't overcommit.\n    *   **Estimate Time:** Roughly estimate how long each task will take.\n    *   **Consider Your Energy Levels:** Some tasks require more mental or physical energy. Schedule them accordingly.\n\n**II. Popular Prioritization Frameworks & Methods:**\n\nThese frameworks provide structured ways to evaluate and rank your tasks.\n\n1.  **The Eisenhower Matrix (Urgent/Important Matrix):**\n    *   **Concept:** Divides tasks into four quadrants based on their urgency and importance.\n    *   **Quadrants:**\n        *   **Do First (Urgent & Important):** Crises, deadlines, pressing problems.\n        *   **Schedule (Important, Not Urgent):** Planning, relationship building, recreation, prevention.\n        *   **Delegate (Urgent, Not Important):** Interruptions, some meetings, busywork.\n        *   **Eliminate (Not Urgent & Not Important):** Time-wasters, distractions, trivial tasks.\n    *   **Best For:** Identifying what needs immediate attention, what can be planned, what can be outsourced, and what should be dropped.\n\n2.  **ABCDE Method:**\n    *   **Concept:** Assigns a letter grade to each task based on its importance.\n    *   **Grades:**\n        *   **A:** Must do (critical, serious consequences if not done).\n        *   **B:** Should do (important, minor consequences if not done).\n        *   **C:** Nice to do (no real consequences if not done).\n        *   **D:** Delegate (can be done by someone else).\n        *   **E:** Eliminate (can be dropped entirely).\n    *   **Best For:** A simple, hierarchical approach to ranking tasks. You often then work on A1, A2, etc., before moving to B tasks.\n\n3.  **MoSCoW Method:**\n    *   **Concept:** Primarily used in project management but adaptable for personal tasks. It categorizes requirements (or tasks) into four levels.\n    *   **Categories:**\n        *   **Must have:** Essential for success.\n        *   **Should have:** Important, but not critical.\n        *   **Could have:** Desirable, but not necessary.\n        *   **Won't have (this time):** Explicitly excluded.\n    *   **Best For:** When you have a clear set of deliverables and need to decide what's absolutely non-negotiable.\n\n4.  **Time Blocking/Timeboxing:**\n    *   **Concept:** Allocate specific blocks of time in your calendar for particular tasks or types of work.\n    *   **How it works:** Instead of just a to-do list, you schedule \"Deep Work: 9-11 AM,\" \"Emails: 1-1:30 PM,\" etc.\n    *   **Best For:** Ensuring that important but non-urgent tasks get dedicated time, improving focus, and preventing procrastination.\n\n5.  **Getting Things Done (GTD) Method (David Allen):**\n    *   **Concept:** A comprehensive system for managing workflow and capturing everything. It emphasizes processing your \"inbox\" regularly.\n    *   **Key Principles:** Capture, Clarify, Organize, Reflect, Engage.\n    *   **Prioritization within GTD:** Once tasks are clarified and organized into lists (e.g., \"Next Actions,\" \"Projects\"), you choose what to do based on context, time available,",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC022",
+      "id": "TC016",
+      "name": "Request for explanation",
       "category": "conversational_queries",
-      "name": "General knowledge question",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 3247,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3248
       },
-      "details": {
-        "originalLength": 198,
-        "cleanedLength": 198,
-        "removedChars": 0,
-        "extractedCount": 0
+      "rawResponse": "The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. It's a simple yet highly effective way to break down work into manageable intervals, separated by short breaks. The name \"Pomodoro\" comes from the Italian word for \"tomato,\" as Cirillo used a tomato-shaped kitchen timer to track his work sessions.\n\nHere's a breakdown of how it works:\n\n**The Core Components:**\n\n1.  **Choose a Task:** Decide on the specific task you want to focus on. It's best to pick something that can be completed within a Pomodoro session, or at least a significant chunk of it.\n\n2.  **Set the Timer:** Set your timer for **25 minutes**. This is considered one \"Pomodoro.\"\n\n3.  **Work on the Task:** Dedicate yourself to working on the chosen task without any distractions for the entire 25 minutes. This means no checking emails, social media, or engaging in conversations. If an idea or task pops into your head that's not related to your current focus, jot it down on a piece of paper to address later.\n\n4.  **Take a Short Break:** When the timer rings, stop working immediately and take a **5-minute break**. This break is crucial for resting your mind and preventing burnout. Get up, stretch, walk around, grab a drink of water, or do something unrelated to your work.\n\n5.  **Repeat:** After the short break, start another Pomodoro session (25 minutes of work) followed by another short break (5 minutes).\n\n6.  **Take a Long Break:** After completing **four Pomodoros** (four 25-minute work sessions), take a longer break, typically **15-30 minutes**. This longer break allows for more significant rest and recovery before diving back into another set of Pomodoros.\n\n**Key Principles and Benefits:**\n\n*   **Breaks are Essential:** The Pomodoro Technique emphasizes the importance of regular breaks. This prevents mental fatigue, improves focus, and can actually boost productivity in the long run.\n*   **Combats Procrastination:** By breaking down large tasks into smaller, more manageable 25-minute chunks, it becomes less daunting to start. The commitment is only for 25 minutes, making it easier to overcome inertia.\n*   **Improves Focus and Concentration:** The dedicated work intervals train your brain to concentrate for a specific period. Knowing that a break is coming can help you resist distractions.\n*   **Increases Awareness of Time:** You become more mindful of how you spend your time and where your distractions lie. This can lead to better time estimation for future tasks.\n*   **Reduces Burnout:** The structured breaks prevent you from pushing yourself too hard for extended periods, leading to less stress and burnout.\n*   **Enhances Task Completion:** By consistently working on tasks in focused bursts, you're more likely to complete them.\n*   **Adaptable:** While the standard is 25/5, you can adjust the work and break intervals to suit your personal preferences and the nature of your tasks. Some people find 50/10 or even longer work intervals more effective.\n\n**How to Implement the Pomodoro Technique:**\n\n*   **Tools:** You can use a physical kitchen timer, a smartphone timer app, or dedicated Pomodoro timer apps and browser extensions.\n*   **Task List:** Have a clear to-do list for the day.\n*   **Minimize Distractions:** Turn off notifications, close unnecessary tabs, inform colleagues or family that you need uninterrupted time.\n*   **Be Disciplined:** The success of the technique relies on your commitment to sticking to the timer and avoiding distractions during work intervals.\n*   **Review and Adjust:** After a few days or weeks, reflect on how the technique is working for you. Are the intervals too short or too long? Are you still getting distracted? Make adjustments as needed.\n\n**In Summary:**\n\nThe Pomodoro Technique is a simple yet powerful time management strategy that uses timed work intervals (Pomodoros) and short breaks to improve focus, productivity, and prevent burnout. By breaking down your work into bite-sized chunks and incorporating regular rest, you can become more efficient and achieve your goals more effectively.",
+      "cleanedMessage": "The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. It's a simple yet highly effective way to break down work into manageable intervals, separated by short breaks. The name \"Pomodoro\" comes from the Italian word for \"tomato,\" as Cirillo used a tomato-shaped kitchen timer to track his work sessions.\n\nHere's a breakdown of how it works:\n\n**The Core Components:**\n\n1.  **Choose a Task:** Decide on the specific task you want to focus on. It's best to pick something that can be completed within a Pomodoro session, or at least a significant chunk of it.\n\n2.  **Set the Timer:** Set your timer for **25 minutes**. This is considered one \"Pomodoro.\"\n\n3.  **Work on the Task:** Dedicate yourself to working on the chosen task without any distractions for the entire 25 minutes. This means no checking emails, social media, or engaging in conversations. If an idea or task pops into your head that's not related to your current focus, jot it down on a piece of paper to address later.\n\n4.  **Take a Short Break:** When the timer rings, stop working immediately and take a **5-minute break**. This break is crucial for resting your mind and preventing burnout. Get up, stretch, walk around, grab a drink of water, or do something unrelated to your work.\n\n5.  **Repeat:** After the short break, start another Pomodoro session (25 minutes of work) followed by another short break (5 minutes).\n\n6.  **Take a Long Break:** After completing **four Pomodoros** (four 25-minute work sessions), take a longer break, typically **15-30 minutes**. This longer break allows for more significant rest and recovery before diving back into another set of Pomodoros.\n\n**Key Principles and Benefits:**\n\n*   **Breaks are Essential:** The Pomodoro Technique emphasizes the importance of regular breaks. This prevents mental fatigue, improves focus, and can actually boost productivity in the long run.\n*   **Combats Procrastination:** By breaking down large tasks into smaller, more manageable 25-minute chunks, it becomes less daunting to start. The commitment is only for 25 minutes, making it easier to overcome inertia.\n*   **Improves Focus and Concentration:** The dedicated work intervals train your brain to concentrate for a specific period. Knowing that a break is coming can help you resist distractions.\n*   **Increases Awareness of Time:** You become more mindful of how you spend your time and where your distractions lie. This can lead to better time estimation for future tasks.\n*   **Reduces Burnout:** The structured breaks prevent you from pushing yourself too hard for extended periods, leading to less stress and burnout.\n*   **Enhances Task Completion:** By consistently working on tasks in focused bursts, you're more likely to complete them.\n*   **Adaptable:** While the standard is 25/5, you can adjust the work and break intervals to suit your personal preferences and the nature of your tasks. Some people find 50/10 or even longer work intervals more effective.\n\n**How to Implement the Pomodoro Technique:**\n\n*   **Tools:** You can use a physical kitchen timer, a smartphone timer app, or dedicated Pomodoro timer apps and browser extensions.\n*   **Task List:** Have a clear to-do list for the day.\n*   **Minimize Distractions:** Turn off notifications, close unnecessary tabs, inform colleagues or family that you need uninterrupted time.\n*   **Be Disciplined:** The success of the technique relies on your commitment to sticking to the timer and avoiding distractions during work intervals.\n*   **Review and Adjust:** After a few days or weeks, reflect on how the technique is working for you. Are the intervals too short or too long? Are you still getting distracted? Make adjustments as needed.\n\n**In Summary:**\n\nThe Pomodoro Technique is a simple yet powerful time management strategy that uses timed work intervals (Pomodoros) and short breaks to improve focus, productivity, and prevent burnout. By breaking down your work into bite-sized chunks and incorporating regular rest, you can become more efficient and achieve your goals more effectively.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC023",
+      "id": "TC017",
+      "name": "Math question",
       "category": "conversational_queries",
-      "name": "Code debugging help",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 813,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 814
       },
-      "details": {
-        "originalLength": 436,
-        "cleanedLength": 436,
-        "removedChars": 0,
-        "extractedCount": 0
+      "rawResponse": "Here are a few ways to calculate 25% of 240:\n\n**Method 1: Convert percentage to a decimal**\n\n*   25% as a decimal is 0.25.\n*   Multiply the decimal by the number: 0.25 * 240 = 60\n\n**Method 2: Convert percentage to a fraction**\n\n*   25% as a fraction is 1/4.\n*   Divide the number by the denominator: 240 / 4 = 60\n\n**Method 3: Think of it as a quarter**\n\n*   25% is the same as one quarter.\n*   A quarter of 240 is 240 divided by 4.\n*   240 / 4 = 60\n\n**Therefore, 25% of 240 is 60.**",
+      "cleanedMessage": "Here are a few ways to calculate 25% of 240:\n\n**Method 1: Convert percentage to a decimal**\n\n*   25% as a decimal is 0.25.\n*   Multiply the decimal by the number: 0.25 * 240 = 60\n\n**Method 2: Convert percentage to a fraction**\n\n*   25% as a fraction is 1/4.\n*   Divide the number by the denominator: 240 / 4 = 60\n\n**Method 3: Think of it as a quarter**\n\n*   25% is the same as one quarter.\n*   A quarter of 240 is 240 divided by 4.\n*   240 / 4 = 60\n\n**Therefore, 25% of 240 is 60.**",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC024",
-      "category": "conversational_queries",
-      "name": "Math problem solving",
+      "id": "TC018",
+      "name": "Request detailed info in chat",
+      "category": "info_withholding",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 3356,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3357
       },
-      "details": {
-        "originalLength": 190,
-        "cleanedLength": 190,
-        "removedChars": 0,
-        "extractedCount": 0
+      "rawResponse": "Machine learning algorithms are the engines that power artificial intelligence. They enable systems to learn from data without being explicitly programmed. The field is vast and constantly evolving, but we can broadly categorize the different types of algorithms based on their learning style and the type of problem they're designed to solve.\n\nHere's a breakdown of the main categories and some popular algorithms within them:\n\n## 1. Supervised Learning\n\nIn supervised learning, the algorithm is trained on a **labeled dataset**. This means each data point in the training set has a corresponding \"correct answer\" or **target variable**. The goal is for the algorithm to learn a mapping function from the input features to the output labels, so it can predict the labels for new, unseen data.\n\n**Key Characteristics:**\n*   Requires labeled data.\n*   Predicts a specific output based on input.\n*   Used for classification and regression tasks.\n\n**Types of Supervised Learning Problems:**\n\n*   **Classification:** Predicting a **categorical** outcome (e.g., spam or not spam, disease or no disease, type of animal).\n    *   **Algorithms:**\n        *   **Logistic Regression:** A simple yet powerful algorithm for binary classification. It estimates the probability of an instance belonging to a particular class.\n        *   **Support Vector Machines (SVMs):** Finds the optimal hyperplane that best separates data points into different classes. Can handle complex, non-linear decision boundaries using kernels.\n        *   **Decision Trees:** Creates a tree-like structure where each internal node represents a feature, each branch represents a decision, and each leaf node represents a class label. Easy to interpret.\n        *   **Random Forests:** An ensemble method that builds multiple decision trees and combines their predictions (e.g., by voting) to improve accuracy and reduce overfitting.\n        *   **K-Nearest Neighbors (KNN):** Classifies a new data point based on the majority class of its 'k' nearest neighbors in the feature space.\n        *   **Naive Bayes:** A probabilistic classifier based on Bayes' theorem with the \"naive\" assumption of independence between features. Works well for text classification.\n        *   **Gradient Boosting Machines (e.g., XGBoost, LightGBM, CatBoost):** Ensemble methods that sequentially build trees, with each new tree trying to correct the errors of the previous ones. Known for high accuracy.\n\n*   **Regression:** Predicting a **continuous** numerical outcome (e.g., house price, temperature, stock price).\n    *   **Algorithms:**\n        *   **Linear Regression:** Models the relationship between a dependent variable and one or more independent variables by fitting a linear equation to the observed data.\n        *   **Polynomial Regression:** An extension of linear regression that allows for non-linear relationships by adding polynomial terms of the independent variables.\n        *   **Ridge Regression & Lasso Regression:** Regularized versions of linear regression that add penalties to the coefficients to prevent overfitting and shrink them towards zero. Lasso can also perform feature selection.\n        *   **Decision Trees (for Regression):** Similar to classification trees, but leaf nodes predict a continuous value (e.g., the average of the target variable in that leaf).\n        *   **Random Forests (for Regression):** Ensemble of regression trees.\n        *   **Gradient Boosting Machines (for Regression):** Ensemble of regression trees.\n\n## 2. Unsupervised Learning\n\nIn unsupervised learning, the algorithm is trained on **unlabeled data**. The goal is to find hidden patterns, structures, or relationships within the data without any explicit guidance.\n\n**Key Characteristics:**\n*   Works with unlabeled data.\n*   Discovers inherent structure and patterns.\n*   Used for clustering, dimensionality reduction, and anomaly detection.\n\n**Types of Unsupervised Learning Problems:**\n\n*   **Clustering:** Grouping data points into clusters such that data points within the same cluster are more similar to each other than to those in other clusters.\n    *   **Algorithms:**\n        *   **K-Means Clustering:** Partitions data into 'k' clusters, where each data point belongs to the cluster with the nearest mean (centroid).\n        *   **Hierarchical Clustering:** Creates a tree-like hierarchy of clusters. Can be agglomerative (bottom-up) or divisive (top-down).\n        *   **DBSCAN (Density-Based Spatial Clustering of Applications with Noise):** Groups together points that are closely packed together (have many nearby neighbors), marking points that lie alone in low-density regions as outliers.\n        *   **Gaussian Mixture Models (GMM):** Assumes that the data is generated from a mixture of several Gaussian distributions.\n\n*   **Dimensionality Reduction:** Reducing the number of features (dimensions) in a dataset while preserving as much of the important information as possible. This helps with visualization, noise reduction, and improving the performance of other algorithms.\n    *   ",
+      "cleanedMessage": "Machine learning algorithms are the engines that power artificial intelligence. They enable systems to learn from data without being explicitly programmed. The field is vast and constantly evolving, but we can broadly categorize the different types of algorithms based on their learning style and the type of problem they're designed to solve.\n\nHere's a breakdown of the main categories and some popular algorithms within them:\n\n## 1. Supervised Learning\n\nIn supervised learning, the algorithm is trained on a **labeled dataset**. This means each data point in the training set has a corresponding \"correct answer\" or **target variable**. The goal is for the algorithm to learn a mapping function from the input features to the output labels, so it can predict the labels for new, unseen data.\n\n**Key Characteristics:**\n*   Requires labeled data.\n*   Predicts a specific output based on input.\n*   Used for classification and regression tasks.\n\n**Types of Supervised Learning Problems:**\n\n*   **Classification:** Predicting a **categorical** outcome (e.g., spam or not spam, disease or no disease, type of animal).\n    *   **Algorithms:**\n        *   **Logistic Regression:** A simple yet powerful algorithm for binary classification. It estimates the probability of an instance belonging to a particular class.\n        *   **Support Vector Machines (SVMs):** Finds the optimal hyperplane that best separates data points into different classes. Can handle complex, non-linear decision boundaries using kernels.\n        *   **Decision Trees:** Creates a tree-like structure where each internal node represents a feature, each branch represents a decision, and each leaf node represents a class label. Easy to interpret.\n        *   **Random Forests:** An ensemble method that builds multiple decision trees and combines their predictions (e.g., by voting) to improve accuracy and reduce overfitting.\n        *   **K-Nearest Neighbors (KNN):** Classifies a new data point based on the majority class of its 'k' nearest neighbors in the feature space.\n        *   **Naive Bayes:** A probabilistic classifier based on Bayes' theorem with the \"naive\" assumption of independence between features. Works well for text classification.\n        *   **Gradient Boosting Machines (e.g., XGBoost, LightGBM, CatBoost):** Ensemble methods that sequentially build trees, with each new tree trying to correct the errors of the previous ones. Known for high accuracy.\n\n*   **Regression:** Predicting a **continuous** numerical outcome (e.g., house price, temperature, stock price).\n    *   **Algorithms:**\n        *   **Linear Regression:** Models the relationship between a dependent variable and one or more independent variables by fitting a linear equation to the observed data.\n        *   **Polynomial Regression:** An extension of linear regression that allows for non-linear relationships by adding polynomial terms of the independent variables.\n        *   **Ridge Regression & Lasso Regression:** Regularized versions of linear regression that add penalties to the coefficients to prevent overfitting and shrink them towards zero. Lasso can also perform feature selection.\n        *   **Decision Trees (for Regression):** Similar to classification trees, but leaf nodes predict a continuous value (e.g., the average of the target variable in that leaf).\n        *   **Random Forests (for Regression):** Ensemble of regression trees.\n        *   **Gradient Boosting Machines (for Regression):** Ensemble of regression trees.\n\n## 2. Unsupervised Learning\n\nIn unsupervised learning, the algorithm is trained on **unlabeled data**. The goal is to find hidden patterns, structures, or relationships within the data without any explicit guidance.\n\n**Key Characteristics:**\n*   Works with unlabeled data.\n*   Discovers inherent structure and patterns.\n*   Used for clustering, dimensionality reduction, and anomaly detection.\n\n**Types of Unsupervised Learning Problems:**\n\n*   **Clustering:** Grouping data points into clusters such that data points within the same cluster are more similar to each other than to those in other clusters.\n    *   **Algorithms:**\n        *   **K-Means Clustering:** Partitions data into 'k' clusters, where each data point belongs to the cluster with the nearest mean (centroid).\n        *   **Hierarchical Clustering:** Creates a tree-like hierarchy of clusters. Can be agglomerative (bottom-up) or divisive (top-down).\n        *   **DBSCAN (Density-Based Spatial Clustering of Applications with Noise):** Groups together points that are closely packed together (have many nearby neighbors), marking points that lie alone in low-density regions as outliers.\n        *   **Gaussian Mixture Models (GMM):** Assumes that the data is generated from a mixture of several Gaussian distributions.\n\n*   **Dimensionality Reduction:** Reducing the number of features (dimensions) in a dataset while preserving as much of the important information as possible. This helps with visualization, noise reduction, and improving the performance of other algorithms.\n    *",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC025",
+      "id": "TC019",
+      "name": "Request same info as note",
+      "category": "info_withholding",
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 2847,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 2847
+      },
+      "rawResponse": "## Machine Learning Algorithms: A Quick Overview\n\nMachine learning (ML) algorithms are the engines that power artificial intelligence, enabling systems to learn from data without explicit programming. They can be broadly categorized into three main types based on the learning approach:\n\n---\n\n### 1. Supervised Learning\n\n**Core Idea:** Algorithms learn from labeled data, meaning each training example has a known input and a corresponding correct output. The goal is to predict the output for new, unseen inputs.\n\n**Key Characteristics:**\n*   **Requires labeled datasets.**\n*   **Learns a mapping function from input to output.**\n*   **Used for prediction and classification.**\n\n**Common Tasks & Algorithms:**\n\n*   **Classification:** Predicting a categorical label.\n    *   **Logistic Regression:** Predicts the probability of a binary outcome.\n    *   **Support Vector Machines (SVM):** Finds the optimal hyperplane to separate data points.\n    *   **Decision Trees:** Creates a tree-like structure of decisions to classify data.\n    *   **Random Forests:** An ensemble of decision trees for improved accuracy and robustness.\n    *   **K-Nearest Neighbors (KNN):** Classifies data points based on the majority class of their nearest neighbors.\n    *   **Naive Bayes:** Based on Bayes' theorem, assumes independence between features.\n    *   **Neural Networks (specifically feedforward networks):** Can learn complex non-linear relationships for classification.\n\n*   **Regression:** Predicting a continuous numerical value.\n    *   **Linear Regression:** Models the relationship between variables with a straight line.\n    *   **Polynomial Regression:** Models relationships with a curved line.\n    *   **Ridge/Lasso Regression:** Regularized linear regression to prevent overfitting.\n    *   **Support Vector Regression (SVR):** An adaptation of SVM for regression tasks.\n    *   **Decision Trees & Random Forests:** Can also be used for regression.\n    *   **Neural Networks:** Can learn complex regression functions.\n\n---\n\n### 2. Unsupervised Learning\n\n**Core Idea:** Algorithms learn from unlabeled data, meaning there are no predefined outputs. The goal is to discover hidden patterns, structures, or relationships within the data.\n\n**Key Characteristics:**\n*   **Uses unlabeled datasets.**\n*   **Focuses on data exploration and discovery.**\n*   **Used for finding groups, reducing dimensions, and detecting anomalies.**\n\n**Common Tasks & Algorithms:**\n\n*   **Clustering:** Grouping similar data points together.\n    *   **K-Means Clustering:** Partitions data into 'k' clusters based on centroids.\n    *   **Hierarchical Clustering:** Creates a tree-like hierarchy of clusters.\n    *   **DBSCAN (Density-Based Spatial Clustering of Applications with Noise):** Groups densely packed points and marks outliers.\n\n*   **Dimensionality Reduction:** Reducing the number of variables while retaining important information.\n    *   **Principal Component Analysis (PCA):** Finds orthogonal components that capture maximum variance.\n    *   **t-Distributed Stochastic Neighbor Embedding (t-SNE):** Visualizes high-dimensional data in lower dimensions, preserving local structure.\n    *   **Linear Discriminant Analysis (LDA):** (Often used in a supervised context but can be seen as dimensionality reduction for classification).\n\n*   **Association Rule Mining:** Discovering relationships between variables in large datasets.\n    *   **Apriori Algorithm:** Identifies frequent itemsets and derives association rules.\n\n*   **Anomaly Detection:** Identifying unusual or outlier data points.\n    *   **Isolation Forest:** Isolates anomalies by randomly partitioning data.\n    *   **One-Class SVM:** Learns a boundary around normal data points.\n\n---\n\n### 3. Reinforcement Learning (RL)\n\n**Core Idea:** Algorithms learn by interacting with an environment. An \"agent\" takes actions, receives rewards or penalties based on those actions, and learns to optimize its behavior to maximize cumulative reward over time.\n\n**Key Characteristics:**\n*   **Learns through trial and error.**\n*   **Involves an agent, environment, states, actions, and rewards.**\n*   **Goal is to learn an optimal policy (a strategy for choosing actions).**\n\n**Common Tasks & Algorithms:**\n\n*   **Game Playing:** Training agents to play games like Chess, Go, or video games.\n*   **Robotics:** Teaching robots to perform tasks.\n*   **Recommendation Systems:** Personalizing recommendations based on user interactions.\n*   **Autonomous Driving:** Developing self-driving car systems.\n*   **Resource Management:** Optimizing resource allocation in complex systems.\n\n**Key Algorithms:**\n*   **Q-Learning:** Learns an action-value function (Q-function) that estimates the expected future reward of taking an action in a given state.\n*   **Deep Q-Networks (DQN):** Combines",
+      "cleanedMessage": "## Machine Learning Algorithms: A Quick Overview\n\nMachine learning (ML) algorithms are the engines that power artificial intelligence, enabling systems to learn from data without explicit programming. They can be broadly categorized into three main types based on the learning approach:\n\n---\n\n### 1. Supervised Learning\n\n**Core Idea:** Algorithms learn from labeled data, meaning each training example has a known input and a corresponding correct output. The goal is to predict the output for new, unseen inputs.\n\n**Key Characteristics:**\n*   **Requires labeled datasets.**\n*   **Learns a mapping function from input to output.**\n*   **Used for prediction and classification.**\n\n**Common Tasks & Algorithms:**\n\n*   **Classification:** Predicting a categorical label.\n    *   **Logistic Regression:** Predicts the probability of a binary outcome.\n    *   **Support Vector Machines (SVM):** Finds the optimal hyperplane to separate data points.\n    *   **Decision Trees:** Creates a tree-like structure of decisions to classify data.\n    *   **Random Forests:** An ensemble of decision trees for improved accuracy and robustness.\n    *   **K-Nearest Neighbors (KNN):** Classifies data points based on the majority class of their nearest neighbors.\n    *   **Naive Bayes:** Based on Bayes' theorem, assumes independence between features.\n    *   **Neural Networks (specifically feedforward networks):** Can learn complex non-linear relationships for classification.\n\n*   **Regression:** Predicting a continuous numerical value.\n    *   **Linear Regression:** Models the relationship between variables with a straight line.\n    *   **Polynomial Regression:** Models relationships with a curved line.\n    *   **Ridge/Lasso Regression:** Regularized linear regression to prevent overfitting.\n    *   **Support Vector Regression (SVR):** An adaptation of SVM for regression tasks.\n    *   **Decision Trees & Random Forests:** Can also be used for regression.\n    *   **Neural Networks:** Can learn complex regression functions.\n\n---\n\n### 2. Unsupervised Learning\n\n**Core Idea:** Algorithms learn from unlabeled data, meaning there are no predefined outputs. The goal is to discover hidden patterns, structures, or relationships within the data.\n\n**Key Characteristics:**\n*   **Uses unlabeled datasets.**\n*   **Focuses on data exploration and discovery.**\n*   **Used for finding groups, reducing dimensions, and detecting anomalies.**\n\n**Common Tasks & Algorithms:**\n\n*   **Clustering:** Grouping similar data points together.\n    *   **K-Means Clustering:** Partitions data into 'k' clusters based on centroids.\n    *   **Hierarchical Clustering:** Creates a tree-like hierarchy of clusters.\n    *   **DBSCAN (Density-Based Spatial Clustering of Applications with Noise):** Groups densely packed points and marks outliers.\n\n*   **Dimensionality Reduction:** Reducing the number of variables while retaining important information.\n    *   **Principal Component Analysis (PCA):** Finds orthogonal components that capture maximum variance.\n    *   **t-Distributed Stochastic Neighbor Embedding (t-SNE):** Visualizes high-dimensional data in lower dimensions, preserving local structure.\n    *   **Linear Discriminant Analysis (LDA):** (Often used in a supervised context but can be seen as dimensionality reduction for classification).\n\n*   **Association Rule Mining:** Discovering relationships between variables in large datasets.\n    *   **Apriori Algorithm:** Identifies frequent itemsets and derives association rules.\n\n*   **Anomaly Detection:** Identifying unusual or outlier data points.\n    *   **Isolation Forest:** Isolates anomalies by randomly partitioning data.\n    *   **One-Class SVM:** Learns a boundary around normal data points.\n\n---\n\n### 3. Reinforcement Learning (RL)\n\n**Core Idea:** Algorithms learn by interacting with an environment. An \"agent\" takes actions, receives rewards or penalties based on those actions, and learns to optimize its behavior to maximize cumulative reward over time.\n\n**Key Characteristics:**\n*   **Learns through trial and error.**\n*   **Involves an agent, environment, states, actions, and rewards.**\n*   **Goal is to learn an optimal policy (a strategy for choosing actions).**\n\n**Common Tasks & Algorithms:**\n\n*   **Game Playing:** Training agents to play games like Chess, Go, or video games.\n*   **Robotics:** Teaching robots to perform tasks.\n*   **Recommendation Systems:** Personalizing recommendations based on user interactions.\n*   **Autonomous Driving:** Developing self-driving car systems.\n*   **Resource Management:** Optimizing resource allocation in complex systems.\n\n**Key Algorithms:**\n*   **Q-Learning:** Learns an action-value function (Q-function) that estimates the expected future reward of taking an action in a given state.\n*   **Deep Q-Networks (DQN):** Combines",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
+      }
+    },
+    {
+      "id": "TC020",
+      "name": "Request explanation in chat",
+      "category": "info_withholding",
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 3519,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3519
+      },
+      "rawResponse": "React Hooks are a revolutionary feature introduced in React 16.8 that allow you to use state and other React features (like lifecycle methods) in **functional components** without having to write a class. Before hooks, you needed class components to manage state and use lifecycle methods. Hooks simplify this by providing a more direct and declarative way to manage component logic.\n\nHere's a breakdown of how they work:\n\n**The Core Idea: Functions as First-Class Citizens**\n\nTraditionally, React components were either functions (for stateless presentation) or classes (for stateful logic and lifecycle management). Hooks bridge this gap by enabling functional components to have their own internal state, side effects, and context.\n\n**Key Principles and Mechanisms:**\n\n1.  **Stateful Logic in Functional Components:**\n    *   **`useState` Hook:** This is the most fundamental hook. It allows you to add state to functional components.\n        *   **How it works:** `useState` is a function that you call at the top level of your functional component. It takes an initial state value as an argument and returns an array with two elements:\n            1.  The **current state value**.\n            2.  A **function to update that state value**.\n        *   **Example:**\n            ```javascript\n            import React, { useState } from 'react';\n\n            function Counter() {\n              // Declare a state variable called 'count' and initialize it to 0\n              const [count, setCount] = useState(0);\n\n              return (\n                <div>\n                  <p>You clicked {count} times</p>\n                  <button onClick={() => setCount(count + 1)}>\n                    Click me\n                  </button>\n                </div>\n              );\n            }\n            ```\n        *   **Behind the scenes:** When `useState` is called, React associates this state with the specific component instance. When `setCount` is called, React schedules a re-render of the component, and the `useState` hook will then return the *new* state value.\n\n2.  **Managing Side Effects:**\n    *   **`useEffect` Hook:** This hook allows you to perform side effects in your functional components. Side effects are operations that interact with the outside world, such as:\n        *   Data fetching (e.g., from an API)\n        *   Subscriptions (e.g., to WebSockets)\n        *   Manually changing the DOM\n        *   Timers\n    *   **How it works:** `useEffect` takes two arguments:\n        1.  A **function** that contains your side effect logic.\n        2.  An optional **dependency array**. This array tells React when to re-run the effect.\n    *   **Dependency Array Behavior:**\n        *   **No dependency array (or `undefined`):** The effect runs after *every* render.\n        *   **Empty dependency array (`[]`):** The effect runs only *once* after the initial render (similar to `componentDidMount`).\n        *   **Array with values (`[prop1, state2]`):** The effect runs after the initial render and whenever any of the values in the dependency array change.\n    *   **Cleanup Function:** The function passed to `useEffect` can optionally return another function. This is the cleanup function, and it runs before the component unmounts or before the effect re-runs due to dependency changes (similar to `componentWillUnmount` or the cleanup part of `componentDidUpdate`).\n    *   **Example:**\n        ```javascript\n        import React, { useState, useEffect } from 'react';\n\n        function Timer() {\n          const [seconds, setSeconds] = useState(0);\n\n          useEffect(() => {\n            // This effect runs only once after the initial render\n            const intervalId = setInterval(() => {\n              setSeconds(prevSeconds => prevSeconds + 1);\n            }, 1000);\n\n            // Cleanup function: clear the interval when the component unmounts\n            return () => clearInterval(intervalId);\n          }, []); // Empty dependency array means this effect runs once\n\n          return (\n            <div>\n              <p>Seconds: {seconds}</p>\n            </div>\n          );\n        }\n        ```\n\n3.  **Rules of Hooks:** These are crucial for hooks to work correctly.\n    *   **Only call Hooks at the top level:** Don't call hooks inside loops, conditional statements, or nested functions. This ensures that hooks are called in the same order on every render. React relies on this consistent order to correctly associate state and effects with their respective hooks.\n    *   **Only call Hooks from React functional components or custom Hooks:** Don't call hooks from regular JavaScript functions.\n\n**How React Tracks Hooks:**\n\nReact maintains a list",
+      "cleanedMessage": "React Hooks are a revolutionary feature introduced in React 16.8 that allow you to use state and other React features (like lifecycle methods) in **functional components** without having to write a class. Before hooks, you needed class components to manage state and use lifecycle methods. Hooks simplify this by providing a more direct and declarative way to manage component logic.\n\nHere's a breakdown of how they work:\n\n**The Core Idea: Functions as First-Class Citizens**\n\nTraditionally, React components were either functions (for stateless presentation) or classes (for stateful logic and lifecycle management). Hooks bridge this gap by enabling functional components to have their own internal state, side effects, and context.\n\n**Key Principles and Mechanisms:**\n\n1.  **Stateful Logic in Functional Components:**\n    *   **`useState` Hook:** This is the most fundamental hook. It allows you to add state to functional components.\n        *   **How it works:** `useState` is a function that you call at the top level of your functional component. It takes an initial state value as an argument and returns an array with two elements:\n            1.  The **current state value**.\n            2.  A **function to update that state value**.\n        *   **Example:**\n            ```javascript\n            import React, { useState } from 'react';\n\n            function Counter() {\n              // Declare a state variable called 'count' and initialize it to 0\n              const [count, setCount] = useState(0);\n\n              return (\n                <div>\n                  <p>You clicked {count} times</p>\n                  <button onClick={() => setCount(count + 1)}>\n                    Click me\n                  </button>\n                </div>\n              );\n            }\n            ```\n        *   **Behind the scenes:** When `useState` is called, React associates this state with the specific component instance. When `setCount` is called, React schedules a re-render of the component, and the `useState` hook will then return the *new* state value.\n\n2.  **Managing Side Effects:**\n    *   **`useEffect` Hook:** This hook allows you to perform side effects in your functional components. Side effects are operations that interact with the outside world, such as:\n        *   Data fetching (e.g., from an API)\n        *   Subscriptions (e.g., to WebSockets)\n        *   Manually changing the DOM\n        *   Timers\n    *   **How it works:** `useEffect` takes two arguments:\n        1.  A **function** that contains your side effect logic.\n        2.  An optional **dependency array**. This array tells React when to re-run the effect.\n    *   **Dependency Array Behavior:**\n        *   **No dependency array (or `undefined`):** The effect runs after *every* render.\n        *   **Empty dependency array (`[]`):** The effect runs only *once* after the initial render (similar to `componentDidMount`).\n        *   **Array with values (`[prop1, state2]`):** The effect runs after the initial render and whenever any of the values in the dependency array change.\n    *   **Cleanup Function:** The function passed to `useEffect` can optionally return another function. This is the cleanup function, and it runs before the component unmounts or before the effect re-runs due to dependency changes (similar to `componentWillUnmount` or the cleanup part of `componentDidUpdate`).\n    *   **Example:**\n        ```javascript\n        import React, { useState, useEffect } from 'react';\n\n        function Timer() {\n          const [seconds, setSeconds] = useState(0);\n\n          useEffect(() => {\n            // This effect runs only once after the initial render\n            const intervalId = setInterval(() => {\n              setSeconds(prevSeconds => prevSeconds + 1);\n            }, 1000);\n\n            // Cleanup function: clear the interval when the component unmounts\n            return () => clearInterval(intervalId);\n          }, []); // Empty dependency array means this effect runs once\n\n          return (\n            <div>\n              <p>Seconds: {seconds}</p>\n            </div>\n          );\n        }\n        ```\n\n3.  **Rules of Hooks:** These are crucial for hooks to work correctly.\n    *   **Only call Hooks at the top level:** Don't call hooks inside loops, conditional statements, or nested functions. This ensures that hooks are called in the same order on every render. React relies on this consistent order to correctly associate state and effects with their respective hooks.\n    *   **Only call Hooks from React functional components or custom Hooks:** Don't call hooks from regular JavaScript functions.\n\n**How React Tracks Hooks:**\n\nReact maintains a list",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
+      }
+    },
+    {
+      "id": "TC021",
+      "name": "Request same explanation as note",
+      "category": "info_withholding",
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 3754,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3754
+      },
+      "rawResponse": "## A Gentle Introduction to React Hooks\n\nHey there!\n\nYou've probably heard a lot about React Hooks lately, and you might be wondering what all the fuss is about. In a nutshell, **React Hooks are functions that let you \"hook into\" React state and lifecycle features from function components.**\n\nBefore Hooks, if you wanted to manage state or use lifecycle methods in React, you had to write a **class component**. This meant using `this.state`, `this.setState`, and methods like `componentDidMount`, `componentDidUpdate`, etc.\n\n**Hooks change that by allowing you to use these powerful features directly within your functional components.** This brings a lot of benefits, making your code:\n\n*   **More Readable and Concise:** You can often replace entire class components with simpler, shorter function components.\n*   **Easier to Reuse Logic:** You can extract stateful logic into custom Hooks and reuse them across different components.\n*   **Less Prone to Bugs:** Class components could sometimes lead to complex logic that was hard to follow and debug. Hooks help simplify this.\n\n### The Core Idea: State and Side Effects\n\nAt their heart, Hooks are about two main things:\n\n1.  **Managing State:**\n    *   The most fundamental Hook is **`useState`**. It's like having a local variable within your function component that can change, and when it changes, React re-renders your component.\n    *   You call `useState` with an initial value, and it returns an array with two elements: the current state value and a function to update that value.\n\n    ```javascript\n    import React, { useState } from 'react';\n\n    function Counter() {\n      // Declare a state variable called 'count' and initialize it to 0\n      const [count, setCount] = useState(0);\n\n      return (\n        <div>\n          <p>You clicked {count} times</p>\n          <button onClick={() => setCount(count + 1)}>\n            Click me\n          </button>\n        </div>\n      );\n    }\n    ```\n\n2.  **Handling Side Effects:**\n    *   \"Side effects\" are operations that happen outside of the normal component rendering flow, like fetching data from an API, setting up subscriptions, or manually manipulating the DOM.\n    *   The primary Hook for this is **`useEffect`**. It lets you perform these side effects after React has updated the DOM.\n    *   You pass `useEffect` a function that contains your side effect code. You can also provide a dependency array to control when the effect runs.\n\n    ```javascript\n    import React, { useState, useEffect } from 'react';\n\n    function Greeting({ name }) {\n      const [message, setMessage] = useState('');\n\n      useEffect(() => {\n        // This effect runs after every render\n        setMessage(`Hello, ${name}!`);\n\n        // You can also return a cleanup function\n        return () => {\n          console.log('Component unmounted or effect re-ran');\n        };\n      }, [name]); // The effect re-runs only if 'name' changes\n\n      return <p>{message}</p>;\n    }\n    ```\n\n### Key Rules of Hooks\n\nThere are a couple of important rules to remember when using Hooks:\n\n1.  **Only Call Hooks at the Top Level:** Don't call Hooks inside loops, conditional statements, or nested functions. This ensures that Hooks are called in the same order on every render.\n2.  **Only Call Hooks from React Function Components:** You can't call Hooks from regular JavaScript functions.\n\n### Beyond `useState` and `useEffect`\n\nWhile `useState` and `useEffect` are the most common, React provides other powerful Hooks:\n\n*   **`useContext`**: To access values from React Context without needing to wrap your component in a `Provider`.\n*   **`useReducer`**: An alternative to `useState` for managing more complex state logic, similar to Redux.\n*   **`useCallback` / `useMemo`**: For performance optimizations by memoizing functions and values.\n*   **Custom Hooks**: You can create your own Hooks by extracting reusable stateful logic into a function that starts with `use`.\n\n### In Summary\n\nReact Hooks are a game-changer for building modern React applications. They empower you to leverage powerful React features like state management and lifecycle methods within the simplicity of function components. By understanding `useState` and `useEffect`, you're well on your way to harnessing the benefits of Hooks!\n\nLet me know if you'd like to dive deeper into any specific Hook!",
+      "cleanedMessage": "## A Gentle Introduction to React Hooks\n\nHey there!\n\nYou've probably heard a lot about React Hooks lately, and you might be wondering what all the fuss is about. In a nutshell, **React Hooks are functions that let you \"hook into\" React state and lifecycle features from function components.**\n\nBefore Hooks, if you wanted to manage state or use lifecycle methods in React, you had to write a **class component**. This meant using `this.state`, `this.setState`, and methods like `componentDidMount`, `componentDidUpdate`, etc.\n\n**Hooks change that by allowing you to use these powerful features directly within your functional components.** This brings a lot of benefits, making your code:\n\n*   **More Readable and Concise:** You can often replace entire class components with simpler, shorter function components.\n*   **Easier to Reuse Logic:** You can extract stateful logic into custom Hooks and reuse them across different components.\n*   **Less Prone to Bugs:** Class components could sometimes lead to complex logic that was hard to follow and debug. Hooks help simplify this.\n\n### The Core Idea: State and Side Effects\n\nAt their heart, Hooks are about two main things:\n\n1.  **Managing State:**\n    *   The most fundamental Hook is **`useState`**. It's like having a local variable within your function component that can change, and when it changes, React re-renders your component.\n    *   You call `useState` with an initial value, and it returns an array with two elements: the current state value and a function to update that value.\n\n    ```javascript\n    import React, { useState } from 'react';\n\n    function Counter() {\n      // Declare a state variable called 'count' and initialize it to 0\n      const [count, setCount] = useState(0);\n\n      return (\n        <div>\n          <p>You clicked {count} times</p>\n          <button onClick={() => setCount(count + 1)}>\n            Click me\n          </button>\n        </div>\n      );\n    }\n    ```\n\n2.  **Handling Side Effects:**\n    *   \"Side effects\" are operations that happen outside of the normal component rendering flow, like fetching data from an API, setting up subscriptions, or manually manipulating the DOM.\n    *   The primary Hook for this is **`useEffect`**. It lets you perform these side effects after React has updated the DOM.\n    *   You pass `useEffect` a function that contains your side effect code. You can also provide a dependency array to control when the effect runs.\n\n    ```javascript\n    import React, { useState, useEffect } from 'react';\n\n    function Greeting({ name }) {\n      const [message, setMessage] = useState('');\n\n      useEffect(() => {\n        // This effect runs after every render\n        setMessage(`Hello, ${name}!`);\n\n        // You can also return a cleanup function\n        return () => {\n          console.log('Component unmounted or effect re-ran');\n        };\n      }, [name]); // The effect re-runs only if 'name' changes\n\n      return <p>{message}</p>;\n    }\n    ```\n\n### Key Rules of Hooks\n\nThere are a couple of important rules to remember when using Hooks:\n\n1.  **Only Call Hooks at the Top Level:** Don't call Hooks inside loops, conditional statements, or nested functions. This ensures that Hooks are called in the same order on every render.\n2.  **Only Call Hooks from React Function Components:** You can't call Hooks from regular JavaScript functions.\n\n### Beyond `useState` and `useEffect`\n\nWhile `useState` and `useEffect` are the most common, React provides other powerful Hooks:\n\n*   **`useContext`**: To access values from React Context without needing to wrap your component in a `Provider`.\n*   **`useReducer`**: An alternative to `useState` for managing more complex state logic, similar to Redux.\n*   **`useCallback` / `useMemo`**: For performance optimizations by memoizing functions and values.\n*   **Custom Hooks**: You can create your own Hooks by extracting reusable stateful logic into a function that starts with `use`.\n\n### In Summary\n\nReact Hooks are a game-changer for building modern React applications. They empower you to leverage powerful React features like state management and lifecycle methods within the simplicity of function components. By understanding `useState` and `useEffect`, you're well on your way to harnessing the benefits of Hooks!\n\nLet me know if you'd like to dive deeper into any specific Hook!",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
+      }
+    },
+    {
+      "id": "TC022",
+      "name": "Request list in chat",
+      "category": "info_withholding",
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 3387,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3387
+      },
+      "rawResponse": "The \"best\" productivity tips are highly personal, as what works for one person might not work for another. However, there are many universally effective strategies that form a strong foundation for increased productivity. Here's a breakdown of some of the most impactful ones, categorized for clarity:\n\n**I. Planning & Prioritization:**\n\n*   **Define Your Goals (SMART):** Before you can be productive, you need to know *what* you're trying to achieve. Make your goals **S**pecific, **M**easurable, **A**chievable, **R**elevant, and **T**ime-bound. This clarity guides your efforts.\n*   **The Eisenhower Matrix (Urgent/Important):** Categorize tasks into four quadrants:\n    *   **Urgent & Important (Do First):** Crises, deadlines.\n    *   **Important, Not Urgent (Schedule):** Planning, relationship building, personal development. This is where true productivity lies.\n    *   **Urgent, Not Important (Delegate):** Interruptions, some emails, some meetings.\n    *   **Not Urgent, Not Important (Eliminate):** Time-wasters, distractions.\n*   **Time Blocking/Time Boxing:** Allocate specific blocks of time for specific tasks or types of work. This helps you focus and ensures you dedicate time to important activities.\n*   **The Two-Minute Rule:** If a task takes less than two minutes to complete, do it immediately. This prevents small tasks from piling up and becoming overwhelming.\n*   **Daily/Weekly Review & Planning:** At the end of each day or week, review what you accomplished and plan for the next. This provides a sense of closure and sets you up for success.\n*   **Identify Your \"Most Important Tasks\" (MITs):** Choose 1-3 crucial tasks that will make the biggest impact and tackle them first thing in the morning when your energy and focus are highest.\n\n**II. Execution & Focus:**\n\n*   **Single-Tasking (Avoid Multitasking):** While it feels productive, multitasking actually reduces efficiency and increases errors. Focus on one task at a time to achieve deeper concentration and better results.\n*   **The Pomodoro Technique:** Work in focused bursts (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes). After several bursts, take a longer break. This combats burnout and maintains focus.\n*   **Minimize Distractions:**\n    *   **Turn off Notifications:** Email, social media, and messaging app notifications are major productivity killers. Schedule specific times to check them.\n    *   **Close Unnecessary Tabs/Apps:** A cluttered digital workspace leads to a cluttered mind.\n    *   **Create a Dedicated Workspace:** If possible, have a physical space where you only do work.\n    *   **Communicate Your Availability:** Let colleagues or family know when you need uninterrupted focus time.\n*   **Batch Similar Tasks:** Group similar activities together (e.g., answering emails, making phone calls, administrative tasks) and do them in one go. This reduces context switching.\n*   **Take Regular Breaks:** Paradoxically, taking breaks boosts productivity. Step away from your work, stretch, move around, or do something completely different to recharge your mind.\n*   **Learn to Say \"No\":** Protect your time and energy by declining requests that don't align with your priorities or that you genuinely don't have the capacity for.\n\n**III. Mindset & Well-being:**\n\n*   **Get Enough Sleep:** Sleep is crucial for cognitive function, focus, and decision-making. Prioritize 7-9 hours of quality sleep per night.\n*   **Eat Healthy and Stay Hydrated:** Your physical well-being directly impacts your mental acuity. Fuel your body with nutritious food and drink plenty of water.\n*   **Exercise Regularly:** Physical activity boosts energy levels, reduces stress, and improves cognitive function.\n*   **Practice Mindfulness/Meditation:** Even a few minutes of mindfulness can improve focus, reduce stress, and increase self-awareness.\n*   **Break Down Large Tasks:** Overwhelming tasks can lead to procrastination. Break them down into smaller, more manageable steps.\n*   **Embrace Imperfection:** Don't let the pursuit of perfection paralyze you. \"Done is better than perfect\" is often a valuable mantra.\n*   **Celebrate Small Wins:** Acknowledge and celebrate your accomplishments, no matter how small. This builds momentum and motivation.\n*   **Learn to Delegate:** If you have the opportunity, delegate tasks that others can handle effectively. This frees up your time for higher-level work.\n*   **Automate Where Possible:** Look for opportunities to automate repetitive tasks using tools and software.\n\n**IV. Tools & Systems:**\n\n*   **Use a Task Management System:** Whether",
+      "cleanedMessage": "The \"best\" productivity tips are highly personal, as what works for one person might not work for another. However, there are many universally effective strategies that form a strong foundation for increased productivity. Here's a breakdown of some of the most impactful ones, categorized for clarity:\n\n**I. Planning & Prioritization:**\n\n*   **Define Your Goals (SMART):** Before you can be productive, you need to know *what* you're trying to achieve. Make your goals **S**pecific, **M**easurable, **A**chievable, **R**elevant, and **T**ime-bound. This clarity guides your efforts.\n*   **The Eisenhower Matrix (Urgent/Important):** Categorize tasks into four quadrants:\n    *   **Urgent & Important (Do First):** Crises, deadlines.\n    *   **Important, Not Urgent (Schedule):** Planning, relationship building, personal development. This is where true productivity lies.\n    *   **Urgent, Not Important (Delegate):** Interruptions, some emails, some meetings.\n    *   **Not Urgent, Not Important (Eliminate):** Time-wasters, distractions.\n*   **Time Blocking/Time Boxing:** Allocate specific blocks of time for specific tasks or types of work. This helps you focus and ensures you dedicate time to important activities.\n*   **The Two-Minute Rule:** If a task takes less than two minutes to complete, do it immediately. This prevents small tasks from piling up and becoming overwhelming.\n*   **Daily/Weekly Review & Planning:** At the end of each day or week, review what you accomplished and plan for the next. This provides a sense of closure and sets you up for success.\n*   **Identify Your \"Most Important Tasks\" (MITs):** Choose 1-3 crucial tasks that will make the biggest impact and tackle them first thing in the morning when your energy and focus are highest.\n\n**II. Execution & Focus:**\n\n*   **Single-Tasking (Avoid Multitasking):** While it feels productive, multitasking actually reduces efficiency and increases errors. Focus on one task at a time to achieve deeper concentration and better results.\n*   **The Pomodoro Technique:** Work in focused bursts (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes). After several bursts, take a longer break. This combats burnout and maintains focus.\n*   **Minimize Distractions:**\n    *   **Turn off Notifications:** Email, social media, and messaging app notifications are major productivity killers. Schedule specific times to check them.\n    *   **Close Unnecessary Tabs/Apps:** A cluttered digital workspace leads to a cluttered mind.\n    *   **Create a Dedicated Workspace:** If possible, have a physical space where you only do work.\n    *   **Communicate Your Availability:** Let colleagues or family know when you need uninterrupted focus time.\n*   **Batch Similar Tasks:** Group similar activities together (e.g., answering emails, making phone calls, administrative tasks) and do them in one go. This reduces context switching.\n*   **Take Regular Breaks:** Paradoxically, taking breaks boosts productivity. Step away from your work, stretch, move around, or do something completely different to recharge your mind.\n*   **Learn to Say \"No\":** Protect your time and energy by declining requests that don't align with your priorities or that you genuinely don't have the capacity for.\n\n**III. Mindset & Well-being:**\n\n*   **Get Enough Sleep:** Sleep is crucial for cognitive function, focus, and decision-making. Prioritize 7-9 hours of quality sleep per night.\n*   **Eat Healthy and Stay Hydrated:** Your physical well-being directly impacts your mental acuity. Fuel your body with nutritious food and drink plenty of water.\n*   **Exercise Regularly:** Physical activity boosts energy levels, reduces stress, and improves cognitive function.\n*   **Practice Mindfulness/Meditation:** Even a few minutes of mindfulness can improve focus, reduce stress, and increase self-awareness.\n*   **Break Down Large Tasks:** Overwhelming tasks can lead to procrastination. Break them down into smaller, more manageable steps.\n*   **Embrace Imperfection:** Don't let the pursuit of perfection paralyze you. \"Done is better than perfect\" is often a valuable mantra.\n*   **Celebrate Small Wins:** Acknowledge and celebrate your accomplishments, no matter how small. This builds momentum and motivation.\n*   **Learn to Delegate:** If you have the opportunity, delegate tasks that others can handle effectively. This frees up your time for higher-level work.\n*   **Automate Where Possible:** Look for opportunities to automate repetitive tasks using tools and software.\n\n**IV. Tools & Systems:**\n\n*   **Use a Task Management System:** Whether",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
+      }
+    },
+    {
+      "id": "TC023",
+      "name": "Request same list as note",
+      "category": "info_withholding",
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 2548,
+        "cleaning": 0,
+        "detection": 1,
+        "total": 2550
+      },
+      "rawResponse": "## 🚀 Boost Your Productivity: Essential Tips for Getting Things Done! 🚀\n\nHere's a collection of the best productivity tips to help you achieve more with less stress:\n\n---\n\n**🎯 Focus & Planning:**\n\n*   **Define Your Top 3 (or 1):** Before diving into your day, identify the 1-3 most crucial tasks that will make the biggest impact. Tackle these first.\n*   **Time Blocking:** Schedule specific blocks of time for different tasks. Treat these blocks like appointments you can't miss.\n*   **Batch Similar Tasks:** Group similar activities together (e.g., answering emails, making calls, administrative work) to minimize context switching.\n*   **Eat the Frog:** Tackle your most challenging or dreaded task first thing in the morning. Once it's done, the rest of your day feels easier.\n*   **Break Down Large Tasks:** Overwhelmed by a big project? Break it down into smaller, manageable steps. This makes it less daunting and provides a sense of progress.\n\n**⚡️ Execution & Efficiency:**\n\n*   **The Two-Minute Rule:** If a task takes less than two minutes, do it immediately. This prevents small tasks from piling up.\n*   **Eliminate Distractions:** Turn off notifications, close unnecessary tabs, and find a quiet workspace. Consider using website blockers if needed.\n*   **Single-Tasking is King:** Resist the urge to multitask. Focus on one thing at a time for higher quality and speed.\n*   **Use the Pomodoro Technique:** Work in focused bursts (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes). This helps maintain concentration and prevent burnout.\n*   **Automate & Delegate:** Look for opportunities to automate repetitive tasks or delegate work to others when possible.\n\n**🧠 Mindset & Wellbeing:**\n\n*   **Prioritize Sleep:** A well-rested mind is a productive mind. Aim for 7-9 hours of quality sleep.\n*   **Take Regular Breaks:** Step away from your work to stretch, walk around, or simply clear your head. Breaks are crucial for sustained productivity.\n*   **Mindfulness & Meditation:** Even short bursts of mindfulness can improve focus, reduce stress, and enhance your ability to be present.\n*   **Stay Hydrated & Nourished:** Fuel your body and brain with water and healthy foods.\n*   **Learn to Say No:** Protect your time and energy by politely declining requests that don't align with your priorities or capacity.\n*   **Review & Reflect:** At the end of the day or week, take a moment to review what you accomplished, what worked well, and what could be improved.\n\n**🛠️ Tools & Systems:**\n\n*   **Use a Task Management System:** Whether it's a digital app (Todoist, Asana, Trello) or a simple notebook, having a central place to track your tasks is essential.\n*   **Leverage Calendar Apps:** Schedule everything, from meetings to deep work sessions, to create a visual roadmap for your day.\n*   **Explore Productivity Apps:** Experiment with apps for note-taking, focus, time tracking, and more to find what works best for you.\n\n---\n\n**Remember:** Productivity isn't about working harder, it's about working smarter. Experiment with these tips, find what resonates with you, and build habits that support your goals!\n\n**#Productivity #Tips #Focus #TimeManagement #Efficiency #Success #WorkSmarter**",
+      "cleanedMessage": "## 🚀 Boost Your Productivity: Essential Tips for Getting Things Done! 🚀\n\nHere's a collection of the best productivity tips to help you achieve more with less stress:\n\n---\n\n**🎯 Focus & Planning:**\n\n*   **Define Your Top 3 (or 1):** Before diving into your day, identify the 1-3 most crucial tasks that will make the biggest impact. Tackle these first.\n*   **Time Blocking:** Schedule specific blocks of time for different tasks. Treat these blocks like appointments you can't miss.\n*   **Batch Similar Tasks:** Group similar activities together (e.g., answering emails, making calls, administrative work) to minimize context switching.\n*   **Eat the Frog:** Tackle your most challenging or dreaded task first thing in the morning. Once it's done, the rest of your day feels easier.\n*   **Break Down Large Tasks:** Overwhelmed by a big project? Break it down into smaller, manageable steps. This makes it less daunting and provides a sense of progress.\n\n**⚡️ Execution & Efficiency:**\n\n*   **The Two-Minute Rule:** If a task takes less than two minutes, do it immediately. This prevents small tasks from piling up.\n*   **Eliminate Distractions:** Turn off notifications, close unnecessary tabs, and find a quiet workspace. Consider using website blockers if needed.\n*   **Single-Tasking is King:** Resist the urge to multitask. Focus on one thing at a time for higher quality and speed.\n*   **Use the Pomodoro Technique:** Work in focused bursts (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes). This helps maintain concentration and prevent burnout.\n*   **Automate & Delegate:** Look for opportunities to automate repetitive tasks or delegate work to others when possible.\n\n**🧠 Mindset & Wellbeing:**\n\n*   **Prioritize Sleep:** A well-rested mind is a productive mind. Aim for 7-9 hours of quality sleep.\n*   **Take Regular Breaks:** Step away from your work to stretch, walk around, or simply clear your head. Breaks are crucial for sustained productivity.\n*   **Mindfulness & Meditation:** Even short bursts of mindfulness can improve focus, reduce stress, and enhance your ability to be present.\n*   **Stay Hydrated & Nourished:** Fuel your body and brain with water and healthy foods.\n*   **Learn to Say No:** Protect your time and energy by politely declining requests that don't align with your priorities or capacity.\n*   **Review & Reflect:** At the end of the day or week, take a moment to review what you accomplished, what worked well, and what could be improved.\n\n**🛠️ Tools & Systems:**\n\n*   **Use a Task Management System:** Whether it's a digital app (Todoist, Asana, Trello) or a simple notebook, having a central place to track your tasks is essential.\n*   **Leverage Calendar Apps:** Schedule everything, from meetings to deep work sessions, to create a visual roadmap for your day.\n*   **Explore Productivity Apps:** Experiment with apps for note-taking, focus, time tracking, and more to find what works best for you.\n\n---\n\n**Remember:** Productivity isn't about working harder, it's about working smarter. Experiment with these tips, find what resonates with you, and build habits that support your goals!\n\n**#Productivity #Tips #Focus #TimeManagement #Efficiency #Success #WorkSmarter**",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
+      }
+    },
+    {
+      "id": "TC024",
+      "name": "Create task and ask question",
       "category": "mixed_requests",
-      "name": "Create note AND explain React hooks",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
+      "timings": {
+        "aiCall": 2956,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 2956
       },
-      "details": {
-        "originalLength": 778,
-        "cleanedLength": 391,
-        "removedChars": 387,
-        "extractedCount": 1
+      "rawResponse": "Here's the task added to your schedule and the explanation of `useState` vs. `useReducer`:\n\n## Tomorrow's Tasks:\n\n*   **Study React Hooks:** Focus on understanding `useState` and `useReducer` in depth.\n    *   **Specific Goal:** Be able to explain the differences between `useState` and `useReducer` and when to choose one over the other.\n    *   **Action:** Read official React documentation, watch tutorials, and try to implement small examples of both.\n\n---\n\n## `useState` vs. `useReducer`: What's the Difference?\n\nBoth `useState` and `useReducer` are React Hooks used for managing **local component state**. However, they differ in their complexity, how they handle state updates, and when you should choose one over the other.\n\nHere's a breakdown:\n\n### `useState`\n\n*   **Purpose:** The simplest way to manage state in functional components. It's ideal for simple state variables that can be directly updated.\n*   **How it works:**\n    *   You call `useState(initialState)` and it returns an array with two elements:\n        1.  The **current state value**.\n        2.  A **function to update that state value**.\n    *   When you call the update function, React re-renders the component with the new state.\n*   **When to use it:**\n    *   For simple state values like booleans, strings, numbers, or small arrays/objects.\n    *   When state updates are straightforward and don't involve complex logic or multiple dependent state changes.\n    *   For most everyday state management needs.\n\n**Example:**\n\n```javascript\nimport React, { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0); // Initial state is 0\n\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n      <button onClick={() => setCount(count - 1)}>Decrement</button>\n      <button onClick={() => setCount(0)}>Reset</button>\n    </div>\n  );\n}\n```\n\n### `useReducer`\n\n*   **Purpose:** A more powerful alternative to `useState` for managing complex state logic. It's particularly useful when your state has multiple sub-values or when the next state depends on the previous one in a more intricate way.\n*   **How it works:**\n    *   You call `useReducer(reducer, initialState)`.\n    *   `reducer`: A function that takes the `currentState` and an `action` as arguments and returns the `newState`.\n    *   `initialState`: The initial value of your state.\n    *   `useReducer` returns an array with two elements:\n        1.  The **current state value**.\n        2.  A **`dispatch` function**. You call `dispatch` with an `action` object to trigger a state update. The `reducer` function then determines the new state based on the `action`.\n*   **When to use it:**\n    *   When your state is complex and has multiple related properties.\n    *   When the logic for updating state involves multiple steps or conditions.\n    *   When the next state depends on the previous state in a non-trivial way (e.g., toggling multiple flags, performing calculations based on previous values).\n    *   When you want to centralize and test your state update logic more effectively.\n    *   When you're migrating from class component `setState` with reducer functions.\n\n**Example:**\n\n```javascript\nimport React, { useReducer } from 'react';\n\n// Define the initial state\nconst initialState = { count: 0 };\n\n// Define the reducer function\nfunction reducer(state, action) {\n  switch (action.type) {\n    case 'increment':\n      return { count: state.count + 1 };\n    case 'decrement':\n      return { count: state.count - 1 };\n    case 'reset':\n      return { count: 0 };\n    default:\n      throw new Error();\n  }\n}\n\nfunction CounterWithReducer() {\n  const [state, dispatch] = useReducer(reducer, initialState); // Pass reducer and initial state\n\n  return (\n    <div>\n      <p>Count: {state.count}</p>\n      <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>\n      <button onClick={() => dispatch({ type: 'decrement' })}>Decrement</button>\n      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>\n    </div>\n  );",
+      "cleanedMessage": "Here's the task added to your schedule and the explanation of `useState` vs. `useReducer`:\n\n## Tomorrow's Tasks:\n\n*   **Study React Hooks:** Focus on understanding `useState` and `useReducer` in depth.\n    *   **Specific Goal:** Be able to explain the differences between `useState` and `useReducer` and when to choose one over the other.\n    *   **Action:** Read official React documentation, watch tutorials, and try to implement small examples of both.\n\n---\n\n## `useState` vs. `useReducer`: What's the Difference?\n\nBoth `useState` and `useReducer` are React Hooks used for managing **local component state**. However, they differ in their complexity, how they handle state updates, and when you should choose one over the other.\n\nHere's a breakdown:\n\n### `useState`\n\n*   **Purpose:** The simplest way to manage state in functional components. It's ideal for simple state variables that can be directly updated.\n*   **How it works:**\n    *   You call `useState(initialState)` and it returns an array with two elements:\n        1.  The **current state value**.\n        2.  A **function to update that state value**.\n    *   When you call the update function, React re-renders the component with the new state.\n*   **When to use it:**\n    *   For simple state values like booleans, strings, numbers, or small arrays/objects.\n    *   When state updates are straightforward and don't involve complex logic or multiple dependent state changes.\n    *   For most everyday state management needs.\n\n**Example:**\n\n```javascript\nimport React, { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0); // Initial state is 0\n\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n      <button onClick={() => setCount(count - 1)}>Decrement</button>\n      <button onClick={() => setCount(0)}>Reset</button>\n    </div>\n  );\n}\n```\n\n### `useReducer`\n\n*   **Purpose:** A more powerful alternative to `useState` for managing complex state logic. It's particularly useful when your state has multiple sub-values or when the next state depends on the previous one in a more intricate way.\n*   **How it works:**\n    *   You call `useReducer(reducer, initialState)`.\n    *   `reducer`: A function that takes the `currentState` and an `action` as arguments and returns the `newState`.\n    *   `initialState`: The initial value of your state.\n    *   `useReducer` returns an array with two elements:\n        1.  The **current state value**.\n        2.  A **`dispatch` function**. You call `dispatch` with an `action` object to trigger a state update. The `reducer` function then determines the new state based on the `action`.\n*   **When to use it:**\n    *   When your state is complex and has multiple related properties.\n    *   When the logic for updating state involves multiple steps or conditions.\n    *   When the next state depends on the previous state in a non-trivial way (e.g., toggling multiple flags, performing calculations based on previous values).\n    *   When you want to centralize and test your state update logic more effectively.\n    *   When you're migrating from class component `setState` with reducer functions.\n\n**Example:**\n\n```javascript\nimport React, { useReducer } from 'react';\n\n// Define the initial state\nconst initialState = { count: 0 };\n\n// Define the reducer function\nfunction reducer(state, action) {\n  switch (action.type) {\n    case 'increment':\n      return { count: state.count + 1 };\n    case 'decrement':\n      return { count: state.count - 1 };\n    case 'reset':\n      return { count: 0 };\n    default:\n      throw new Error();\n  }\n}\n\nfunction CounterWithReducer() {\n  const [state, dispatch] = useReducer(reducer, initialState); // Pass reducer and initial state\n\n  return (\n    <div>\n      <p>Count: {state.count}</p>\n      <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>\n      <button onClick={() => dispatch({ type: 'decrement' })}>Decrement</button>\n      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>\n    </div>\n  );",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC026",
+      "id": "TC025",
+      "name": "Create note and get feedback",
       "category": "mixed_requests",
-      "name": "Add task and suggest where to start",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 3583,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 3583
       },
-      "details": {
-        "originalLength": 630,
-        "cleanedLength": 558,
-        "removedChars": 72,
-        "extractedCount": 1
+      "rawResponse": "This is a great project idea! A task manager with AI has a lot of potential and could offer a significant improvement over existing task management tools. Here's a breakdown of my thoughts and some points to consider:\n\n**Overall Impression:**\n\n*   **High Potential & Relevance:** Task management is a universal need, and AI integration can address common pain points like overwhelm, prioritization, and time management. This makes it a highly relevant and potentially impactful project.\n*   **Challenging but Rewarding:** Implementing AI effectively will require careful planning and execution, but the payoff in terms of user value can be substantial.\n*   **Differentiator:** While many task managers exist, those with truly intelligent AI features are still relatively rare, giving you a strong opportunity to stand out.\n\n**Key Areas Where AI Can Shine in a Task Manager:**\n\nHere are some specific ways AI can enhance a task manager, which you can use as inspiration or as core features:\n\n*   **Intelligent Task Creation & Parsing:**\n    *   **Natural Language Processing (NLP):** Allow users to add tasks by simply typing or speaking in natural language (e.g., \"Remind me to call the plumber tomorrow at 2 PM about the leaky faucet\"). The AI can parse this to extract the task, due date, time, and relevant context.\n    *   **Smart Suggestions:** Based on past tasks and habits, the AI can suggest task details, categories, or even sub-tasks.\n*   **Prioritization & Scheduling:**\n    *   **Dynamic Prioritization:** The AI can learn user priorities and automatically re-prioritize tasks based on urgency, importance, deadlines, and even estimated effort.\n    *   **Smart Scheduling:** Suggest optimal times to work on tasks based on the user's calendar, energy levels (if tracked), and the estimated time required. It could even suggest breaking down large tasks into smaller, manageable chunks.\n    *   **Conflict Detection:** Alert users if their schedule becomes too packed or if tasks overlap.\n*   **Task Breakdown & Project Management:**\n    *   **Automatic Sub-task Generation:** For complex tasks, the AI could suggest a breakdown into smaller, actionable steps.\n    *   **Project Planning Assistance:** Help users outline project steps, estimate timelines, and identify potential bottlenecks.\n*   **Contextual Reminders & Notifications:**\n    *   **Location-Based Reminders:** Remind users of tasks when they arrive at a specific location (e.g., \"Buy groceries when you get to the supermarket\").\n    *   **Time-Based Reminders:** More intelligent reminders that consider the user's current activity or focus.\n    *   **Proactive Nudges:** Remind users about upcoming deadlines or tasks they might have forgotten.\n*   **Productivity Analysis & Insights:**\n    *   **Time Tracking & Analysis:** Automatically track time spent on tasks (with user permission) and provide insights into productivity patterns.\n    *   **Habit Identification:** Identify recurring tasks and suggest automation or better management strategies.\n    *   **Performance Benchmarking:** Compare user productivity against their own past performance or general trends.\n*   **Workflow Automation:**\n    *   **Repetitive Task Automation:** Identify and automate recurring tasks or sequences of actions.\n    *   **Integration with Other Tools:** Connect with calendars, email, note-taking apps, etc., to streamline workflows.\n*   **Personalization & Learning:**\n    *   **Adaptive Interface:** The AI can learn user preferences for how they like to view and manage tasks.\n    *   **Personalized Recommendations:** Suggest new features or ways to organize tasks based on user behavior.\n\n**Potential Challenges & Considerations:**\n\n*   **Data Privacy & Security:** Handling user task data requires robust privacy and security measures.\n*   **AI Accuracy & Reliability:** The AI needs to be accurate and reliable to be trusted by users. Incorrect suggestions or missed reminders can be frustrating.\n*   **User Trust & Adoption:** Users might be hesitant to fully delegate task management to an AI. Building trust through transparency and user control is crucial.\n*   **Complexity of Implementation:** Developing sophisticated AI models can be challenging and time-consuming.\n*   **Defining \"Intelligence\":** What does \"AI\" mean in this context? Clearly define the scope and capabilities of your AI.\n*   **User Experience (UX):** The AI should enhance, not complicate, the user experience. It should feel intuitive and helpful.\n*   **Over-reliance:** Ensure the AI acts as an assistant, not a replacement for user agency. Users should always have the final say.\n*   **Ethical Considerations:** Be mindful of potential biases in the AI and how it might influence user behavior.\n\n**To Make Your Project Idea Stronger, Consider:**\n\n1.  **Target Audience:** Who are you building this for? (e.g., busy professionals, students",
+      "cleanedMessage": "This is a great project idea! A task manager with AI has a lot of potential and could offer a significant improvement over existing task management tools. Here's a breakdown of my thoughts and some points to consider:\n\n**Overall Impression:**\n\n*   **High Potential & Relevance:** Task management is a universal need, and AI integration can address common pain points like overwhelm, prioritization, and time management. This makes it a highly relevant and potentially impactful project.\n*   **Challenging but Rewarding:** Implementing AI effectively will require careful planning and execution, but the payoff in terms of user value can be substantial.\n*   **Differentiator:** While many task managers exist, those with truly intelligent AI features are still relatively rare, giving you a strong opportunity to stand out.\n\n**Key Areas Where AI Can Shine in a Task Manager:**\n\nHere are some specific ways AI can enhance a task manager, which you can use as inspiration or as core features:\n\n*   **Intelligent Task Creation & Parsing:**\n    *   **Natural Language Processing (NLP):** Allow users to add tasks by simply typing or speaking in natural language (e.g., \"Remind me to call the plumber tomorrow at 2 PM about the leaky faucet\"). The AI can parse this to extract the task, due date, time, and relevant context.\n    *   **Smart Suggestions:** Based on past tasks and habits, the AI can suggest task details, categories, or even sub-tasks.\n*   **Prioritization & Scheduling:**\n    *   **Dynamic Prioritization:** The AI can learn user priorities and automatically re-prioritize tasks based on urgency, importance, deadlines, and even estimated effort.\n    *   **Smart Scheduling:** Suggest optimal times to work on tasks based on the user's calendar, energy levels (if tracked), and the estimated time required. It could even suggest breaking down large tasks into smaller, manageable chunks.\n    *   **Conflict Detection:** Alert users if their schedule becomes too packed or if tasks overlap.\n*   **Task Breakdown & Project Management:**\n    *   **Automatic Sub-task Generation:** For complex tasks, the AI could suggest a breakdown into smaller, actionable steps.\n    *   **Project Planning Assistance:** Help users outline project steps, estimate timelines, and identify potential bottlenecks.\n*   **Contextual Reminders & Notifications:**\n    *   **Location-Based Reminders:** Remind users of tasks when they arrive at a specific location (e.g., \"Buy groceries when you get to the supermarket\").\n    *   **Time-Based Reminders:** More intelligent reminders that consider the user's current activity or focus.\n    *   **Proactive Nudges:** Remind users about upcoming deadlines or tasks they might have forgotten.\n*   **Productivity Analysis & Insights:**\n    *   **Time Tracking & Analysis:** Automatically track time spent on tasks (with user permission) and provide insights into productivity patterns.\n    *   **Habit Identification:** Identify recurring tasks and suggest automation or better management strategies.\n    *   **Performance Benchmarking:** Compare user productivity against their own past performance or general trends.\n*   **Workflow Automation:**\n    *   **Repetitive Task Automation:** Identify and automate recurring tasks or sequences of actions.\n    *   **Integration with Other Tools:** Connect with calendars, email, note-taking apps, etc., to streamline workflows.\n*   **Personalization & Learning:**\n    *   **Adaptive Interface:** The AI can learn user preferences for how they like to view and manage tasks.\n    *   **Personalized Recommendations:** Suggest new features or ways to organize tasks based on user behavior.\n\n**Potential Challenges & Considerations:**\n\n*   **Data Privacy & Security:** Handling user task data requires robust privacy and security measures.\n*   **AI Accuracy & Reliability:** The AI needs to be accurate and reliable to be trusted by users. Incorrect suggestions or missed reminders can be frustrating.\n*   **User Trust & Adoption:** Users might be hesitant to fully delegate task management to an AI. Building trust through transparency and user control is crucial.\n*   **Complexity of Implementation:** Developing sophisticated AI models can be challenging and time-consuming.\n*   **Defining \"Intelligence\":** What does \"AI\" mean in this context? Clearly define the scope and capabilities of your AI.\n*   **User Experience (UX):** The AI should enhance, not complicate, the user experience. It should feel intuitive and helpful.\n*   **Over-reliance:** Ensure the AI acts as an assistant, not a replacement for user agency. Users should always have the final say.\n*   **Ethical Considerations:** Be mindful of potential biases in the AI and how it might influence user behavior.\n\n**To Make Your Project Idea Stronger, Consider:**\n\n1.  **Target Audience:** Who are you building this for? (e.g., busy professionals, students",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC027",
-      "category": "mixed_requests",
-      "name": "Schedule meeting and suggest agenda",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 568,
-        "cleanedLength": 412,
-        "removedChars": 156,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC028",
-      "category": "mixed_requests",
-      "name": "Create note with code AND debug it",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 783,
-        "cleanedLength": 516,
-        "removedChars": 267,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC029",
-      "category": "mixed_requests",
-      "name": "Create tasks for project AND estimate timeline",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 1,
-        "detectionTime": 0,
-        "totalTime": 1
-      },
-      "details": {
-        "originalLength": 877,
-        "cleanedLength": 542,
-        "removedChars": 335,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC030",
+      "id": "TC026",
+      "name": "Very long note content",
       "category": "edge_cases",
-      "name": "Malformed JSON in response",
-      "passed": false,
-      "issues": [
-        {
-          "type": "json_leak",
-          "severity": "high",
-          "patterns": [
-            {
-              "pattern": "TASKS_JSON marker",
-              "severity": "high",
-              "sample": "TASKS_JSON: ["
-            }
-          ]
-        }
-      ],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "passed": true,
+      "issues": [],
+      "timings": {
+        "aiCall": 2961,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 2961
       },
-      "details": {
-        "originalLength": 122,
-        "cleanedLength": 50,
-        "removedChars": 72,
-        "extractedCount": 0
+      "rawResponse": "## Comprehensive Python Programming Notes\n\nThis document provides a comprehensive overview of essential Python programming concepts, including variables, data types, control flow, functions, classes, modules, error handling, and best practices. Each section includes explanations and illustrative examples.\n\n---\n\n### 1. Variables and Data Types\n\n**Variables** are named containers that store data. In Python, you don't need to declare the type of a variable explicitly; the interpreter infers it from the assigned value.\n\n**Data Types** represent the kind of data a variable can hold. Python has several built-in data types:\n\n*   **Numeric Types:**\n    *   `int`: Whole numbers (e.g., `5`, `-10`, `0`).\n    *   `float`: Numbers with decimal points (e.g., `3.14`, `-0.5`, `2.0`).\n    *   `complex`: Complex numbers (e.g., `2 + 3j`).\n\n*   **Sequence Types:**\n    *   `str`: Immutable sequences of characters (text) (e.g., `\"Hello\"`, `'Python'`).\n    *   `list`: Mutable, ordered sequences of items (can contain different data types) (e.g., `[1, \"apple\", 3.14]`).\n    *   `tuple`: Immutable, ordered sequences of items (e.g., `(1, \"banana\", 2.71)`).\n\n*   **Mapping Type:**\n    *   `dict`: Mutable, unordered collections of key-value pairs (keys must be immutable) (e.g., `{\"name\": \"Alice\", \"age\": 30}`).\n\n*   **Set Types:**\n    *   `set`: Mutable, unordered collections of unique items (e.g., `{1, 2, 3}`).\n    *   `frozenset`: Immutable version of a set.\n\n*   **Boolean Type:**\n    *   `bool`: Represents truth values (`True` or `False`).\n\n**Examples:**\n\n```python\n# Numeric types\nage = 30           # int\nprice = 19.99      # float\ncomplex_num = 1 + 2j # complex\n\n# Sequence types\nname = \"Alice\"     # str\nfruits = [\"apple\", \"banana\", \"cherry\"] # list\ncoordinates = (10, 20) # tuple\n\n# Mapping type\nperson = {\"name\": \"Bob\", \"city\": \"New York\"} # dict\n\n# Set types\nunique_numbers = {1, 2, 3, 2, 1} # set (will be {1, 2, 3})\nfrozen_set_example = frozenset([4, 5, 6]) # frozenset\n\n# Boolean type\nis_active = True   # bool\nis_empty = False   # bool\n\n# Type checking\nprint(type(age))         # Output: <class 'int'>\nprint(type(fruits))      # Output: <class 'list'>\nprint(type(is_active))   # Output: <class 'bool'>\n```\n\n---\n\n### 2. Control Flow\n\nControl flow statements determine the order in which code is executed.\n\n*   **Conditional Statements (`if`, `elif`, `else`):** Execute blocks of code based on whether a condition is true or false.\n\n    ```python\n    score = 85\n\n    if score >= 90:\n        print(\"Excellent!\")\n    elif score >= 70:\n        print(\"Good job.\")\n    else:\n        print(\"Needs improvement.\")\n    ```\n\n*   **Loops:**\n    *   **`for` loop:** Iterates over a sequence (like a list, tuple, string, or range).\n\n        ```python\n        # Iterating over a list\n        for fruit in fruits:\n            print(fruit)\n\n        # Iterating with index using range()\n        for i in range(len(fruits)):\n            print(f\"Index {i}: {fruits[i]}\")\n\n        # Iterating over a string\n        for char in name:\n            print(char)\n        ```\n\n    *   **`while` loop:** Executes a block of code as long as a condition is true.\n\n        ```python\n        count = 0\n        while count < 5:\n            print(f\"Count: {count}\")\n            count += 1\n        ```\n\n*   **`break` and `continue`:**\n    *   `break`: Exits the current loop entirely.\n    *   `continue`: Skips the rest of the current iteration and proceeds to the next.\n\n    ```python\n    numbers = [",
+      "cleanedMessage": "## Comprehensive Python Programming Notes\n\nThis document provides a comprehensive overview of essential Python programming concepts, including variables, data types, control flow, functions, classes, modules, error handling, and best practices. Each section includes explanations and illustrative examples.\n\n---\n\n### 1. Variables and Data Types\n\n**Variables** are named containers that store data. In Python, you don't need to declare the type of a variable explicitly; the interpreter infers it from the assigned value.\n\n**Data Types** represent the kind of data a variable can hold. Python has several built-in data types:\n\n*   **Numeric Types:**\n    *   `int`: Whole numbers (e.g., `5`, `-10`, `0`).\n    *   `float`: Numbers with decimal points (e.g., `3.14`, `-0.5`, `2.0`).\n    *   `complex`: Complex numbers (e.g., `2 + 3j`).\n\n*   **Sequence Types:**\n    *   `str`: Immutable sequences of characters (text) (e.g., `\"Hello\"`, `'Python'`).\n    *   `list`: Mutable, ordered sequences of items (can contain different data types) (e.g., `[1, \"apple\", 3.14]`).\n    *   `tuple`: Immutable, ordered sequences of items (e.g., `(1, \"banana\", 2.71)`).\n\n*   **Mapping Type:**\n    *   `dict`: Mutable, unordered collections of key-value pairs (keys must be immutable) (e.g., `{\"name\": \"Alice\", \"age\": 30}`).\n\n*   **Set Types:**\n    *   `set`: Mutable, unordered collections of unique items (e.g., `{1, 2, 3}`).\n    *   `frozenset`: Immutable version of a set.\n\n*   **Boolean Type:**\n    *   `bool`: Represents truth values (`True` or `False`).\n\n**Examples:**\n\n```python\n# Numeric types\nage = 30           # int\nprice = 19.99      # float\ncomplex_num = 1 + 2j # complex\n\n# Sequence types\nname = \"Alice\"     # str\nfruits = [\"apple\", \"banana\", \"cherry\"] # list\ncoordinates = (10, 20) # tuple\n\n# Mapping type\nperson = {\"name\": \"Bob\", \"city\": \"New York\"} # dict\n\n# Set types\nunique_numbers = {1, 2, 3, 2, 1} # set (will be {1, 2, 3})\nfrozen_set_example = frozenset([4, 5, 6]) # frozenset\n\n# Boolean type\nis_active = True   # bool\nis_empty = False   # bool\n\n# Type checking\nprint(type(age))         # Output: <class 'int'>\nprint(type(fruits))      # Output: <class 'list'>\nprint(type(is_active))   # Output: <class 'bool'>\n```\n\n---\n\n### 2. Control Flow\n\nControl flow statements determine the order in which code is executed.\n\n*   **Conditional Statements (`if`, `elif`, `else`):** Execute blocks of code based on whether a condition is true or false.\n\n    ```python\n    score = 85\n\n    if score >= 90:\n        print(\"Excellent!\")\n    elif score >= 70:\n        print(\"Good job.\")\n    else:\n        print(\"Needs improvement.\")\n    ```\n\n*   **Loops:**\n    *   **`for` loop:** Iterates over a sequence (like a list, tuple, string, or range).\n\n        ```python\n        # Iterating over a list\n        for fruit in fruits:\n            print(fruit)\n\n        # Iterating with index using range()\n        for i in range(len(fruits)):\n            print(f\"Index {i}: {fruits[i]}\")\n\n        # Iterating over a string\n        for char in name:\n            print(char)\n        ```\n\n    *   **`while` loop:** Executes a block of code as long as a condition is true.\n\n        ```python\n        count = 0\n        while count < 5:\n            print(f\"Count: {count}\")\n            count += 1\n        ```\n\n*   **`break` and `continue`:**\n    *   `break`: Exits the current loop entirely.\n    *   `continue`: Skips the rest of the current iteration and proceeds to the next.\n\n    ```python\n    numbers = [",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC031",
+      "id": "TC027",
+      "name": "Note with unicode and emoji",
       "category": "edge_cases",
-      "name": "JSON with unescaped quotes",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 753,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 753
       },
-      "details": {
-        "originalLength": 111,
-        "cleanedLength": 13,
-        "removedChars": 98,
-        "extractedCount": 1
+      "rawResponse": "Here's your note titled 'Goals 2025':\n\n**Goals 2025**\n\n1. Fitness 💪\n2. Travel 🌍\n3. Learning 📚",
+      "cleanedMessage": "Here's your note titled 'Goals 2025':\n\n**Goals 2025**\n\n1. Fitness 💪\n2. Travel 🌍\n3. Learning 📚",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC032",
+      "id": "TC028",
+      "name": "Task with complex date",
       "category": "edge_cases",
-      "name": "Very long JSON content",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 600,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 601
       },
-      "details": {
-        "originalLength": 1449,
-        "cleanedLength": 64,
-        "removedChars": 1385,
-        "extractedCount": 1
+      "rawResponse": "Okay, I'll remind you to submit your quarterly report every last Friday of the month.",
+      "cleanedMessage": "Okay, I'll remind you to submit your quarterly report every last Friday of the month.",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC033",
+      "id": "TC029",
+      "name": "Very short request",
       "category": "edge_cases",
-      "name": "Empty content fields",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
+      "timings": {
+        "aiCall": 1986,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 1986
       },
-      "details": {
-        "originalLength": 78,
-        "cleanedLength": 23,
-        "removedChars": 55,
-        "extractedCount": 1
+      "rawResponse": "Okay, I'm ready! What would you like me to note?\n\nPlease tell me:\n\n*   **What subject is this test for?** (e.g., History, Math, Science, Literature, a specific topic)\n*   **What are the main topics or chapters covered?**\n*   **Are there any specific types of questions you're expecting?** (e.g., multiple choice, essay, definitions, problem-solving)\n*   **Is there anything you want to focus on or emphasize?**\n\nOnce I have a better idea of what you need, I can help you create effective notes.\n\n**In the meantime, here are some general note-taking strategies and prompts you can use to get started:**\n\n---\n\n### **General Test Note-Taking Framework**\n\n**I. Key Concepts & Definitions**\n    *   What are the most important terms or ideas?\n    *   Define them clearly and concisely.\n    *   Think about synonyms or antonyms.\n\n**II. Major Theories & Principles**\n    *   What are the overarching theories or principles discussed?\n    *   Who developed them? When?\n    *   What are the core components or steps?\n\n**III. Important People & Events**\n    *   Who are the key figures? What did they do?\n    *   What are the significant events? When did they happen? What were their causes and effects?\n\n**IV. Processes & Steps**\n    *   Are there any processes or procedures to learn?\n    *   Break them down into sequential steps.\n    *   Use diagrams or flowcharts if helpful.\n\n**V. Formulas & Equations (if applicable)**\n    *   List all relevant formulas.\n    *   Define each variable.\n    *   Practice using them with examples.\n\n**VI. Examples & Applications**\n    *   What real-world examples illustrate these concepts?\n    *   How are these ideas applied in practice?\n\n**VII. Relationships & Connections**\n    *   How do different concepts relate to each other?\n    *   Are there any cause-and-effect relationships?\n    *   Compare and contrast different ideas.\n\n**VIII. Potential Test Questions**\n    *   What questions do you anticipate being on the test?\n    *   Try to formulate them yourself and then answer them thoroughly.\n\n**IX. Areas of Difficulty**\n    *   What parts of the material do you find most challenging?\n    *   Spend extra time reviewing these sections.\n\n---\n\n**Let's get started! Tell me about your test.**",
+      "cleanedMessage": "Okay, I'm ready! What would you like me to note?\n\nPlease tell me:\n\n*   **What subject is this test for?** (e.g., History, Math, Science, Literature, a specific topic)\n*   **What are the main topics or chapters covered?**\n*   **Are there any specific types of questions you're expecting?** (e.g., multiple choice, essay, definitions, problem-solving)\n*   **Is there anything you want to focus on or emphasize?**\n\nOnce I have a better idea of what you need, I can help you create effective notes.\n\n**In the meantime, here are some general note-taking strategies and prompts you can use to get started:**\n\n---\n\n### **General Test Note-Taking Framework**\n\n**I. Key Concepts & Definitions**\n    *   What are the most important terms or ideas?\n    *   Define them clearly and concisely.\n    *   Think about synonyms or antonyms.\n\n**II. Major Theories & Principles**\n    *   What are the overarching theories or principles discussed?\n    *   Who developed them? When?\n    *   What are the core components or steps?\n\n**III. Important People & Events**\n    *   Who are the key figures? What did they do?\n    *   What are the significant events? When did they happen? What were their causes and effects?\n\n**IV. Processes & Steps**\n    *   Are there any processes or procedures to learn?\n    *   Break them down into sequential steps.\n    *   Use diagrams or flowcharts if helpful.\n\n**V. Formulas & Equations (if applicable)**\n    *   List all relevant formulas.\n    *   Define each variable.\n    *   Practice using them with examples.\n\n**VI. Examples & Applications**\n    *   What real-world examples illustrate these concepts?\n    *   How are these ideas applied in practice?\n\n**VII. Relationships & Connections**\n    *   How do different concepts relate to each other?\n    *   Are there any cause-and-effect relationships?\n    *   Compare and contrast different ideas.\n\n**VIII. Potential Test Questions**\n    *   What questions do you anticipate being on the test?\n    *   Try to formulate them yourself and then answer them thoroughly.\n\n**IX. Areas of Difficulty**\n    *   What parts of the material do you find most challenging?\n    *   Spend extra time reviewing these sections.\n\n---\n\n**Let's get started! Tell me about your test.**",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     },
     {
-      "testId": "TC034",
+      "id": "TC030",
+      "name": "Ambiguous request",
       "category": "edge_cases",
-      "name": "Unicode and emoji in JSON",
       "passed": true,
       "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
+      "timings": {
+        "aiCall": 982,
+        "cleaning": 0,
+        "detection": 0,
+        "total": 982
       },
-      "details": {
-        "originalLength": 194,
-        "cleanedLength": 25,
-        "removedChars": 169,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC035",
-      "category": "edge_cases",
-      "name": "JSON with newlines in strings",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 233,
-        "cleanedLength": 24,
-        "removedChars": 209,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC036",
-      "category": "edge_cases",
-      "name": "Multiple JSON blocks of same type",
-      "passed": false,
-      "issues": [
-        {
-          "type": "json_leak",
-          "severity": "high",
-          "patterns": [
-            {
-              "pattern": "TASKS_JSON marker",
-              "severity": "high",
-              "sample": "TASKS_JSON: ["
-            }
-          ]
-        }
-      ],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 123,
-        "cleanedLength": 74,
-        "removedChars": 49,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC037",
-      "category": "edge_cases",
-      "name": "JSON-like text in explanation",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 301,
-        "cleanedLength": 230,
-        "removedChars": 71,
-        "extractedCount": 0
-      }
-    },
-    {
-      "testId": "TC038",
-      "category": "boundary_tests",
-      "name": "Very short response",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
-      },
-      "details": {
-        "originalLength": 5,
-        "cleanedLength": 5,
-        "removedChars": 0,
-        "extractedCount": 0
-      }
-    },
-    {
-      "testId": "TC039",
-      "category": "boundary_tests",
-      "name": "Response with no JSON markers",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 119,
-        "cleanedLength": 119,
-        "removedChars": 0,
-        "extractedCount": 0
-      }
-    },
-    {
-      "testId": "TC040",
-      "category": "boundary_tests",
-      "name": "Response with only JSON no conversational text",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 65,
-        "cleanedLength": 1,
-        "removedChars": 64,
-        "extractedCount": 1
-      }
-    },
-    {
-      "testId": "TC041",
-      "category": "boundary_tests",
-      "name": "Empty response",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 0
-      },
-      "details": {
-        "originalLength": 0,
-        "cleanedLength": 0,
-        "removedChars": 0,
-        "extractedCount": 0
-      }
-    },
-    {
-      "testId": "TC042",
-      "category": "edge_cases",
-      "name": "AI explaining JSON format itself",
-      "passed": true,
-      "issues": [],
-      "performance": {
-        "cleaningTime": 0,
-        "detectionTime": 0,
-        "totalTime": 1
-      },
-      "details": {
-        "originalLength": 413,
-        "cleanedLength": 234,
-        "removedChars": 179,
-        "extractedCount": 1
+      "rawResponse": "Okay, you have a dentist appointment next week! That's good you're keeping up with your dental health.\n\nTo give you more specific information, I need a little more context. What would you like to know or discuss about your dentist appointment? For example, are you wondering about:\n\n*   **What to expect?** (e.g., a cleaning, a filling, a check-up)\n*   **Preparation?** (e.g., what to do beforehand, what to bring)\n*   **Things to ask your dentist?**\n*   **Potential costs?**\n*   **How to manage anxiety?**\n*   **Anything specific you're worried about?**\n*   **Just a general reminder?**\n\nLet me know what's on your mind, and I'll do my best to help!",
+      "cleanedMessage": "Okay, you have a dentist appointment next week! That's good you're keeping up with your dental health.\n\nTo give you more specific information, I need a little more context. What would you like to know or discuss about your dentist appointment? For example, are you wondering about:\n\n*   **What to expect?** (e.g., a cleaning, a filling, a check-up)\n*   **Preparation?** (e.g., what to do beforehand, what to bring)\n*   **Things to ask your dentist?**\n*   **Potential costs?**\n*   **How to manage anxiety?**\n*   **Anything specific you're worried about?**\n*   **Just a general reminder?**\n\nLet me know what's on your mind, and I'll do my best to help!",
+      "extracted": {
+        "tasks": null,
+        "events": null,
+        "note": null
       }
     }
   ],
-  "analysis": {
-    "summary": {
-      "totalTests": 42,
-      "passed": 40,
-      "failed": 2,
-      "categories": {
-        "simple_entity_creation": {
-          "total": 5,
-          "passed": 5,
-          "failed": 0
-        },
-        "complex_content": {
-          "total": 9,
-          "passed": 9,
-          "failed": 0
-        },
-        "multiple_entities": {
-          "total": 4,
-          "passed": 4,
-          "failed": 0
-        },
-        "conversational_queries": {
-          "total": 6,
-          "passed": 6,
-          "failed": 0
-        },
-        "mixed_requests": {
-          "total": 5,
-          "passed": 5,
-          "failed": 0
-        },
-        "edge_cases": {
-          "total": 9,
-          "passed": 7,
-          "failed": 2
-        },
-        "boundary_tests": {
-          "total": 4,
-          "passed": 4,
-          "failed": 0
-        }
-      }
-    },
-    "leakPatterns": {
-      "TASKS_JSON marker": [
-        "TC030",
-        "TC036"
-      ]
-    },
-    "failedTests": [
-      {
-        "id": "TC030",
-        "name": "Malformed JSON in response",
-        "category": "edge_cases",
-        "issues": [
-          "json_leak [high]"
-        ]
-      },
-      {
-        "id": "TC036",
-        "name": "Multiple JSON blocks of same type",
-        "category": "edge_cases",
-        "issues": [
-          "json_leak [high]"
-        ]
-      }
-    ]
-  }
+  "testType": "REAL_AI_TESTING"
 }

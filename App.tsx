@@ -672,7 +672,7 @@ const App: React.FC = () => {
           </main>
         </div>
 
-        {/* AI Assistant - Floating on all pages */}
+        {/* AI Assistant - Floating chat on all pages */}
         <AIAssistant
           currentPage={activePage}
           onTaskCreate={handleAddTask}
@@ -688,12 +688,13 @@ const App: React.FC = () => {
               lastModified: Date.now(),
             };
             setNotes([newNote, ...notes]);
-            setActiveNoteId(newNote.id);
-            setActivePage('Notes');
             return newNote;
           }}
           onEventCreate={handleAddEvent}
+          onEventUpdate={handleUpdateEvent}
+          onEventDelete={handleDeleteEvent}
           tasks={tasks}
+          events={events}
         />
 
         {/* Floating Timer - Show only when active and not on Dashboard */}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { WidgetCard } from './WidgetCard';
 import { DateTimePicker } from './DateTimePicker';
 import { ProjectIcon } from './Icons';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface Project {
   id: string;
@@ -181,7 +182,13 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = () => {
                   onClick={() => setSchedulingProject(project)}
                   className="w-full text-xs px-3 py-2 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-accent text-left"
                 >
-                  📅 {project.dueDate ? `Due ${new Date(`${project.dueDate}${project.dueTime ? `T${project.dueTime}` : ''}`).toLocaleDateString()}` : 'Schedule'}
+                  📅 {project.dueDate
+                    ? `Due ${project.dueTime
+                      ? new Date(`${project.dueDate}T${project.dueTime}`).toLocaleDateString()
+                      : parseLocalDate(project.dueDate).toLocaleDateString()
+                    }`
+                    : 'Schedule'
+                  }
                 </button>
               </div>
               <div className="flex justify-between items-center mt-auto pt-4 border-t border-card-border">
