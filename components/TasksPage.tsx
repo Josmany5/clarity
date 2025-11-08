@@ -635,8 +635,6 @@ export const TasksPage: React.FC<TasksPageProps> = ({
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               const dueDate = formData.get('dueDate') as string;
-              const startDate = formData.get('startDate') as string;
-              const endDate = formData.get('endDate') as string;
               const dueTime = formData.get('dueTime') as string;
               const estimatedTime = formData.get('estimatedTime') as string;
               const recurring = (formData.get('recurring') as string) === 'on';
@@ -645,7 +643,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({
 
               // Get selected days of week
               const recurringDays: number[] = [];
-              if (recurring && recurringFrequency === 'weekly') {
+              if (recurring) {
                 for (let i = 0; i < 7; i++) {
                   if (formData.get(`day-${i}`) === 'on') {
                     recurringDays.push(i);
@@ -656,8 +654,6 @@ export const TasksPage: React.FC<TasksPageProps> = ({
               onUpdateTask({
                 ...schedulingTask,
                 dueDate: dueDate || undefined,
-                startDate: startDate || undefined,
-                endDate: endDate || undefined,
                 dueTime: dueTime || undefined,
                 estimatedTime: estimatedTime ? parseInt(estimatedTime) : undefined,
                 recurring: recurring ? {
@@ -685,28 +681,6 @@ export const TasksPage: React.FC<TasksPageProps> = ({
                     type="time"
                     name="dueTime"
                     defaultValue={schedulingTask.dueTime || ''}
-                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-              </div>
-
-              {/* Multi-day Task Range */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-2">Start Date (for multi-day tasks)</label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    defaultValue={schedulingTask.startDate || ''}
-                    className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-2">End Date (for multi-day tasks)</label>
-                  <input
-                    type="date"
-                    name="endDate"
-                    defaultValue={schedulingTask.endDate || ''}
                     className="w-full bg-black/5 dark:bg-white/5 text-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
                   />
                 </div>
@@ -796,8 +770,6 @@ export const TasksPage: React.FC<TasksPageProps> = ({
                       ...schedulingTask,
                       dueDate: undefined,
                       dueTime: undefined,
-                      startDate: undefined,
-                      endDate: undefined,
                       estimatedTime: undefined,
                       recurring: undefined,
                     });

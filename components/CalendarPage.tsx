@@ -62,15 +62,35 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
       }
     });
 
-    // Add events (expand multi-day events)
+    // Add events (with recurring support)
     propEvents.forEach((event: Event) => {
       const startDate = parseLocalDate(event.startDate);
-      const endDate = event.endDate ? parseLocalDate(event.endDate) : startDate;
 
-      // For each day in the range, create a calendar event entry
-      const currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        const dateStr = currentDate.toISOString().split('T')[0];
+      if (event.recurring && event.recurring.daysOfWeek && event.recurring.daysOfWeek.length > 0) {
+        // Recurring event with specific days
+        const recurringEndDate = event.recurring.endDate ? parseLocalDate(event.recurring.endDate) : new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000); // 1 year default
+
+        const currentDate = new Date(startDate);
+        while (currentDate <= recurringEndDate) {
+          const dayOfWeek = currentDate.getDay();
+          if (event.recurring.daysOfWeek.includes(dayOfWeek)) {
+            const dateStr = currentDate.toISOString().split('T')[0];
+            events.push({
+              id: event.id,
+              title: event.title,
+              date: dateStr,
+              time: event.startTime,
+              endTime: event.endTime,
+              type: 'event',
+              eventType: event.type,
+              recurring: event.recurring,
+            });
+          }
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+      } else {
+        // Single date event
+        const dateStr = startDate.toISOString().split('T')[0];
         events.push({
           id: event.id,
           title: event.title,
@@ -81,7 +101,6 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({
           eventType: event.type,
           recurring: event.recurring,
         });
-        currentDate.setDate(currentDate.getDate() + 1);
       }
     });
 

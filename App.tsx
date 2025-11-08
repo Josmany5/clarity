@@ -36,14 +36,12 @@ export interface Task {
   urgent: boolean;
   important: boolean;
   dueDate?: string; // YYYY-MM-DD (kept for backward compatibility)
-  startDate?: string; // YYYY-MM-DD (for multi-day tasks)
-  endDate?: string; // YYYY-MM-DD (for multi-day tasks)
   dueTime?: string;
   estimatedTime?: number; // in minutes
   recurring?: {
     frequency: 'daily' | 'weekly' | 'monthly';
-    daysOfWeek?: number[]; // 0-6 (Sunday-Saturday)
-    endDate?: string; // YYYY-MM-DD (when recurrence ends)
+    daysOfWeek?: number[]; // 0-6 (Sunday-Saturday) - specify which days task occurs
+    endDate?: string; // YYYY-MM-DD (when recurrence stops)
   };
   subtasks?: Subtask[];
   listId?: string; // ID of the list this task belongs to
@@ -79,13 +77,12 @@ export interface Event {
   description?: string;
   type: 'class' | 'meeting' | 'appointment' | 'other';
   startDate: string; // YYYY-MM-DD
-  endDate?: string; // YYYY-MM-DD (optional, for multi-day events)
   startTime: string; // HH:MM
   endTime: string; // HH:MM
   recurring?: {
     frequency: 'daily' | 'weekly' | 'monthly';
-    daysOfWeek?: number[]; // 0-6 (Sunday-Saturday)
-    endDate?: string; // YYYY-MM-DD
+    daysOfWeek?: number[]; // 0-6 (Sunday-Saturday) - specify which days event occurs
+    endDate?: string; // YYYY-MM-DD - when recurrence stops
   };
   location?: string;
   color?: string;
