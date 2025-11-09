@@ -17,6 +17,8 @@
     "test:ai-leak:category": "node tests/ai-json-leak-detection.test.cjs --category",
     "test:comprehensive": "node tests/comprehensive-ai-test.cjs",
     "test:advanced": "node tests/comprehensive-ai-test-advanced.cjs",
+    "test:confusion": "node tests/ai-confusion-false-positive-test.cjs",
+    "test:mobile": "node tests/ai-mobile-json-leak-test.cjs",
     "test:all": "npm run test:ai-leak && npm run test:comprehensive",
     "test:all:advanced": "npm run test:advanced"
   },
