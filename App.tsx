@@ -71,6 +71,16 @@ export interface Goal {
   createdAt: number;
 }
 
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: 'planning' | 'in-progress' | 'completed' | 'on-hold';
+  createdAt: number;
+  dueDate?: string;
+  dueTime?: string;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -132,6 +142,14 @@ const App: React.FC = () => {
       return (saved as any) || 'dark';
     } catch {
       return 'dark';
+    }
+  });
+  const [aiVoice, setAIVoice] = useState<'female' | 'male'>(() => {
+    try {
+      const saved = window.localStorage.getItem('aiVoice');
+      return (saved as 'female' | 'male') || 'female';
+    } catch {
+      return 'female';
     }
   });
   const [searchQuery, setSearchQuery] = useState('');
@@ -209,6 +227,16 @@ const App: React.FC = () => {
     }
   });
 
+  const [projects, setProjects] = useState<Project[]>(() => {
+    try {
+      const savedProjects = window.localStorage.getItem('projects');
+      return savedProjects ? JSON.parse(savedProjects) : [];
+    } catch (error) {
+      console.error("Could not parse projects from localStorage", error);
+      return [];
+    }
+  });
+
   // Timer state (persistent across pages)
   const [timerDuration, setTimerDuration] = useState(() => {
     try {
@@ -256,6 +284,10 @@ const App: React.FC = () => {
   }, [themeMode]);
 
   useEffect(() => {
+    window.localStorage.setItem('aiVoice', aiVoice);
+  }, [aiVoice]);
+
+  useEffect(() => {
     window.localStorage.setItem('workspaces', JSON.stringify(workspaces));
   }, [workspaces]);
 
@@ -272,6 +304,10 @@ const App: React.FC = () => {
   useEffect(() => {
     window.localStorage.setItem('goals', JSON.stringify(goals));
   }, [goals]);
+
+  useEffect(() => {
+    window.localStorage.setItem('projects', JSON.stringify(projects));
+  }, [projects]);
 
   useEffect(() => {
     window.localStorage.setItem('timerDuration', timerDuration.toString());
@@ -340,6 +376,10 @@ const App: React.FC = () => {
 
   const changeThemeMode = (newMode: typeof themeMode) => {
     setThemeMode(newMode);
+  };
+
+  const changeAIVoice = (newVoice: typeof aiVoice) => {
+    setAIVoice(newVoice);
   };
 
   const handleAddNote = () => {
@@ -627,7 +667,7 @@ const App: React.FC = () => {
           toggleTheme={toggleMode}
         />;
       case 'Settings':
-        return <SettingsPage themeStyle={themeStyle} themeMode={themeMode} onThemeStyleChange={changeThemeStyle} onThemeModeChange={changeThemeMode} />;
+        return <SettingsPage themeStyle={themeStyle} themeMode={themeMode} onThemeStyleChange={changeThemeStyle} onThemeModeChange={changeThemeMode} aiVoice={aiVoice} onAIVoiceChange={changeAIVoice} />;
       default:
         return <DashboardGrid
             setActivePage={setActivePage}
@@ -695,6 +735,12 @@ const App: React.FC = () => {
           onEventDelete={handleDeleteEvent}
           tasks={tasks}
           events={events}
+          notes={notes}
+          goals={goals}
+          workspaces={workspaces}
+          taskLists={taskLists}
+          projects={projects}
+          aiVoice={aiVoice}
         />
 
         {/* Floating Timer - Show only when active and not on Dashboard */}

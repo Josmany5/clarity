@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GOOGLE_CLOUD_TTS_KEY = process.env.GOOGLE_CLOUD_TTS_KEY;
 
 // AI chat endpoint
 app.post('/api/ai', async (req, res) => {
@@ -51,8 +52,77 @@ app.post('/api/ai', async (req, res) => {
       return res.status(200).json({ response: aiResponse });
     }
 
-    // Handle speak action (not implemented yet, but won't error)
+    // Handle speak action - use Google Cloud TTS
     if (action === 'speak') {
+      const { text, voice = 'female' } = data;
+      console.log(`🎤 TTS Request - Voice preference: ${voice}`);
+      console.log(`📝 Received text:`, text);
+      console.log(`📏 Text length:`, text ? text.length : 0);
+
+      if (!GOOGLE_CLOUD_TTS_KEY) {
+        console.log('⚠️  Google Cloud TTS key not configured, falling back to browser TTS');
+        return res.status(200).json({ audio: null });
+      }
+
+      try {
+        // Clean text for TTS - remove markdown formatting
+        let cleanedText = text
+          .replace(/\*\*/g, '')  // Remove bold markers
+          .replace(/\*/g, '')    // Remove italic/bullet markers
+          .replace(/_/g, '')     // Remove underscores
+          .replace(/`/g, '')     // Remove code markers
+          .replace(/#{1,6}\s/g, '') // Remove markdown headers
+          .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Convert links to just text
+          .trim();
+
+        // Select voice based on preference
+        const voiceName = voice === 'male' ? 'en-US-Chirp3-HD-Rasalgethi' : 'en-US-Chirp3-HD-Sulafat';
+        const ssmlGender = voice === 'male' ? 'MALE' : 'FEMALE';
+        console.log(`🔊 Using voice: ${voiceName} (${ssmlGender})`);
+
+        // Use Google Cloud Text-to-Speech API with Chirp3-HD (latest HD voices)
+        const ttsResponse = await fetch(
+          `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_CLOUD_TTS_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              input: { text: cleanedText },
+              voice: {
+                languageCode: 'en-US',
+                name: voiceName,
+                ssmlGender: ssmlGender
+              },
+              audioConfig: {
+                audioEncoding: 'MP3',
+                speakingRate: 1.0,
+                pitch: 0.0
+              }
+            })
+          }
+        );
+
+        if (ttsResponse.ok) {
+          const result = await ttsResponse.json();
+
+          if (result.audioContent) {
+            console.log('✅ Google Cloud TTS audio generated');
+            return res.status(200).json({
+              audio: result.audioContent,
+              mimeType: 'audio/mpeg'
+            });
+          }
+
+          console.log('⚠️  No audio data found in Google Cloud TTS response');
+        } else {
+          const errorText = await ttsResponse.text();
+          console.error('❌ Google Cloud TTS API error:', ttsResponse.status, errorText);
+        }
+      } catch (err) {
+        console.error('❌ TTS error:', err);
+      }
+
+      // Return null if TTS fails (client will use browser TTS)
       return res.status(200).json({ audio: null });
     }
 

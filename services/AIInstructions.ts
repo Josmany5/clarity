@@ -7,7 +7,16 @@ export interface AIContext {
   noteCount: number;
   eventCount: number;
   goalCount: number;
+  workspaceCount: number;
+  taskListCount: number;
+  projectCount: number;
   recentActivity: string[];
+  // Actual data for AI to read
+  tasks?: any[];
+  events?: any[];
+  notes?: any[];
+  goals?: any[];
+  projects?: any[];
 }
 
 // Helper function to format date in local timezone (not UTC)
@@ -311,7 +320,25 @@ The user sees your message but the JSON runs invisibly. Both parts are required 
 - ${context.eventCount} events
 - ${context.noteCount} notes
 - ${context.goalCount} goals
+- ${context.projectCount} projects
 - Recent activity: ${context.recentActivity.join(', ') || 'None yet'}
+
+## DATA ACCESS
+You have direct access to the user's data through these arrays in the context object:
+- context.tasks[] - Array of task objects
+- context.events[] - Array of event objects
+- context.notes[] - Array of note objects
+- context.goals[] - Array of goal objects
+- context.projects[] - Array of project objects
+
+When the user asks questions like "What's on my calendar today?" or "What tasks are due this week?", query these arrays directly using JavaScript array methods (filter, map, sort, etc) to find the answer. Today's date is ${todayStr}.
+
+**Data Structure:**
+- Task: { id, title, completed, urgent, important, dueDate (YYYY-MM-DD), dueTime (HH:MM), listId, subtasks[], tags[] }
+- Event: { id, title, type, startDate (YYYY-MM-DD), startTime (HH:MM), endTime (HH:MM), location, description, recurring }
+- Note: { id, title, content, lastModified (timestamp) }
+- Goal: { id, title, description, status ('not-started'|'in-progress'|'completed'), targetDate (YYYY-MM-DD) }
+- Project: { id, name, description, status ('planning'|'in-progress'|'completed'|'on-hold'), dueDate (YYYY-MM-DD), dueTime (HH:MM) }
 
 Remember: You're both a knowledgeable assistant AND a productivity coach. Help users succeed with Prose's built-in tools!`;
 };

@@ -28,9 +28,15 @@ interface AIAssistantProps {
   onEventDelete?: (eventId: string) => void;
   tasks?: any[];
   events?: any[];
+  notes?: any[];
+  goals?: any[];
+  workspaces?: any[];
+  taskLists?: any[];
+  projects?: any[];
+  aiVoice?: 'female' | 'male';
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, onEventUpdate, onEventDelete, tasks = [], events = [] }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, onEventUpdate, onEventDelete, tasks = [], events = [], notes = [], goals = [], workspaces = [], taskLists = [], projects = [], aiVoice = 'female' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -46,11 +52,13 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceMode, setVoiceMode] = useState(false); // Continuous voice conversation mode
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
   const [fileContent, setFileContent] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const voiceModeRef = useRef(false); // Ref to track voiceMode immediately (no async delay)
 
   // Robust JSON extraction function that handles nested braces and code blocks
   const extractJSON = (text: string, prefix: string): string | null => {
@@ -209,18 +217,19 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     }
   };
 
-  const handleSend = async () => {
-    if ((!input.trim() && !attachedFile) || isLoading) return;
+  const handleSend = async (messageText?: string) => {
+    const textToSend = messageText || input.trim();
+    if ((!textToSend && !attachedFile) || isLoading) return;
 
     // Build user message with file content if attached
-    let userContent = input.trim();
+    let userContent = textToSend;
     if (attachedFile && fileContent) {
       userContent += `\n\n[Attached file: ${attachedFile.name}]\n${fileContent}`;
     }
 
     const userMessage: Message = {
       role: 'user',
-      content: attachedFile ? `${input.trim()}\n📎 ${attachedFile.name}` : input.trim(),
+      content: attachedFile ? `${textToSend}\n📎 ${attachedFile.name}` : textToSend,
       timestamp: Date.now()
     };
 
@@ -231,28 +240,35 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     removeAttachment(); // Clear attachment after sending
     setIsLoading(true);
 
+    let displayMessage = ''; // Declare outside try block for TTS access
+    let response = ''; // Declare outside try block for TTS access
+
     try {
       // Build prompt with file content
-      let prompt = input.trim();
+      let prompt = textToSend;
       if (currentFileContent) {
         prompt += `\n\nI've attached a file (${currentFileName}) with the following content:\n\n${currentFileContent}\n\nPlease analyze this and help me with my request.`;
       }
 
       // Get AI response with conversation history AND app context
-      const response = await getAIResponse(
+      response = await getAIResponse(
         prompt,
         currentPage,
         messages,
         {
           tasks: tasks || [],
-          notes: [],  // Will be passed in Step 5
-          events: [], // Will be passed in Step 5
-          goals: [],  // Will be passed in Step 5
+          notes: notes || [],
+          events: events || [],
+          goals: goals || [],
+          workspaces: workspaces || [],
+          taskLists: taskLists || [],
+          projects: projects || [],
         }
       );
 
       // Debug: Log raw response to see what Gemini is actually sending
       console.log('🔍 RAW GEMINI RESPONSE:', response);
+      console.log('🔍 RAW RESPONSE LENGTH:', response.length);
 
       // Check for task creation using robust extraction
       const tasksJSON = extractJSONArray(response, 'TASKS_JSON:');
@@ -552,6 +568,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
 
       displayMessage = displayMessage.trim();
 
+      console.log('🔍 DISPLAY MESSAGE AFTER CLEANING:', displayMessage);
+      console.log('🔍 DISPLAY MESSAGE LENGTH:', displayMessage.length);
+
       const assistantMessage: Message = {
         role: 'assistant',
         content: displayMessage || response,
@@ -559,8 +578,6 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       };
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Auto-speak disabled to prevent browser crashes
-      // User can enable voice in Settings if needed
     } catch (error: any) {
       const errorMessage: Message = {
         role: 'assistant',
@@ -572,6 +589,38 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+
+      // Only speak user-facing messages, not JSON function calls
+      const textToSpeak = displayMessage;
+      console.log('🎯 Finally block - voiceModeRef.current:', voiceModeRef.current);
+      console.log('🎯 displayMessage:', displayMessage);
+      console.log('🎯 response:', response);
+      console.log('🎯 textToSpeak:', textToSpeak);
+      console.log('🎯 textToSpeak length:', textToSpeak.length);
+
+      // Speak the response in voice mode, then restart listening after TTS completes
+      if (voiceModeRef.current) {
+        console.log('🎤 Voice mode is ON, will speak response');
+        (async () => {
+          try {
+            // Only speak if there's actual content to speak
+            if (textToSpeak && textToSpeak.trim().length > 0) {
+              console.log('🔊 Speaking AI response...', 'Text:', textToSpeak.substring(0, 50) + '...');
+              await speak(textToSpeak, aiVoice);
+              console.log('✅ TTS complete, restarting listening...');
+            } else {
+              console.log('⚠️ No text to speak (empty response), skipping TTS');
+            }
+          } catch (speakError) {
+            console.error('❌ TTS error:', speakError);
+          } finally {
+            // Restart listening after TTS completes (or after error)
+            setTimeout(() => startListening(), 500);
+          }
+        })();
+      } else {
+        console.log('⏸️ Voice mode is OFF, skipping TTS');
+      }
     }
   };
 
@@ -582,11 +631,19 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       return;
     }
 
+    console.log('🎤 Starting listening... voiceModeRef.current:', voiceModeRef.current);
+
     const recognition = startBrowserListening(
-      // onResult - final transcript
+      // onResult - final transcript (after silence timeout)
       (text) => {
-        setInput(text);
+        console.log('🎤 Got final transcript, auto-sending:', text);
         setIsListening(false);
+        // Auto-send when we get the final transcript
+        if (text.trim()) {
+          // Clear the input field and send the message
+          setInput('');
+          handleSend(text.trim());
+        }
       },
       // onError
       (error) => {
@@ -822,15 +879,35 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
 
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
-                  onClick={startListening}
+                  onClick={() => {
+                    console.log('🎙️ Voice button clicked! Current voiceMode:', voiceMode);
+                    const newVoiceMode = !voiceMode;
+                    console.log('🎙️ Setting voiceMode to:', newVoiceMode);
+
+                    // Update both state AND ref immediately
+                    setVoiceMode(newVoiceMode);
+                    voiceModeRef.current = newVoiceMode;
+
+                    if (newVoiceMode) {
+                      // Turning ON voice mode - start listening
+                      console.log('✅ Turning ON voice mode - will start listening');
+                      setTimeout(() => startListening(), 100);
+                    } else {
+                      // Turning OFF voice mode - stop listening and speaking
+                      console.log('⏸️ Turning OFF voice mode - stopping listening and speaking');
+                      recognitionRef.current?.stop();
+                      setIsListening(false);
+                      stopSpeaking();
+                    }
+                  }}
                   disabled={isLoading}
                   className={`p-2 sm:p-2.5 rounded-full transition-all flex-shrink-0 ${
-                    isListening
-                      ? 'bg-red-500 text-white animate-pulse'
+                    voiceMode
+                      ? 'bg-purple-500 text-white ring-2 ring-purple-300'
                       : 'bg-black/10 dark:bg-white/10 text-text-primary hover:bg-black/20 dark:hover:bg-white/20'
                   } disabled:opacity-50`}
-                  aria-label={isListening ? 'Stop listening' : 'Start voice input'}
-                  title={isListening ? 'Listening...' : 'Voice input'}
+                  aria-label={voiceMode ? 'Stop voice mode' : 'Start voice mode'}
+                  title={voiceMode ? 'Voice mode ON (continuous conversation)' : 'Voice mode (hands-free chat)'}
                 >
                   <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -867,7 +944,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
                 />
 
                 <button
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   disabled={(!input.trim() && !attachedFile) || isLoading}
                   className="p-2 sm:p-2.5 bg-accent text-white rounded-full hover:bg-accent-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                   aria-label="Send message"

@@ -18,38 +18,56 @@ export const startBrowserListening = (
   }
 
   const recognition = new SpeechRecognition();
-  recognition.continuous = false;
+  recognition.continuous = true; // Keep listening for longer pauses
   recognition.interimResults = true; // Show interim results for better feedback
   recognition.lang = 'en-US';
   recognition.maxAlternatives = 1;
 
+  let silenceTimeout: NodeJS.Timeout | null = null;
+  let accumulatedTranscript = '';
+
   recognition.onstart = () => {
     console.log('🎤 Speech recognition started');
+    accumulatedTranscript = '';
   };
 
   recognition.onresult = (event: any) => {
     let interimTranscript = '';
-    let finalTranscript = '';
+    let currentFinalTranscript = '';
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const transcript = event.results[i][0].transcript;
       if (event.results[i].isFinal) {
-        finalTranscript += transcript;
+        currentFinalTranscript += transcript;
       } else {
         interimTranscript += transcript;
       }
     }
 
-    // Show interim results while speaking
-    if (interimTranscript && onInterimResult) {
-      onInterimResult(interimTranscript);
+    // Accumulate final transcripts
+    if (currentFinalTranscript) {
+      accumulatedTranscript += currentFinalTranscript + ' ';
     }
 
-    // Final result when done speaking
-    if (finalTranscript) {
-      console.log('🎤 Final transcript:', finalTranscript);
-      onResult(finalTranscript);
+    // Show interim results while speaking (combined with accumulated)
+    const displayText = (accumulatedTranscript + interimTranscript).trim();
+    if (displayText && onInterimResult) {
+      onInterimResult(displayText);
     }
+
+    // Clear any existing silence timeout
+    if (silenceTimeout) {
+      clearTimeout(silenceTimeout);
+    }
+
+    // Set new silence timeout - fire after 1.5 seconds of silence
+    silenceTimeout = setTimeout(() => {
+      if (accumulatedTranscript.trim()) {
+        console.log('🎤 Final transcript (after silence):', accumulatedTranscript.trim());
+        onResult(accumulatedTranscript.trim());
+        recognition.stop();
+      }
+    }, 1500); // 1.5 seconds of silence before auto-send
   };
 
   recognition.onerror = (event: any) => {
@@ -78,6 +96,10 @@ export const startBrowserListening = (
 
   recognition.onend = () => {
     console.log('🎤 Speech recognition ended');
+    if (silenceTimeout) {
+      clearTimeout(silenceTimeout);
+      silenceTimeout = null;
+    }
   };
 
   try {
@@ -91,6 +113,10 @@ export const startBrowserListening = (
   return {
     stop: () => {
       try {
+        if (silenceTimeout) {
+          clearTimeout(silenceTimeout);
+          silenceTimeout = null;
+        }
         recognition.stop();
       } catch (error) {
         console.error('Failed to stop recognition:', error);
@@ -233,23 +259,61 @@ export const setUsePremiumVoice = (value: boolean): void => {
   localStorage.setItem('usePremiumVoice', value.toString());
 };
 
-export const speak = async (text: string): Promise<void> => {
-  const usePremium = getUsePremiumVoice();
+// Google Cloud TTS (HD voices)
+export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
+  const response = await fetch('/api/ai', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'speak',
+      data: {
+        text,
+        voice
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('Google Cloud TTS request failed');
+  }
+
+  const data = await response.json();
+
+  // If no audio returned, backend doesn't have API key configured
+  if (!data.audio) {
+    throw new Error('Google Cloud TTS not configured on server');
+  }
+
+  // Convert base64 to blob and play
+  const audioBlob = base64ToBlob(data.audio, data.mimeType || 'audio/mpeg');
+  const audioUrl = URL.createObjectURL(audioBlob);
+  const audio = new Audio(audioUrl);
+
+  return new Promise((resolve, reject) => {
+    audio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+      resolve();
+    };
+    audio.onerror = () => {
+      URL.revokeObjectURL(audioUrl);
+      reject(new Error('Audio playback failed'));
+    };
+    audio.play();
+  });
+};
+
+export const speak = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
+  console.log('🎤 speak() called with text:', text);
+  console.log('🎤 speak() text length:', text ? text.length : 0);
+  console.log('🎤 speak() voice:', voice);
 
   try {
-    if (usePremium) {
-      await speakWithElevenLabs(text);
-    } else {
-      await speakWithBrowser(text);
-    }
+    // Try Google Cloud TTS first (high quality HD voices)
+    await speakWithGoogleCloud(text, voice);
   } catch (error) {
-    console.error('Speech error:', error);
-    // Fallback to browser if premium fails
-    if (usePremium) {
-      await speakWithBrowser(text);
-    } else {
-      throw error;
-    }
+    console.error('Google Cloud TTS error, falling back to browser TTS:', error);
+    // Fallback to browser TTS if Google Cloud fails
+    await speakWithBrowser(text);
   }
 };
 
@@ -271,6 +335,9 @@ interface AppContext {
   notes: any[];
   events: any[];
   goals: any[];
+  workspaces: any[];
+  taskLists: any[];
+  projects: any[];
 }
 
 function buildRecentActivity(appContext: AppContext): string[] {
@@ -315,7 +382,16 @@ export const getAIResponse = async (
     noteCount: appContext?.notes.length || 0,
     eventCount: appContext?.events.length || 0,
     goalCount: appContext?.goals.length || 0,
+    workspaceCount: appContext?.workspaces.length || 0,
+    taskListCount: appContext?.taskLists.length || 0,
+    projectCount: appContext?.projects.length || 0,
     recentActivity: appContext ? buildRecentActivity(appContext) : [],
+    // Pass actual data arrays for AI to read
+    tasks: appContext?.tasks || [],
+    events: appContext?.events || [],
+    notes: appContext?.notes || [],
+    goals: appContext?.goals || [],
+    projects: appContext?.projects || [],
   };
 
   // Build system prompt with context

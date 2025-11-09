@@ -7,9 +7,11 @@ interface SettingsPageProps {
   themeMode: 'light' | 'dark';
   onThemeStyleChange: (style: 'minimalist' | 'glass' | 'terminal' | 'pastel') => void;
   onThemeModeChange: (mode: 'light' | 'dark') => void;
+  aiVoice?: 'female' | 'male';
+  onAIVoiceChange?: (voice: 'female' | 'male') => void;
 }
 
-export const SettingsPage: React.FC<SettingsPageProps> = ({ themeStyle, themeMode, onThemeStyleChange, onThemeModeChange }) => {
+export const SettingsPage: React.FC<SettingsPageProps> = ({ themeStyle, themeMode, onThemeStyleChange, onThemeModeChange, aiVoice, onAIVoiceChange }) => {
 
   const themes = [
     { id: 'minimalist' as const, name: 'Minimalist', description: 'Clean modern design', icon: '✨' },
@@ -145,6 +147,67 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ themeStyle, themeMod
                 ))}
               </div>
             </div>
+
+            {/* AI Voice Selection */}
+            {onAIVoiceChange && (
+              <div>
+                <h3 className="font-semibold text-text-primary mb-3">AI Voice</h3>
+                <p className="text-sm text-text-secondary mb-4">Choose the voice for text-to-speech</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => onAIVoiceChange('female')}
+                    className={`p-5 rounded-xl text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent ${
+                      aiVoice === 'female'
+                        ? 'bg-accent text-white shadow-lg scale-105'
+                        : 'bg-black/5 dark:bg-white/5 text-text-primary hover:bg-black/10 dark:hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">👩</span>
+                        <div>
+                          <h4 className="font-bold text-lg">Female</h4>
+                          <p className={`text-sm ${aiVoice === 'female' ? 'text-white/90' : 'text-text-secondary'}`}>
+                            Chirp3-HD-Sulafat
+                          </p>
+                        </div>
+                      </div>
+                      {aiVoice === 'female' && (
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => onAIVoiceChange('male')}
+                    className={`p-5 rounded-xl text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent ${
+                      aiVoice === 'male'
+                        ? 'bg-accent text-white shadow-lg scale-105'
+                        : 'bg-black/5 dark:bg-white/5 text-text-primary hover:bg-black/10 dark:hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">👨</span>
+                        <div>
+                          <h4 className="font-bold text-lg">Male</h4>
+                          <p className={`text-sm ${aiVoice === 'male' ? 'text-white/90' : 'text-text-secondary'}`}>
+                            Chirp3-HD-Rasalgethi
+                          </p>
+                        </div>
+                      </div>
+                      {aiVoice === 'male' && (
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </WidgetCard>
