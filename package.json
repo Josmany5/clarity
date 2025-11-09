@@ -20,6 +20,7 @@
     "test:confusion": "node tests/ai-confusion-false-positive-test.cjs",
     "test:mobile": "node tests/ai-mobile-json-leak-test.cjs",
     "test:context": "node tests/ai-context-data-accuracy-test.cjs",
+    "test:actions": "node tests/ai-all-actions-json-leak-test.cjs",
     "test:all": "npm run test:ai-leak && npm run test:comprehensive",
     "test:all:advanced": "npm run test:advanced"
   },

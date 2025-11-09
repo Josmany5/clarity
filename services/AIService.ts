@@ -268,7 +268,7 @@ export const unlockAudio = async (): Promise<void> => {
   if (isAudioUnlocked) return;
 
   try {
-    // Create AudioContext and play silent audio to unlock
+    // Create AudioContext and play audible beep to unlock
     if (!globalAudioContext) {
       globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
@@ -278,15 +278,25 @@ export const unlockAudio = async (): Promise<void> => {
       await globalAudioContext.resume();
     }
 
-    // Play a tiny silent buffer to unlock audio playback
-    const buffer = globalAudioContext.createBuffer(1, 1, 22050);
+    // Play a brief audible beep (100ms at 800Hz, low volume)
+    // Safari requires ACTUAL audible playback, not silent buffer
+    const sampleRate = globalAudioContext.sampleRate;
+    const duration = 0.1; // 100ms
+    const buffer = globalAudioContext.createBuffer(1, sampleRate * duration, sampleRate);
+    const channelData = buffer.getChannelData(0);
+
+    // Generate a soft beep at 800Hz
+    for (let i = 0; i < buffer.length; i++) {
+      channelData[i] = Math.sin(2 * Math.PI * 800 * i / sampleRate) * 0.1; // Low volume
+    }
+
     const source = globalAudioContext.createBufferSource();
     source.buffer = buffer;
     source.connect(globalAudioContext.destination);
     source.start(0);
 
     isAudioUnlocked = true;
-    console.log('✅ Audio unlocked for mobile');
+    console.log('✅ Audio unlocked for mobile with audible beep');
   } catch (error) {
     console.error('❌ Failed to unlock audio:', error);
   }
