@@ -500,7 +500,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       }
 
       // Remove action blocks from display message - keep only conversational text
-      let displayMessage = response;
+      displayMessage = response;
 
       // Remove task creation JSON - use exact extracted string
       if (tasksJSON) {
