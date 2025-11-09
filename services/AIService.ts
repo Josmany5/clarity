@@ -259,8 +259,46 @@ export const setUsePremiumVoice = (value: boolean): void => {
   localStorage.setItem('usePremiumVoice', value.toString());
 };
 
+// Global audio context that's unlocked by user gesture
+let globalAudioContext: AudioContext | null = null;
+let isAudioUnlocked = false;
+
+// Call this during a user interaction (button click, tap) to unlock audio on mobile
+export const unlockAudio = async (): Promise<void> => {
+  if (isAudioUnlocked) return;
+
+  try {
+    // Create AudioContext and play silent audio to unlock
+    if (!globalAudioContext) {
+      globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+
+    // Resume context if suspended (iOS requirement)
+    if (globalAudioContext.state === 'suspended') {
+      await globalAudioContext.resume();
+    }
+
+    // Play a tiny silent buffer to unlock audio playback
+    const buffer = globalAudioContext.createBuffer(1, 1, 22050);
+    const source = globalAudioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(globalAudioContext.destination);
+    source.start(0);
+
+    isAudioUnlocked = true;
+    console.log('✅ Audio unlocked for mobile');
+  } catch (error) {
+    console.error('❌ Failed to unlock audio:', error);
+  }
+};
+
 // Google Cloud TTS (HD voices)
 export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
+  // Try to unlock audio if not already done
+  if (!isAudioUnlocked) {
+    await unlockAudio();
+  }
+
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -300,13 +338,13 @@ export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male
     };
 
     // Mobile Safari blocks auto-play without user gesture
-    // Catch promise rejection and fallback to browser TTS
+    // With audio unlocked, this should work now
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
-        console.warn('Auto-play blocked (likely mobile), will fallback to browser TTS:', error);
+        console.error('❌ Audio playback blocked even after unlock attempt:', error);
         URL.revokeObjectURL(audioUrl);
-        reject(new Error('Auto-play blocked - mobile Safari requires user gesture'));
+        reject(new Error('Auto-play blocked - could not unlock audio'));
       });
     }
   });

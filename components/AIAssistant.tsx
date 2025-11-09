@@ -6,7 +6,8 @@ import {
   stopSpeaking,
   startBrowserListening,
   getAIResponse,
-  parseTaskCommand
+  parseTaskCommand,
+  unlockAudio
 } from '../services/AIService';
 
 interface Message {
@@ -879,7 +880,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
 
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     console.log('🎙️ Voice button clicked! Current voiceMode:', voiceMode);
                     const newVoiceMode = !voiceMode;
                     console.log('🎙️ Setting voiceMode to:', newVoiceMode);
@@ -889,8 +890,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
                     voiceModeRef.current = newVoiceMode;
 
                     if (newVoiceMode) {
-                      // Turning ON voice mode - start listening
-                      console.log('✅ Turning ON voice mode - will start listening');
+                      // Turning ON voice mode - unlock audio for mobile, then start listening
+                      console.log('✅ Turning ON voice mode - unlocking audio and starting listening');
+                      await unlockAudio(); // Unlock audio with user gesture
                       setTimeout(() => startListening(), 100);
                     } else {
                       // Turning OFF voice mode - stop listening and speaking
