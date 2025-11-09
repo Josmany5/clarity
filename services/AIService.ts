@@ -292,13 +292,49 @@ export const unlockAudio = async (): Promise<void> => {
   }
 };
 
-// Google Cloud TTS (HD voices)
-export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
-  // Try to unlock audio if not already done
-  if (!isAudioUnlocked) {
-    await unlockAudio();
+// Play audio using Web Audio API with the unlocked AudioContext
+async function playWithWebAudio(base64Audio: string): Promise<void> {
+  if (!globalAudioContext) {
+    throw new Error('AudioContext not available');
   }
 
+  // Convert base64 to ArrayBuffer
+  const binaryString = atob(base64Audio);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  const audioBuffer = bytes.buffer;
+
+  return new Promise((resolve, reject) => {
+    // Decode audio data
+    globalAudioContext!.decodeAudioData(
+      audioBuffer,
+      (decodedBuffer) => {
+        // Create buffer source
+        const source = globalAudioContext!.createBufferSource();
+        source.buffer = decodedBuffer;
+        source.connect(globalAudioContext!.destination);
+
+        source.onended = () => {
+          console.log('✅ Web Audio playback completed');
+          resolve();
+        };
+
+        // Start playback
+        source.start(0);
+        console.log('▶️  Web Audio playback started');
+      },
+      (error) => {
+        console.error('❌ Audio decode error:', error);
+        reject(new Error('Failed to decode audio data'));
+      }
+    );
+  });
+}
+
+// Google Cloud TTS (HD voices)
+export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -322,7 +358,14 @@ export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male
     throw new Error('Google Cloud TTS not configured on server');
   }
 
-  // Convert base64 to blob and play
+  // If we have a global AudioContext (unlocked by user gesture), use Web Audio API
+  if (globalAudioContext && isAudioUnlocked) {
+    console.log('🔊 Using unlocked AudioContext for playback');
+    return playWithWebAudio(data.audio);
+  }
+
+  // Fallback: try regular Audio element (may fail on mobile Safari)
+  console.log('⚠️  No unlocked AudioContext, trying Audio element (may fail on mobile)');
   const audioBlob = base64ToBlob(data.audio, data.mimeType || 'audio/mpeg');
   const audioUrl = URL.createObjectURL(audioBlob);
   const audio = new Audio(audioUrl);
@@ -337,14 +380,12 @@ export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male
       reject(new Error('Audio playback failed'));
     };
 
-    // Mobile Safari blocks auto-play without user gesture
-    // With audio unlocked, this should work now
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
-        console.error('❌ Audio playback blocked even after unlock attempt:', error);
+        console.error('❌ Audio playback blocked:', error);
         URL.revokeObjectURL(audioUrl);
-        reject(new Error('Auto-play blocked - could not unlock audio'));
+        reject(new Error('Auto-play blocked - audio not unlocked'));
       });
     }
   });

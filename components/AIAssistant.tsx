@@ -222,6 +222,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     const textToSend = messageText || input.trim();
     if ((!textToSend && !attachedFile) || isLoading) return;
 
+    // Unlock audio on send button click (mobile Safari requirement)
+    await unlockAudio();
+
     // Build user message with file content if attached
     let userContent = textToSend;
     if (attachedFile && fileContent) {
