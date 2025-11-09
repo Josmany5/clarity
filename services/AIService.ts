@@ -298,7 +298,17 @@ export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male
       URL.revokeObjectURL(audioUrl);
       reject(new Error('Audio playback failed'));
     };
-    audio.play();
+
+    // Mobile Safari blocks auto-play without user gesture
+    // Catch promise rejection and fallback to browser TTS
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.warn('Auto-play blocked (likely mobile), will fallback to browser TTS:', error);
+        URL.revokeObjectURL(audioUrl);
+        reject(new Error('Auto-play blocked - mobile Safari requires user gesture'));
+      });
+    }
   });
 };
 
