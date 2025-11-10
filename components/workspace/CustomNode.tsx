@@ -40,7 +40,7 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
     }
   };
 
-  const handleNodeClick = (e: React.MouseEvent) => {
+  const handleNodeClick = (e: React.MouseEvent | React.TouchEvent) => {
     // Only trigger preview if not clicking on buttons or handles
     const target = e.target as HTMLElement;
     if (
@@ -53,12 +53,19 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
     }
   };
 
+  const handleNodeTouch = (e: React.TouchEvent) => {
+    // Prevent default to avoid triggering onClick as well
+    e.preventDefault();
+    handleNodeClick(e);
+  };
+
   return (
     <div
       className="rounded-xl border-2 border-white/30 shadow-lg cursor-pointer hover:border-white/50 transition-all"
       style={{ backgroundColor: data.bgColor, minWidth: '220px', width: '100%', height: '100%' }}
       onDoubleClick={handleDoubleClick}
       onClick={handleNodeClick}
+      onTouchEnd={handleNodeTouch}
     >
       {/* Node Resizer */}
       <NodeResizer
@@ -127,6 +134,8 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
               }}
               onTouchEnd={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
+                setIsExpanded(!isExpanded);
               }}
               className="text-sm text-white/80 hover:text-white underline"
             >
@@ -150,6 +159,8 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
               }}
               onTouchEnd={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
+                data.onCustomize?.();
               }}
               className="px-2 py-1 text-sm bg-white/20 hover:bg-white/30 rounded transition-colors"
               title="Customize Node"
@@ -165,6 +176,8 @@ export const CustomNode = memo(({ data, isConnectable }: NodeProps<CustomNodeDat
               }}
               onTouchEnd={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
+                data.onDelete?.();
               }}
               className="px-2 py-1 text-sm bg-red-500/30 hover:bg-red-500/50 rounded transition-colors"
               title="Delete"
