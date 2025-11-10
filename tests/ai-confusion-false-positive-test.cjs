@@ -2,7 +2,7 @@
 // Tests scenarios where AI might incorrectly create tasks/events when it shouldn't
 // USES REAL AI API - No mock responses
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDas5BCVhqm_aAw3-w_QHLPTIa3-MVZfA8';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDGuQmjBzSzrDU7vUdQj5OhDan68NVpCJ4';
 const API_URL = 'http://localhost:3001/api/ai';
 const TEST_DELAY = 6000; // 6 seconds between tests
 

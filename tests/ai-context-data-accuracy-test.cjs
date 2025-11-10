@@ -3,7 +3,7 @@
 // This addresses the issue where asking "what are my goals?" returns "plan a trip to Japan"
 // even though that goal doesn't exist in the user's actual data
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDas5BCVhqm_aAw3-w_QHLPTIa3-MVZfA8';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDGuQmjBzSzrDU7vUdQj5OhDan68NVpCJ4';
 const API_URL = 'http://localhost:3001/api/ai';
 const TEST_DELAY = 6000; // 6 seconds between tests
 
