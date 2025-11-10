@@ -27,6 +27,18 @@ interface AIAssistantProps {
   onEventCreate?: (event: any) => void;
   onEventUpdate?: (event: any) => void;
   onEventDelete?: (eventId: string) => void;
+  onEventDeleteAll?: () => void;
+  onGoalCreate?: (goal: any) => void;
+  onGoalUpdate?: (goal: any) => void;
+  onGoalDelete?: (goalId: string) => void;
+  onProjectCreate?: (project: any) => void;
+  onProjectUpdate?: (project: any) => void;
+  onProjectDelete?: (projectId: string) => void;
+  onWorkspaceCreate?: (workspace: { name: string; description: string }) => any;
+  onWorkspaceUpdate?: (workspace: any) => void;
+  onWorkspaceDelete?: (workspaceId: string) => void;
+  onNoteUpdate?: (note: any) => void;
+  onNoteDelete?: (noteId: string) => void;
   tasks?: any[];
   events?: any[];
   notes?: any[];
@@ -37,7 +49,7 @@ interface AIAssistantProps {
   aiVoice?: 'female' | 'male';
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, onEventUpdate, onEventDelete, tasks = [], events = [], notes = [], goals = [], workspaces = [], taskLists = [], projects = [], aiVoice = 'female' }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCreate, onTaskUpdate, onTaskDelete, onTaskDeleteAll, onTaskDeleteCompleted, onNoteCreate, onEventCreate, onEventUpdate, onEventDelete, onEventDeleteAll, onGoalCreate, onGoalUpdate, onGoalDelete, onProjectCreate, onProjectUpdate, onProjectDelete, onWorkspaceCreate, onWorkspaceUpdate, onWorkspaceDelete, onNoteUpdate, onNoteDelete, tasks = [], events = [], notes = [], goals = [], workspaces = [], taskLists = [], projects = [], aiVoice = 'female' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -59,6 +71,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textInputRef = useRef<HTMLInputElement>(null);
   const voiceModeRef = useRef(false); // Ref to track voiceMode immediately (no async delay)
 
   // Robust JSON extraction function that handles nested braces and code blocks
@@ -160,20 +173,23 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     localStorage.setItem('aiChatHistory', JSON.stringify(messages));
   }, [messages]);
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when messages change (only if chat is open and visible)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (isOpen && !isMinimized) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isOpen, isMinimized]);
 
-  // Auto-scroll to bottom when chat opens
+  // Auto-scroll to bottom when chat opens (but not when just un-minimizing)
   useEffect(() => {
-    if (isOpen && messages.length > 0) {
-      // Use setTimeout to ensure DOM is rendered
+    if (isOpen && !isMinimized) {
+      // Scroll to bottom immediately when opening, regardless of message count
+      // Use longer timeout to ensure all DOM rendering is complete
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
-      }, 100);
+      }, 150);
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -270,9 +286,19 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
       );
 
-      // Debug: Log raw response to see what Gemini is actually sending
+      // Debug: Log raw response and context to see what Gemini is actually sending
+      console.log('═══════════ AI RESPONSE DEBUG ═══════════');
       console.log('🔍 RAW GEMINI RESPONSE:', response);
       console.log('🔍 RAW RESPONSE LENGTH:', response.length);
+      console.log('📋 USER CONTEXT PROVIDED:');
+      console.log('  - Tasks count:', tasks.length);
+      console.log('  - Events count:', events.length);
+      console.log('  - Notes count:', notes.length);
+      console.log('  - Goals count:', goals.length);
+      console.log('  - Projects count:', projects.length);
+      console.log('💬 CONVERSATION HISTORY LENGTH:', messages.length);
+      console.log('📍 CURRENT PAGE:', currentPage);
+      console.log('═══════════════════════════════════════');
 
       // Check for task creation using robust extraction
       const tasksJSON = extractJSONArray(response, 'TASKS_JSON:');
@@ -402,6 +428,18 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
       }
 
+      const eventDeleteAllJSON = extractJSON(response, 'EVENT_DELETE_ALL_JSON:');
+      if (eventDeleteAllJSON && onEventDeleteAll) {
+        try {
+          const data = JSON.parse(eventDeleteAllJSON);
+          if (data.confirm === true) {
+            onEventDeleteAll();
+          }
+        } catch (error) {
+          console.error('Error parsing EVENT_DELETE_ALL_JSON:', error);
+        }
+      }
+
       // Check for task update using robust extraction
       const updateJSON = extractJSON(response, 'TASK_UPDATE_JSON:');
       if (updateJSON && onTaskUpdate && tasks) {
@@ -503,6 +541,239 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         }
       }
 
+      // Check for goal creation using robust extraction
+      const goalsJSON = extractJSONArray(response, 'GOALS_JSON:');
+      if (goalsJSON && onGoalCreate) {
+        try {
+          console.log('═══════════ GOAL CREATION DEBUG ═══════════');
+          console.log('🎯 Goal JSON found:', goalsJSON);
+          const goalsArray = JSON.parse(goalsJSON);
+          console.log('🎯 Parsed goals array:', goalsArray);
+          for (const goalData of goalsArray) {
+            console.log('🎯 Creating goal with data:', goalData);
+            const newGoal = {
+              title: goalData.title,
+              description: goalData.description || '',
+              targetDate: goalData.targetDate,
+              status: goalData.status || 'not-started'
+            };
+            onGoalCreate(newGoal);
+            console.log('✅ Goal created successfully:', newGoal.title);
+            console.log('💾 Goal will be saved to localStorage automatically by App.tsx useEffect');
+          }
+          console.log('═══════════════════════════════════════');
+        } catch (error) {
+          console.error('❌ Failed to parse goals JSON:', error);
+          console.error('Raw JSON string:', goalsJSON);
+        }
+      } else {
+        if (!onGoalCreate) {
+          console.warn('⚠️ Goal creation handler not provided');
+        }
+        if (!goalsJSON) {
+          console.log('ℹ️ No GOALS_JSON found in response');
+        }
+      }
+
+      // Check for project creation
+      const projectsJSON = extractJSONArray(response, 'PROJECTS_JSON:');
+      if (projectsJSON && onProjectCreate) {
+        try {
+          const projectsData = JSON.parse(projectsJSON);
+          projectsData.forEach((project: any) => {
+            onProjectCreate({
+              name: project.name,
+              description: project.description || '',
+              status: project.status || 'planning',
+              dueDate: project.dueDate,
+              dueTime: project.dueTime,
+            });
+          });
+        } catch (error) {
+          console.error('Failed to parse projects JSON:', error);
+        }
+      }
+
+      // Check for goal update using robust extraction
+      const goalUpdateJSON = extractJSON(response, 'GOAL_UPDATE_JSON:');
+      if (goalUpdateJSON && onGoalUpdate && goals) {
+        try {
+          const updateData = JSON.parse(goalUpdateJSON);
+          console.log('🎯 Goal update request:', updateData);
+          console.log('📋 Available goals:', goals.map(g => g.title));
+
+          // Try to find the goal - be more flexible with matching
+          const searchTerm = updateData.goalTitle.toLowerCase();
+          const goalToUpdate = goals.find(g => {
+            const title = g.title.toLowerCase();
+            return title.includes(searchTerm) || searchTerm.includes(title);
+          });
+
+          if (goalToUpdate) {
+            console.log('✅ Found goal to update:', goalToUpdate.title);
+            console.log('🔄 Applying updates:', updateData.updates);
+            onGoalUpdate({
+              ...goalToUpdate,
+              ...updateData.updates
+            });
+          } else {
+            console.warn('❌ Could not find goal matching:', updateData.goalTitle);
+          }
+        } catch (error) {
+          console.error('Failed to parse goal update JSON:', error);
+          console.error('Raw JSON string:', goalUpdateJSON);
+        }
+      }
+
+      // Check for project update
+      const projectUpdateJSON = extractJSON(response, 'PROJECT_UPDATE_JSON:');
+      if (projectUpdateJSON && onProjectUpdate && projects) {
+        try {
+          const updateData = JSON.parse(projectUpdateJSON);
+          const projectToUpdate = projects.find((p: any) =>
+            p.name.toLowerCase().includes(updateData.projectName.toLowerCase())
+          );
+          if (projectToUpdate && updateData.updates) {
+            onProjectUpdate({
+              ...projectToUpdate,
+              ...updateData.updates,
+            });
+          }
+        } catch (error) {
+          console.error('Failed to parse project update JSON:', error);
+        }
+      }
+
+      // Check for goal deletion using robust extraction
+      const goalDeleteJSON = extractJSON(response, 'GOAL_DELETE_JSON:');
+      if (goalDeleteJSON && onGoalDelete && goals) {
+        try {
+          const deleteData = JSON.parse(goalDeleteJSON);
+          console.log('🗑️ Goal deletion request:', deleteData);
+          console.log('📋 Available goals:', goals.map(g => g.title));
+
+          // Try to find the goal - be more flexible with matching
+          const searchTerm = deleteData.goalTitle.toLowerCase();
+          const goalToDelete = goals.find(g => {
+            const title = g.title.toLowerCase();
+            return title.includes(searchTerm) || searchTerm.includes(title);
+          });
+
+          if (goalToDelete) {
+            console.log('✅ Found goal to delete:', goalToDelete.title);
+            onGoalDelete(goalToDelete.id);
+          } else {
+            console.warn('❌ Could not find goal matching:', deleteData.goalTitle);
+          }
+        } catch (error) {
+          console.error('Failed to parse goal delete JSON:', error);
+          console.error('Raw JSON string:', goalDeleteJSON);
+        }
+      }
+
+      // Check for project deletion
+      const projectDeleteJSON = extractJSON(response, 'PROJECT_DELETE_JSON:');
+      if (projectDeleteJSON && onProjectDelete && projects) {
+        try {
+          const deleteData = JSON.parse(projectDeleteJSON);
+          const projectToDelete = projects.find((p: any) =>
+            p.name.toLowerCase().includes(deleteData.projectName.toLowerCase())
+          );
+          if (projectToDelete) {
+            onProjectDelete(projectToDelete.id);
+          }
+        } catch (error) {
+          console.error('Failed to parse project delete JSON:', error);
+        }
+      }
+
+      // Check for workspace creation
+      const workspacesJSON = extractJSON(response, 'WORKSPACES_JSON:');
+      if (workspacesJSON && onWorkspaceCreate) {
+        try {
+          const workspacesData = JSON.parse(workspacesJSON);
+          workspacesData.forEach((workspace: any) => {
+            onWorkspaceCreate({
+              name: workspace.name,
+              description: workspace.description || '',
+            });
+          });
+        } catch (error) {
+          console.error('Failed to parse workspaces JSON:', error);
+        }
+      }
+
+      // Check for workspace update
+      const workspaceUpdateJSON = extractJSON(response, 'WORKSPACE_UPDATE_JSON:');
+      if (workspaceUpdateJSON && onWorkspaceUpdate && workspaces) {
+        try {
+          const updateData = JSON.parse(workspaceUpdateJSON);
+          const workspaceToUpdate = workspaces.find((w: any) =>
+            w.name.toLowerCase().includes(updateData.workspaceName.toLowerCase())
+          );
+          if (workspaceToUpdate && updateData.updates) {
+            onWorkspaceUpdate({
+              ...workspaceToUpdate,
+              ...updateData.updates,
+            });
+          }
+        } catch (error) {
+          console.error('Failed to parse workspace update JSON:', error);
+        }
+      }
+
+      // Check for workspace deletion
+      const workspaceDeleteJSON = extractJSON(response, 'WORKSPACE_DELETE_JSON:');
+      if (workspaceDeleteJSON && onWorkspaceDelete && workspaces) {
+        try {
+          const deleteData = JSON.parse(workspaceDeleteJSON);
+          const workspaceToDelete = workspaces.find((w: any) =>
+            w.name.toLowerCase().includes(deleteData.workspaceName.toLowerCase())
+          );
+          if (workspaceToDelete) {
+            onWorkspaceDelete(workspaceToDelete.id);
+          }
+        } catch (error) {
+          console.error('Failed to parse workspace delete JSON:', error);
+        }
+      }
+
+      // Check for note update
+      const noteUpdateJSON = extractJSON(response, 'NOTE_UPDATE_JSON:');
+      if (noteUpdateJSON && onNoteUpdate && notes) {
+        try {
+          const updateData = JSON.parse(noteUpdateJSON);
+          const noteToUpdate = notes.find((n: any) =>
+            n.title.toLowerCase().includes(updateData.noteTitle.toLowerCase())
+          );
+          if (noteToUpdate && updateData.updates) {
+            onNoteUpdate({
+              ...noteToUpdate,
+              ...updateData.updates,
+              lastModified: Date.now(),
+            });
+          }
+        } catch (error) {
+          console.error('Failed to parse note update JSON:', error);
+        }
+      }
+
+      // Check for note deletion
+      const noteDeleteJSON = extractJSON(response, 'NOTE_DELETE_JSON:');
+      if (noteDeleteJSON && onNoteDelete && notes) {
+        try {
+          const deleteData = JSON.parse(noteDeleteJSON);
+          const noteToDelete = notes.find((n: any) =>
+            n.title.toLowerCase().includes(deleteData.noteTitle.toLowerCase())
+          );
+          if (noteToDelete) {
+            onNoteDelete(noteToDelete.id);
+          }
+        } catch (error) {
+          console.error('Failed to parse note delete JSON:', error);
+        }
+      }
+
       // Remove action blocks from display message - keep only conversational text
       displayMessage = response;
 
@@ -534,6 +805,75 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       // Remove event update JSON
       if (eventUpdateJSON) {
         displayMessage = displayMessage.replace(/EVENT_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove event deletion JSON
+      if (eventDeleteJSON) {
+        displayMessage = displayMessage.replace(/EVENT_DELETE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove event delete all JSON
+      if (eventDeleteAllJSON) {
+        displayMessage = displayMessage.replace(/EVENT_DELETE_ALL_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove goal creation JSON - use exact extracted string
+      if (goalsJSON) {
+        const goalMarker = 'GOALS_JSON:';
+        const startIdx = displayMessage.indexOf(goalMarker);
+        if (startIdx !== -1) {
+          const endIdx = startIdx + goalMarker.length + goalsJSON.length;
+          displayMessage = displayMessage.slice(0, startIdx) + displayMessage.slice(endIdx);
+        }
+      }
+
+      // Remove goal update JSON
+      if (goalUpdateJSON) {
+        displayMessage = displayMessage.replace(/GOAL_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove goal deletion JSON
+      if (goalDeleteJSON) {
+        displayMessage = displayMessage.replace(/GOAL_DELETE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove project creation JSON
+      if (projectsJSON) {
+        const projectMarker = 'PROJECTS_JSON:';
+        const startIdx = displayMessage.indexOf(projectMarker);
+        if (startIdx !== -1) {
+          const endIdx = startIdx + projectMarker.length + projectsJSON.length;
+          displayMessage = displayMessage.slice(0, startIdx) + displayMessage.slice(endIdx);
+        }
+      }
+
+      // Remove project update JSON
+      if (projectUpdateJSON) {
+        displayMessage = displayMessage.replace(/PROJECT_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove project deletion JSON
+      if (projectDeleteJSON) {
+        displayMessage = displayMessage.replace(/PROJECT_DELETE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove workspace JSON
+      if (workspacesJSON) {
+        displayMessage = displayMessage.replace(/WORKSPACES_JSON:\s*\[[\s\S]*?\]\n?/g, '');
+      }
+      if (workspaceUpdateJSON) {
+        displayMessage = displayMessage.replace(/WORKSPACE_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+      if (workspaceDeleteJSON) {
+        displayMessage = displayMessage.replace(/WORKSPACE_DELETE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+
+      // Remove note operations JSON
+      if (noteUpdateJSON) {
+        displayMessage = displayMessage.replace(/NOTE_UPDATE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
+      }
+      if (noteDeleteJSON) {
+        displayMessage = displayMessage.replace(/NOTE_DELETE_JSON:\s*\{[\s\S]*?\}\n?/g, '');
       }
 
       // Remove task update JSON
@@ -581,6 +921,11 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Refocus the input field after response is displayed
+      setTimeout(() => {
+        textInputRef.current?.focus();
+      }, 100);
 
     } catch (error: any) {
       const errorMessage: Message = {
@@ -726,9 +1071,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
-                if (window.confirm('Start a new chat? This will clear the conversation history.')) {
+                if (window.confirm('Start a new chat? Previous messages will be saved in Chat History.')) {
                   setMessages([]);
-                  localStorage.removeItem('aiChatHistory');
                 }
               }}
               className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
@@ -939,6 +1283,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
                 />
 
                 <input
+                  ref={textInputRef}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}

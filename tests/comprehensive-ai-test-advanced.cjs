@@ -118,14 +118,15 @@ async function callRealAI(userPrompt, context) {
     goalCount: context.goals.length
   });
 
-  const fullPrompt = `${systemPrompt}\n\nUser: ${userPrompt}`;
-
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: 'chat',
-      data: { message: fullPrompt }
+      data: {
+        message: userPrompt,
+        systemPrompt: systemPrompt
+      }
     })
   });
 

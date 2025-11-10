@@ -127,15 +127,20 @@ export const startBrowserListening = (
 
 // ============= AI INTELLIGENCE (Gemini via Backend) =============
 
-export const askGemini = async (prompt: string, context?: string): Promise<string> => {
+export const askGemini = async (
+  systemPrompt: string,
+  conversationHistory: Array<{ role: string; content: string }>,
+  userMessage: string
+): Promise<string> => {
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: 'chat',
       data: {
-        message: prompt,
-        context
+        systemPrompt,
+        conversationHistory,
+        message: userMessage
       }
     })
   });
@@ -184,6 +189,23 @@ export const speakWithBrowser = (text: string): Promise<void> => {
 };
 
 export const stopSpeaking = (): void => {
+  // Stop Web Audio API playback (for Google Cloud TTS)
+  if (currentAudioSource) {
+    try {
+      currentAudioSource.stop();
+      currentAudioSource = null;
+      console.log('⏹️  Stopped Web Audio playback');
+    } catch (error) {
+      // Already stopped or invalid state
+      currentAudioSource = null;
+    }
+  }
+
+  // Clear audio queue
+  audioQueue = [];
+  isPlayingQueue = false;
+
+  // Stop browser TTS
   if (window.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
@@ -263,6 +285,13 @@ export const setUsePremiumVoice = (value: boolean): void => {
 let globalAudioContext: AudioContext | null = null;
 let isAudioUnlocked = false;
 
+// Track currently playing audio source for interruption support
+let currentAudioSource: AudioBufferSourceNode | null = null;
+
+// Queue for managing chunked audio playback
+let audioQueue: Array<() => Promise<void>> = [];
+let isPlayingQueue = false;
+
 // Call this during a user interaction (button click, tap) to unlock audio on mobile
 export const unlockAudio = async (): Promise<void> => {
   if (isAudioUnlocked) return;
@@ -302,6 +331,64 @@ export const unlockAudio = async (): Promise<void> => {
   }
 };
 
+// Helper: Split text into chunks for TTS (Google Cloud has ~5000 char limit)
+function chunkText(text: string, maxChars: number = 4500): string[] {
+  if (text.length <= maxChars) {
+    return [text];
+  }
+
+  const chunks: string[] = [];
+  // Split by sentences (period, exclamation, question mark followed by space or end)
+  const sentences = text.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g) || [text];
+
+  let currentChunk = '';
+  for (const sentence of sentences) {
+    const trimmed = sentence.trim();
+    if (!trimmed) continue;
+
+    // If adding this sentence exceeds limit, start new chunk
+    if (currentChunk && (currentChunk.length + trimmed.length + 1) > maxChars) {
+      chunks.push(currentChunk.trim());
+      currentChunk = trimmed;
+    } else {
+      currentChunk += (currentChunk ? ' ' : '') + trimmed;
+    }
+  }
+
+  if (currentChunk) {
+    chunks.push(currentChunk.trim());
+  }
+
+  return chunks.length > 0 ? chunks : [text];
+}
+
+// Helper: Split text into sentences for streaming TTS
+function splitIntoSentences(text: string): string[] {
+  // Split by sentences, keeping punctuation
+  const sentences = text.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g) || [text];
+  return sentences.map(s => s.trim()).filter(s => s.length > 0);
+}
+
+// Helper: Process audio queue sequentially
+async function processAudioQueue(): Promise<void> {
+  if (isPlayingQueue || audioQueue.length === 0) {
+    return;
+  }
+
+  isPlayingQueue = true;
+  while (audioQueue.length > 0) {
+    const playNext = audioQueue.shift();
+    if (playNext) {
+      try {
+        await playNext();
+      } catch (error) {
+        console.error('Error playing queued audio:', error);
+      }
+    }
+  }
+  isPlayingQueue = false;
+}
+
 // Play audio using Web Audio API with the unlocked AudioContext
 async function playWithWebAudio(base64Audio: string): Promise<void> {
   if (!globalAudioContext) {
@@ -326,8 +413,12 @@ async function playWithWebAudio(base64Audio: string): Promise<void> {
         source.buffer = decodedBuffer;
         source.connect(globalAudioContext!.destination);
 
+        // Track the current audio source for interruption support
+        currentAudioSource = source;
+
         source.onended = () => {
           console.log('✅ Web Audio playback completed');
+          currentAudioSource = null;
           resolve();
         };
 
@@ -337,14 +428,15 @@ async function playWithWebAudio(base64Audio: string): Promise<void> {
       },
       (error) => {
         console.error('❌ Audio decode error:', error);
+        currentAudioSource = null;
         reject(new Error('Failed to decode audio data'));
       }
     );
   });
 }
 
-// Google Cloud TTS (HD voices)
-export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
+// Fetch TTS audio for a text chunk
+async function fetchTTSAudio(text: string, voice: 'female' | 'male' = 'female'): Promise<string> {
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -363,42 +455,68 @@ export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male
 
   const data = await response.json();
 
-  // If no audio returned, backend doesn't have API key configured
   if (!data.audio) {
     throw new Error('Google Cloud TTS not configured on server');
   }
 
-  // If we have a global AudioContext (unlocked by user gesture), use Web Audio API
-  if (globalAudioContext && isAudioUnlocked) {
-    console.log('🔊 Using unlocked AudioContext for playback');
-    return playWithWebAudio(data.audio);
-  }
+  return data.audio;
+}
 
-  // Fallback: try regular Audio element (may fail on mobile Safari)
-  console.log('⚠️  No unlocked AudioContext, trying Audio element (may fail on mobile)');
-  const audioBlob = base64ToBlob(data.audio, data.mimeType || 'audio/mpeg');
-  const audioUrl = URL.createObjectURL(audioBlob);
-  const audio = new Audio(audioUrl);
+// Google Cloud TTS (HD voices) with sentence-by-sentence streaming
+export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
+  // Stop any current playback before starting new one
+  stopSpeaking();
 
-  return new Promise((resolve, reject) => {
-    audio.onended = () => {
-      URL.revokeObjectURL(audioUrl);
-      resolve();
-    };
-    audio.onerror = () => {
-      URL.revokeObjectURL(audioUrl);
-      reject(new Error('Audio playback failed'));
-    };
+  // Split text into chunks (to handle Google's character limit)
+  const chunks = chunkText(text, 4500);
+  console.log(`🎤 Split text into ${chunks.length} chunks for TTS`);
 
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.error('❌ Audio playback blocked:', error);
-        URL.revokeObjectURL(audioUrl);
-        reject(new Error('Auto-play blocked - audio not unlocked'));
+  // For each chunk, split into sentences and queue them
+  for (const chunk of chunks) {
+    const sentences = splitIntoSentences(chunk);
+    console.log(`🎤 Processing ${sentences.length} sentences in chunk`);
+
+    for (const sentence of sentences) {
+      // Queue each sentence for playback
+      audioQueue.push(async () => {
+        console.log(`🎤 Fetching TTS for sentence: "${sentence.substring(0, 50)}..."`);
+        const audioBase64 = await fetchTTSAudio(sentence, voice);
+
+        // Play with Web Audio API if available, otherwise fallback
+        if (globalAudioContext && isAudioUnlocked) {
+          return playWithWebAudio(audioBase64);
+        } else {
+          // Fallback to Audio element
+          const audioBlob = base64ToBlob(audioBase64, 'audio/mpeg');
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+
+          return new Promise<void>((resolve, reject) => {
+            audio.onended = () => {
+              URL.revokeObjectURL(audioUrl);
+              resolve();
+            };
+            audio.onerror = () => {
+              URL.revokeObjectURL(audioUrl);
+              reject(new Error('Audio playback failed'));
+            };
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+              playPromise.catch((error) => {
+                console.error('❌ Audio playback blocked:', error);
+                URL.revokeObjectURL(audioUrl);
+                reject(error);
+              });
+            }
+          });
+        }
       });
     }
-  });
+  }
+
+  // Start processing the queue
+  return processAudioQueue();
 };
 
 export const speak = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
@@ -496,13 +614,6 @@ export const getAIResponse = async (
   // Build system prompt with context
   const systemPrompt = buildSystemPrompt(context);
 
-  // Build conversation history
-  const conversationText = conversationHistory
-    ?.map(m => `${m.role === 'user' ? 'User' : 'Wove'}: ${m.content}`)
-    .join('\n') || '';
-
-  // Full prompt = system instructions + history + current message
-  const fullPrompt = `${systemPrompt}\n\n${conversationText}\n\nUser: ${userMessage}`;
-
-  return await askGemini(fullPrompt);
+  // Return structured data to Gemini API
+  return await askGemini(systemPrompt, conversationHistory || [], userMessage);
 };

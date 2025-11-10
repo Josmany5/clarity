@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Clarity Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @import url('https://rsms.me/inter/inter.css');
       @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
@@ -211,7 +212,31 @@
         }
       }
     </style>
-<link rel="stylesheet" href="/index.css">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'primary': '#7C3AED',
+              'primary-light': '#A78BFA',
+              'bg-primary': 'var(--bg-primary)',
+              'text-primary': 'var(--text-primary)',
+              'text-secondary': 'var(--text-secondary)',
+              'card-bg': 'var(--card-bg)',
+              'card-border': 'var(--card-border)',
+              'sidebar-bg': 'var(--sidebar-bg)',
+              'sidebar-border': 'var(--sidebar-border)',
+              'accent': 'var(--accent-primary)',
+              'accent-secondary': 'var(--accent-secondary)',
+            },
+            boxShadow: {
+              'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.1)',
+            }
+          }
+        }
+      }
+    </script>
 </head>
   <body>
     <div id="root"></div>

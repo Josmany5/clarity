@@ -6,9 +6,10 @@ interface GoalWidgetProps {
   goals: Goal[];
   onUpdateGoal?: (goal: Goal) => void;
   onAddGoal?: () => void;
+  onViewAll?: () => void;
 }
 
-export const GoalWidget: React.FC<GoalWidgetProps> = ({ goals, onUpdateGoal, onAddGoal }) => {
+export const GoalWidget: React.FC<GoalWidgetProps> = ({ goals, onUpdateGoal, onAddGoal, onViewAll }) => {
   const [expandedGoalId, setExpandedGoalId] = useState<string | null>(null);
 
   const getStatusColor = (status: Goal['status']) => {
@@ -51,7 +52,9 @@ export const GoalWidget: React.FC<GoalWidgetProps> = ({ goals, onUpdateGoal, onA
   return (
     <WidgetCard>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-lg text-text-primary">Personal Goals</h3>
+        <h3 className="font-bold text-lg text-text-primary">
+          Personal Goals
+        </h3>
         {onAddGoal && (
           <button
             onClick={onAddGoal}

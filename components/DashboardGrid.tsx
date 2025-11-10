@@ -5,10 +5,11 @@ import { FocusTimer } from './FocusTimer';
 import { LineChartCard } from './LineChartCard';
 import { MiniCalendar } from './MiniCalendar';
 import { GoalWidget } from './GoalWidget';
+import { ProjectWidget } from './ProjectWidget';
 import { MiniTodoWidget } from './MiniTodoWidget';
 import { MiniEventsWidget } from './MiniEventsWidget';
 import { UserIcon, NoteIcon } from './Icons';
-import type { Note, Goal, Task } from '../App';
+import type { Note, Goal, Task, Project } from '../App';
 
 const Tag: React.FC<{ color: string; children: React.ReactNode }> = ({ color, children }) => (
   <span className={`text-xs font-semibold px-2 py-1 rounded-full ${color}`}>
@@ -30,8 +31,10 @@ interface DashboardGridProps {
     onSelectNote: (noteId: string) => void;
     tasks?: Task[];
     goals?: Goal[];
+    projects?: Project[];
     events?: Array<{ id: string; title: string; startDate: string; startTime: string; type: string }>;
     onUpdateGoal?: (goal: Goal) => void;
+    onUpdateProject?: (project: Project) => void;
     onUpdateTask?: (task: Task) => void;
     timerDuration: number;
     timerTimeRemaining: number;
@@ -49,8 +52,10 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
   onSelectNote,
   tasks = [],
   goals = [],
+  projects = [],
   events = [],
   onUpdateGoal,
+  onUpdateProject,
   onUpdateTask,
   timerDuration,
   timerTimeRemaining,
@@ -75,18 +80,31 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
             goals={goals}
             onUpdateGoal={onUpdateGoal}
             onAddGoal={() => setActivePage('Goals')}
+            onViewAll={() => setActivePage('Goals')}
           />
             <WidgetCard>
                 <h3 className="font-bold text-lg text-text-primary mb-3">Recent Notes</h3>
                 {recentNotes.length > 0 ? (
-                    <ul className="space-y-3">
-                        {recentNotes.map(note => (
-                            <li key={note.id} onClick={() => onSelectNote(note.id)} className="flex items-center p-2 -m-2 rounded-lg cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                                <NoteIcon className="w-5 h-5 mr-3 text-accent flex-shrink-0" />
-                                <p className="text-sm text-text-primary truncate">{note.title}</p>
-                            </li>
-                        ))}
-                    </ul>
+                    <>
+                        <ul className="space-y-3">
+                            {recentNotes.map(note => (
+                                <li key={note.id} onClick={() => onSelectNote(note.id)} className="flex items-center p-2 -m-2 rounded-lg cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                                    <NoteIcon className="w-5 h-5 mr-3 text-accent flex-shrink-0" />
+                                    <p className="text-sm text-text-primary truncate">{note.title}</p>
+                                </li>
+                            ))}
+                        </ul>
+                        {notes.length > 3 && (
+                            <div className="mt-4 text-center">
+                                <button
+                                    onClick={() => setActivePage('Notes')}
+                                    className="text-xs text-accent hover:text-accent-secondary transition-colors"
+                                >
+                                    View all {notes.length} notes
+                                </button>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <p className="text-sm text-text-secondary text-center py-4">No recent notes. Click "New Note" to get started!</p>
                 )}
@@ -95,16 +113,11 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
 
         {/* Column 2 */}
         <div className="lg:col-span-2 xl:col-span-2 space-y-6">
-          <ClickableWidget onClick={() => setActivePage('Projects')}>
-              <WidgetCard>
-                  <h3 className="font-bold text-lg text-text-primary">Marketing Plan</h3>
-                  <p className="text-sm text-text-secondary mt-1">Analyze Q3 results</p>
-                  <div className="flex space-x-2 mt-3">
-                      <Tag color="bg-red-500/20 text-red-500 dark:text-red-300">#work</Tag>
-                      <Tag color="bg-orange-500/20 text-orange-500 dark:text-orange-300">#personal</Tag>
-                  </div>
-              </WidgetCard>
-          </ClickableWidget>
+          <ProjectWidget
+            projects={projects}
+            onUpdateProject={onUpdateProject}
+            onAddProject={() => setActivePage('Projects')}
+          />
           <WidgetCard>
               <LineChartCard theme={theme} />
           </WidgetCard>

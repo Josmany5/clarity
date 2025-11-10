@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ override: true });
 
 const app = express();
 app.use(cors());
@@ -23,8 +23,29 @@ app.post('/api/ai', async (req, res) => {
   try {
     // Handle chat action
     if (action === 'chat') {
-      const { message, context } = data;
-      const fullPrompt = context ? `${context}\n\nUser: ${message}` : message;
+      const { systemPrompt, context, conversationHistory, message } = data;
+
+      // Support both systemPrompt (from app) and context (from tests)
+      const actualSystemPrompt = systemPrompt || context || 'You are a helpful assistant.';
+
+      // Build contents array with proper role structure
+      const contents = [];
+
+      // Add conversation history with roles
+      if (conversationHistory && conversationHistory.length > 0) {
+        for (const msg of conversationHistory) {
+          contents.push({
+            role: msg.role === 'user' ? 'user' : 'model',
+            parts: [{ text: msg.content }]
+          });
+        }
+      }
+
+      // Add current user message
+      contents.push({
+        role: 'user',
+        parts: [{ text: message }]
+      });
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -32,10 +53,13 @@ app.post('/api/ai', async (req, res) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: fullPrompt }] }],
+            systemInstruction: {
+              parts: [{ text: actualSystemPrompt }]
+            },
+            contents: contents,
             generationConfig: {
               temperature: 0.7,
-              maxOutputTokens: 2048,
+              maxOutputTokens: 4096,
             }
           })
         }

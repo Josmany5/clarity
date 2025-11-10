@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Note, Task } from '../../App';
+import type { Note, Task, Project, Goal } from '../../App';
 import { RichTextEditor } from '../RichTextEditor';
 
 interface CreateEntityModalProps {
@@ -7,6 +7,8 @@ interface CreateEntityModalProps {
   onClose: () => void;
   onCreateNote: (title: string, content: string) => Note;
   onCreateTask: (title: string, urgent: boolean, important: boolean, dueDate?: string, dueTime?: string) => Task;
+  onCreateProject: (name: string, description: string) => Project;
+  onCreateGoal: (title: string, description: string, targetDate?: string) => Goal;
   onAddToWorkspace: (entityType: 'note' | 'task' | 'project' | 'goal', entityId: string) => void;
 }
 
@@ -15,6 +17,8 @@ export const CreateEntityModal: React.FC<CreateEntityModalProps> = ({
   onClose,
   onCreateNote,
   onCreateTask,
+  onCreateProject,
+  onCreateGoal,
   onAddToWorkspace,
 }) => {
   const [entityType, setEntityType] = useState<'note' | 'task' | 'project' | 'goal'>('note');
@@ -30,6 +34,15 @@ export const CreateEntityModal: React.FC<CreateEntityModalProps> = ({
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskDueTime, setTaskDueTime] = useState('');
 
+  // Project state
+  const [projectName, setProjectName] = useState('');
+  const [projectDescription, setProjectDescription] = useState('');
+
+  // Goal state
+  const [goalTitle, setGoalTitle] = useState('');
+  const [goalDescription, setGoalDescription] = useState('');
+  const [goalTargetDate, setGoalTargetDate] = useState('');
+
   if (!isOpen) return null;
 
   const resetForm = () => {
@@ -40,6 +53,11 @@ export const CreateEntityModal: React.FC<CreateEntityModalProps> = ({
     setTaskImportant(false);
     setTaskDueDate('');
     setTaskDueTime('');
+    setProjectName('');
+    setProjectDescription('');
+    setGoalTitle('');
+    setGoalDescription('');
+    setGoalTargetDate('');
   };
 
   const handleCreate = () => {
@@ -64,11 +82,19 @@ export const CreateEntityModal: React.FC<CreateEntityModalProps> = ({
       );
       onAddToWorkspace('task', newTask.id);
     } else if (entityType === 'project') {
-      alert('Project creation coming soon...');
-      return;
+      if (!projectName.trim()) {
+        alert('Please enter a project name');
+        return;
+      }
+      const newProject = onCreateProject(projectName, projectDescription);
+      onAddToWorkspace('project', newProject.id);
     } else if (entityType === 'goal') {
-      alert('Goal creation coming soon...');
-      return;
+      if (!goalTitle.trim()) {
+        alert('Please enter a goal title');
+        return;
+      }
+      const newGoal = onCreateGoal(goalTitle, goalDescription, goalTargetDate || undefined);
+      onAddToWorkspace('goal', newGoal.id);
     }
 
     resetForm();
@@ -173,22 +199,81 @@ export const CreateEntityModal: React.FC<CreateEntityModalProps> = ({
 
       case 'project':
         return (
-          <div className="flex items-center justify-center h-full text-text-secondary">
-            <div className="text-center">
-              <span className="text-6xl mb-4 block">📁</span>
-              <p className="text-lg font-semibold">Project Creation</p>
-              <p className="text-sm mt-2">Coming soon...</p>
+          <div className="p-6 space-y-6">
+            {/* Project Name */}
+            <div>
+              <label className="block text-sm font-semibold text-text-secondary mb-2">
+                Project Name
+              </label>
+              <input
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="w-full text-lg px-4 py-2 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg border border-card-border focus:outline-none focus:ring-2 focus:ring-accent"
+                placeholder="e.g., Website Redesign"
+                autoFocus
+              />
+            </div>
+
+            {/* Project Description */}
+            <div>
+              <label className="block text-sm font-semibold text-text-secondary mb-2">
+                Description
+              </label>
+              <textarea
+                value={projectDescription}
+                onChange={(e) => setProjectDescription(e.target.value)}
+                className="w-full px-4 py-2 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg border border-card-border focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                placeholder="What is this project about?"
+                rows={4}
+              />
             </div>
           </div>
         );
 
       case 'goal':
         return (
-          <div className="flex items-center justify-center h-full text-text-secondary">
-            <div className="text-center">
-              <span className="text-6xl mb-4 block">🎯</span>
-              <p className="text-lg font-semibold">Goal Creation</p>
-              <p className="text-sm mt-2">Coming soon...</p>
+          <div className="p-6 space-y-6">
+            {/* Goal Title */}
+            <div>
+              <label className="block text-sm font-semibold text-text-secondary mb-2">
+                Goal Title
+              </label>
+              <input
+                type="text"
+                value={goalTitle}
+                onChange={(e) => setGoalTitle(e.target.value)}
+                className="w-full text-lg px-4 py-2 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg border border-card-border focus:outline-none focus:ring-2 focus:ring-accent"
+                placeholder="e.g., Learn Spanish"
+                autoFocus
+              />
+            </div>
+
+            {/* Goal Description */}
+            <div>
+              <label className="block text-sm font-semibold text-text-secondary mb-2">
+                Description
+              </label>
+              <textarea
+                value={goalDescription}
+                onChange={(e) => setGoalDescription(e.target.value)}
+                className="w-full px-4 py-2 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg border border-card-border focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                placeholder="Describe your goal..."
+                rows={4}
+              />
+            </div>
+
+            {/* Target Date */}
+            <div>
+              <label className="block text-sm font-semibold text-text-secondary mb-2">
+                Target Date (Optional)
+              </label>
+              <input
+                type="date"
+                value={goalTargetDate}
+                onChange={(e) => setGoalTargetDate(e.target.value)}
+                className="w-full px-4 py-2 bg-black/5 dark:bg-white/5 text-text-primary rounded-lg border border-card-border focus:outline-none focus:ring-2 focus:ring-accent"
+              />
             </div>
           </div>
         );

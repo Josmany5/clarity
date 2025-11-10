@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Workspace, Note, Task, ViewMode } from '../App';
+import type { Workspace, Note, Task, Project, Goal, ViewMode } from '../App';
 import { WidgetCard } from './WidgetCard';
 import { MapView } from './workspace/MapView';
 import { ListView } from './workspace/ListView';
@@ -18,10 +18,14 @@ interface WorkspacesPageProps {
   onDeleteWorkspace: (id: string) => void;
   notes: Note[];
   tasks: Task[];
+  projects?: Project[];
+  goals?: Goal[];
   onUpdateNote?: (note: Note) => void;
   onUpdateTask?: (task: Task) => void;
   onAddNote?: (title: string, content: string) => Note;
   onAddTask?: (task: { title: string; urgent: boolean; important: boolean; dueDate?: string; dueTime?: string }) => Task;
+  onAddProject?: (name: string, description: string) => Project;
+  onAddGoal?: (title: string, description: string, targetDate?: string) => Goal;
 }
 
 export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
@@ -33,10 +37,14 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
   onDeleteWorkspace,
   notes,
   tasks,
+  projects = [],
+  goals = [],
   onUpdateNote,
   onUpdateTask,
   onAddNote,
   onAddTask,
+  onAddProject,
+  onAddGoal,
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
@@ -415,6 +423,18 @@ export const WorkspacesPage: React.FC<WorkspacesPageProps> = ({
           onClose={() => setShowCreateEntityModal(false)}
           onCreateNote={handleCreateNote}
           onCreateTask={handleCreateTask}
+          onCreateProject={(name, description) => {
+            if (!onAddProject) {
+              throw new Error('onAddProject prop not provided');
+            }
+            return onAddProject(name, description);
+          }}
+          onCreateGoal={(title, description, targetDate) => {
+            if (!onAddGoal) {
+              throw new Error('onAddGoal prop not provided');
+            }
+            return onAddGoal(title, description, targetDate);
+          }}
           onAddToWorkspace={handleAddEntityToWorkspace}
         />
       )}

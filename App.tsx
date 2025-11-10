@@ -180,10 +180,8 @@ const App: React.FC = () => {
       }
       // Create default lists
       const defaultLists: TaskList[] = [
-        { id: 'inbox', name: 'Inbox', color: '#8b5cf6', icon: '📥', createdAt: Date.now() },
         { id: 'work', name: 'Work', color: '#3b82f6', icon: '💼', createdAt: Date.now() },
         { id: 'personal', name: 'Personal', color: '#10b981', icon: '🏠', createdAt: Date.now() },
-        { id: 'shopping', name: 'Shopping', color: '#f59e0b', icon: '🛒', createdAt: Date.now() },
       ];
       return defaultLists;
     } catch (error) {
@@ -418,7 +416,7 @@ const App: React.FC = () => {
       id: crypto.randomUUID(),
       createdAt: Date.now(),
     };
-    setTasks(prevTasks => [newTask, ...prevTasks]);
+    setTasks(prevTasks => [...prevTasks, newTask]);
     setActivePage('Tasks'); // Auto-navigate to Tasks page like Notes
   };
 
@@ -477,6 +475,10 @@ const App: React.FC = () => {
     setEvents(events.filter(event => event.id !== eventId));
   };
 
+  const handleDeleteAllEvents = () => {
+    setEvents([]);
+  };
+
   const handleAddGoal = (goal: Omit<Goal, 'id' | 'createdAt'>) => {
     const newGoal: Goal = {
       ...goal,
@@ -492,6 +494,23 @@ const App: React.FC = () => {
 
   const handleDeleteGoal = (goalId: string) => {
     setGoals(goals.filter(goal => goal.id !== goalId));
+  };
+
+  const handleAddProject = (project: Omit<Project, 'id' | 'createdAt'>) => {
+    const newProject: Project = {
+      ...project,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+    };
+    setProjects(prevProjects => [...prevProjects, newProject]);
+  };
+
+  const handleUpdateProject = (updatedProject: Project) => {
+    setProjects(projects.map(project => project.id === updatedProject.id ? updatedProject : project));
+  };
+
+  const handleDeleteProject = (projectId: string) => {
+    setProjects(projects.filter(project => project.id !== projectId));
   };
 
   const handleCreateWorkspace = (name: string, description: string = '') => {
@@ -534,8 +553,10 @@ const App: React.FC = () => {
             notes={notes}
             tasks={tasks}
             goals={goals}
+            projects={projects}
             events={events}
             onUpdateGoal={handleUpdateGoal}
+            onUpdateProject={handleUpdateProject}
             onUpdateTask={handleUpdateTask}
             onNewNote={handleAddNote}
             onSelectNote={(noteId) => {
@@ -733,6 +754,25 @@ const App: React.FC = () => {
           onEventCreate={handleAddEvent}
           onEventUpdate={handleUpdateEvent}
           onEventDelete={handleDeleteEvent}
+          onEventDeleteAll={handleDeleteAllEvents}
+          onGoalCreate={handleAddGoal}
+          onGoalUpdate={handleUpdateGoal}
+          onGoalDelete={handleDeleteGoal}
+          onProjectCreate={handleAddProject}
+          onProjectUpdate={handleUpdateProject}
+          onProjectDelete={handleDeleteProject}
+          onWorkspaceCreate={(workspace) => {
+            const newWorkspace = handleCreateWorkspace(workspace.name, workspace.description);
+            return newWorkspace;
+          }}
+          onWorkspaceUpdate={handleUpdateWorkspace}
+          onWorkspaceDelete={handleDeleteWorkspace}
+          onNoteUpdate={(updatedNote) => {
+            setNotes(notes.map(note => note.id === updatedNote.id ? updatedNote : note));
+          }}
+          onNoteDelete={(noteId) => {
+            setNotes(notes.filter(note => note.id !== noteId));
+          }}
           tasks={tasks}
           events={events}
           notes={notes}
