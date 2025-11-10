@@ -4,8 +4,14 @@
 const https = require('https');
 
 // Configuration
-const API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDGuQmjBzSzrDU7vUdQj5OhDan68NVpCJ4';
+const API_KEY = process.env.GEMINI_API_KEY;
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+if (!API_KEY) {
+  console.error('❌ GEMINI_API_KEY environment variable is required');
+  console.error('Set it in your .env file or run: export GEMINI_API_KEY=your_key_here');
+  process.exit(1);
+}
 
 // Read AI instructions
 const fs = require('fs');

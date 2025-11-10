@@ -1,9 +1,15 @@
 // Comprehensive AI Testing Suite
 // Tests AI functionality with 6-second delays between tests
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDGuQmjBzSzrDU7vUdQj5OhDan68NVpCJ4';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const API_URL = 'http://localhost:3001/api/ai';
 const TEST_DELAY = 6000; // 6 seconds between tests
+
+if (!GEMINI_API_KEY) {
+  console.error('❌ GEMINI_API_KEY environment variable is required');
+  console.error('Set it in your .env file or run: export GEMINI_API_KEY=your_key_here');
+  process.exit(1);
+}
 
 // Test counter
 let testCount = 0;
