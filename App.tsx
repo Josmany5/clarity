@@ -19,6 +19,7 @@ import { ChatHistoryPage } from './components/ChatHistoryPage';
 import { EventsPage } from './components/EventsPage';
 import { SearchResultsPage } from './components/SearchResultsPage';
 import { GoalsPage } from './components/GoalsPage';
+
 import { AIAssistant } from './components/AIAssistant';
 import { FloatingTimer } from './components/FloatingTimer';
 
@@ -235,6 +236,8 @@ const App: React.FC = () => {
     }
   });
 
+
+
   // Timer state (persistent across pages)
   const [timerDuration, setTimerDuration] = useState(() => {
     try {
@@ -306,6 +309,8 @@ const App: React.FC = () => {
   useEffect(() => {
     window.localStorage.setItem('projects', JSON.stringify(projects));
   }, [projects]);
+
+
 
   useEffect(() => {
     window.localStorage.setItem('timerDuration', timerDuration.toString());
@@ -634,6 +639,43 @@ const App: React.FC = () => {
           onUpdateEvent={handleUpdateEvent}
           onDeleteEvent={handleDeleteEvent}
         />;
+      // case 'Documents':
+      //   return <DocumentsPage
+      //     documents={documents}
+      //     folders={folders}
+      //     onAddDocument={(document) => {
+      //       const newDocument: Document = {
+      //         ...document,
+      //         id: crypto.randomUUID(),
+      //         createdAt: Date.now(),
+      //       };
+      //       setDocuments(prevDocuments => [newDocument, ...prevDocuments]);
+      //     }}
+      //     onUpdateDocument={(updatedDocument) => {
+      //       setDocuments(documents.map(doc => doc.id === updatedDocument.id ? updatedDocument : doc));
+      //     }}
+      //     onDeleteDocument={(documentId) => {
+      //       setDocuments(documents.filter(doc => doc.id !== documentId));
+      //     }}
+      //     onAddFolder={(folder) => {
+      //       const newFolder: Folder = {
+      //         ...folder,
+      //         id: crypto.randomUUID(),
+      //         createdAt: Date.now(),
+      //       };
+      //       setFolders(prevFolders => [...prevFolders, newFolder]);
+      //     }}
+      //     onUpdateFolder={(updatedFolder) => {
+      //       setFolders(folders.map(folder => folder.id === updatedFolder.id ? updatedFolder : folder));
+      //     }}
+      //     onDeleteFolder={(folderId) => {
+      //       // Move documents from deleted folder to inbox
+      //       setDocuments(documents.map(doc =>
+      //         doc.folderId === folderId ? { ...doc, folderId: 'inbox' } : doc
+      //       ));
+      //       setFolders(folders.filter(folder => folder.id !== folderId));
+      //     }}
+      //   />;
       case 'Planner':
         return <PlannerPage />;
       case 'Workflows':

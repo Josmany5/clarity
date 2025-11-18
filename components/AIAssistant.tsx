@@ -73,6 +73,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textInputRef = useRef<HTMLInputElement>(null);
   const voiceModeRef = useRef(false); // Ref to track voiceMode immediately (no async delay)
+  const abortControllerRef = useRef<AbortController | null>(null); // For cancelling ongoing requests
 
   // Robust JSON extraction function that handles nested braces and code blocks
   const extractJSON = (text: string, prefix: string): string | null => {
@@ -238,6 +239,16 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     const textToSend = messageText || input.trim();
     if ((!textToSend && !attachedFile) || isLoading) return;
 
+    // Cancel any ongoing request
+    if (abortControllerRef.current) {
+      console.log('🛑 Aborting previous request');
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+
+    // Stop any ongoing speech
+    stopSpeaking();
+
     // Unlock audio on send button click (mobile Safari requirement)
     await unlockAudio();
 
@@ -260,6 +271,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
     removeAttachment(); // Clear attachment after sending
     setIsLoading(true);
 
+    // Create new AbortController for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     let displayMessage = ''; // Declare outside try block for TTS access
     let response = ''; // Declare outside try block for TTS access
 
@@ -270,11 +285,15 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
         prompt += `\n\nI've attached a file (${currentFileName}) with the following content:\n\n${currentFileContent}\n\nPlease analyze this and help me with my request.`;
       }
 
+      // Trim conversation history to last 10 messages to avoid token limits
+      const trimmedHistory = messages.slice(-10);
+      console.log(`📜 Conversation history: ${messages.length} messages (sending last ${trimmedHistory.length})`);
+
       // Get AI response with conversation history AND app context
       response = await getAIResponse(
         prompt,
         currentPage,
-        messages,
+        trimmedHistory,
         {
           tasks: tasks || [],
           notes: notes || [],
@@ -283,7 +302,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
           workspaces: workspaces || [],
           taskLists: taskLists || [],
           projects: projects || [],
-        }
+        },
+        abortController.signal
       );
 
       // Debug: Log raw response and context to see what Gemini is actually sending
@@ -928,16 +948,41 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentPage, onTaskCre
       }, 100);
 
     } catch (error: any) {
+      // Detailed error logging for debugging
+      console.error('═══════════ AI CHAT ERROR ═══════════');
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Is AbortError:', error.name === 'AbortError');
+      console.error('Messages count:', messages.length);
+      console.error('Voice mode active:', voiceModeRef.current);
+      console.error('═══════════════════════════════════════');
+
+      // Don't show error if request was intentionally aborted
+      if (error.name === 'AbortError') {
+        console.log('Request was cancelled, not showing error message');
+        return;
+      }
+
       const errorMessage: Message = {
         role: 'assistant',
         content: error.message.includes('API key')
           ? 'Please configure your API keys in Settings to use AI features.'
-          : 'Sorry, I encountered an error. Please try again.',
+          : error.message.includes('rate limit') || error.message.includes('429')
+          ? 'Rate limit reached. Please wait a moment and try again.'
+          : error.message.includes('token') || error.message.includes('too long')
+          ? 'Message is too long. Try starting a new chat or using shorter messages.'
+          : `Sorry, I encountered an error: ${error.message}. Please try again.`,
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+
+      // Clear abort controller
+      if (abortControllerRef.current === abortController) {
+        abortControllerRef.current = null;
+      }
 
       // Only speak user-facing messages, not JSON function calls
       const textToSpeak = displayMessage;

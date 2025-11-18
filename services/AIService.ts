@@ -130,7 +130,9 @@ export const startBrowserListening = (
 export const askGemini = async (
   systemPrompt: string,
   conversationHistory: Array<{ role: string; content: string }>,
-  userMessage: string
+  userMessage: string,
+  onChunk?: (chunk: string) => void,
+  abortSignal?: AbortSignal
 ): Promise<string> => {
   const response = await fetch('/api/ai', {
     method: 'POST',
@@ -142,7 +144,8 @@ export const askGemini = async (
         conversationHistory,
         message: userMessage
       }
-    })
+    }),
+    signal: abortSignal
   });
 
   if (!response.ok) {
@@ -369,6 +372,16 @@ function splitIntoSentences(text: string): string[] {
   return sentences.map(s => s.trim()).filter(s => s.length > 0);
 }
 
+// Helper: Batch sentences into groups (reduces API calls and pauses)
+function batchSentences(sentences: string[], batchSize: number = 3): string[] {
+  const batches: string[] = [];
+  for (let i = 0; i < sentences.length; i += batchSize) {
+    const batch = sentences.slice(i, i + batchSize).join(' ');
+    batches.push(batch);
+  }
+  return batches;
+}
+
 // Helper: Process audio queue sequentially
 async function processAudioQueue(): Promise<void> {
   if (isPlayingQueue || audioQueue.length === 0) {
@@ -435,34 +448,68 @@ async function playWithWebAudio(base64Audio: string): Promise<void> {
   });
 }
 
-// Fetch TTS audio for a text chunk
-async function fetchTTSAudio(text: string, voice: 'female' | 'male' = 'female'): Promise<string> {
-  const response = await fetch('/api/ai', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'speak',
-      data: {
-        text,
-        voice
+// Fetch TTS audio for a text chunk with retry logic
+async function fetchTTSAudio(text: string, voice: 'female' | 'male' = 'female', retries: number = 2): Promise<string> {
+  let lastError;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      console.log(`🎤 TTS attempt ${attempt + 1}/${retries + 1} for text: "${text.substring(0, 50)}..."`);
+
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'speak',
+          data: {
+            text,
+            voice
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error(`❌ TTS API error (${response.status}):`, errorData);
+
+        // If rate limited, wait before retry
+        if (response.status === 429) {
+          const waitTime = Math.pow(2, attempt) * 1000; // Exponential backoff: 1s, 2s, 4s
+          console.log(`⏳ Rate limited, waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+          lastError = new Error(`TTS rate limit (429), attempt ${attempt + 1}`);
+          continue;
+        }
+
+        throw new Error(`Google Cloud TTS request failed (${response.status})`);
       }
-    })
-  });
 
-  if (!response.ok) {
-    throw new Error('Google Cloud TTS request failed');
+      const data = await response.json();
+
+      if (!data.audio) {
+        throw new Error('Google Cloud TTS not configured on server');
+      }
+
+      console.log(`✅ TTS audio fetched successfully`);
+      return data.audio;
+
+    } catch (error) {
+      console.error(`❌ TTS fetch error on attempt ${attempt + 1}:`, error);
+      lastError = error;
+
+      // Wait before retry (exponential backoff)
+      if (attempt < retries) {
+        const waitTime = Math.pow(2, attempt) * 1000;
+        console.log(`⏳ Waiting ${waitTime}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
+    }
   }
 
-  const data = await response.json();
-
-  if (!data.audio) {
-    throw new Error('Google Cloud TTS not configured on server');
-  }
-
-  return data.audio;
+  throw lastError || new Error('TTS request failed after retries');
 }
 
-// Google Cloud TTS (HD voices) with sentence-by-sentence streaming
+// Google Cloud TTS (HD voices) with batched sentence streaming
 export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male' = 'female'): Promise<void> => {
   // Stop any current playback before starting new one
   stopSpeaking();
@@ -471,45 +518,56 @@ export const speakWithGoogleCloud = async (text: string, voice: 'female' | 'male
   const chunks = chunkText(text, 4500);
   console.log(`🎤 Split text into ${chunks.length} chunks for TTS`);
 
-  // For each chunk, split into sentences and queue them
+  // For each chunk, batch sentences together to reduce API calls and pauses
   for (const chunk of chunks) {
     const sentences = splitIntoSentences(chunk);
-    console.log(`🎤 Processing ${sentences.length} sentences in chunk`);
+    console.log(`🎤 Split into ${sentences.length} sentences`);
 
-    for (const sentence of sentences) {
-      // Queue each sentence for playback
+    // Batch sentences together (3-5 sentences per API call instead of 1)
+    const batches = batchSentences(sentences, 4);
+    console.log(`🎤 Batched into ${batches.length} groups (reduces API calls from ${sentences.length} to ${batches.length})`);
+
+    for (const batch of batches) {
+      // Queue each batch for playback
       audioQueue.push(async () => {
-        console.log(`🎤 Fetching TTS for sentence: "${sentence.substring(0, 50)}..."`);
-        const audioBase64 = await fetchTTSAudio(sentence, voice);
+        console.log(`🎤 Fetching TTS for batch: "${batch.substring(0, 60)}..."`);
 
-        // Play with Web Audio API if available, otherwise fallback
-        if (globalAudioContext && isAudioUnlocked) {
-          return playWithWebAudio(audioBase64);
-        } else {
-          // Fallback to Audio element
-          const audioBlob = base64ToBlob(audioBase64, 'audio/mpeg');
-          const audioUrl = URL.createObjectURL(audioBlob);
-          const audio = new Audio(audioUrl);
+        try {
+          const audioBase64 = await fetchTTSAudio(batch, voice);
 
-          return new Promise<void>((resolve, reject) => {
-            audio.onended = () => {
-              URL.revokeObjectURL(audioUrl);
-              resolve();
-            };
-            audio.onerror = () => {
-              URL.revokeObjectURL(audioUrl);
-              reject(new Error('Audio playback failed'));
-            };
+          // Play with Web Audio API if available, otherwise fallback
+          if (globalAudioContext && isAudioUnlocked) {
+            return playWithWebAudio(audioBase64);
+          } else {
+            // Fallback to Audio element
+            const audioBlob = base64ToBlob(audioBase64, 'audio/mpeg');
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
 
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-              playPromise.catch((error) => {
-                console.error('❌ Audio playback blocked:', error);
+            return new Promise<void>((resolve, reject) => {
+              audio.onended = () => {
                 URL.revokeObjectURL(audioUrl);
-                reject(error);
-              });
-            }
-          });
+                resolve();
+              };
+              audio.onerror = () => {
+                URL.revokeObjectURL(audioUrl);
+                reject(new Error('Audio playback failed'));
+              };
+
+              const playPromise = audio.play();
+              if (playPromise !== undefined) {
+                playPromise.catch((error) => {
+                  console.error('❌ Audio playback blocked:', error);
+                  URL.revokeObjectURL(audioUrl);
+                  reject(error);
+                });
+              }
+            });
+          }
+        } catch (error) {
+          console.error('❌ TTS batch failed:', error);
+          // Don't break the queue, just skip this batch
+          throw error;
         }
       });
     }
@@ -590,7 +648,8 @@ export const getAIResponse = async (
   userMessage: string,
   currentPage: string,
   conversationHistory?: Array<{ role: string; content: string }>,
-  appContext?: AppContext
+  appContext?: AppContext,
+  abortSignal?: AbortSignal
 ): Promise<string> => {
   // Build context for system prompt
   const context: AIContext = {
@@ -614,6 +673,6 @@ export const getAIResponse = async (
   // Build system prompt with context
   const systemPrompt = buildSystemPrompt(context);
 
-  // Return structured data to Gemini API
-  return await askGemini(systemPrompt, conversationHistory || [], userMessage);
+  // Return structured data to Gemini API with abort signal
+  return await askGemini(systemPrompt, conversationHistory || [], userMessage, undefined, abortSignal);
 };
