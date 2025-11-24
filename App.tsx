@@ -19,9 +19,15 @@ import { ChatHistoryPage } from './components/ChatHistoryPage';
 import { EventsPage } from './components/EventsPage';
 import { SearchResultsPage } from './components/SearchResultsPage';
 import { GoalsPage } from './components/GoalsPage';
+import { AICanvasPage } from './components/AICanvasPage';
+import { AuthPage } from './components/AuthPage';
+import { LandingPage } from './components/LandingPage';
+import { OnboardingFlow } from './components/OnboardingFlow';
 
 import { AIAssistant } from './components/AIAssistant';
 import { FloatingTimer } from './components/FloatingTimer';
+import { AuthService } from './services/AuthService';
+import type { User } from '@supabase/supabase-js';
 
 export interface Note {
   id: string;
@@ -128,7 +134,15 @@ export interface Workspace {
 }
 
 const App: React.FC = () => {
+  // Auth state
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [showAuthPage, setShowAuthPage] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   const [activePage, setActivePage] = useState('Dashboard');
+  const [canvasMode, setCanvasMode] = useState<'DO' | 'REVIEW' | 'PLAN'>('DO');
+  const [canvasInsertFrameFn, setCanvasInsertFrameFn] = useState<((frameType: 'task-list' | 'project-card' | 'calendar' | 'notes', filterType?: 'today' | 'tomorrow' | 'week') => void) | null>(null);
   const [themeStyle, setThemeStyle] = useState<'minimalist' | 'glass' | 'terminal' | 'pastel'>(() => {
     try {
       const saved = window.localStorage.getItem('themeStyle');
@@ -263,6 +277,23 @@ const App: React.FC = () => {
       return false;
     }
   });
+
+  // Auth effect - check for existing session and listen for changes
+  useEffect(() => {
+    // Check for existing session
+    AuthService.getUser().then(user => {
+      setUser(user);
+      setAuthLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = AuthService.onAuthStateChange((user) => {
+      setUser(user);
+      setAuthLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem('notes', JSON.stringify(notes));
@@ -549,6 +580,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    await AuthService.signOut();
+    setUser(null);
+  };
+
   const renderPage = () => {
     switch (activePage) {
       case 'Dashboard':
@@ -622,6 +658,20 @@ const App: React.FC = () => {
           onAddGoal={handleAddGoal}
           onUpdateGoal={handleUpdateGoal}
           onDeleteGoal={handleDeleteGoal}
+        />;
+      case 'Canvas':
+        return <AICanvasPage
+          theme={themeStyle}
+          tasks={tasks}
+          notes={notes}
+          events={events}
+          goals={goals}
+          projects={projects}
+          workspaces={workspaces}
+          taskLists={taskLists}
+          mode={canvasMode}
+          onModeChange={setCanvasMode}
+          onInsertFrameReady={(fn) => setCanvasInsertFrameFn(() => fn)}
         />;
       case 'Calendar':
         return <CalendarPage
@@ -746,6 +796,65 @@ const App: React.FC = () => {
     }
   };
 
+  // Show loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div className={`theme-${themeStyle} ${themeMode}`}>
+        <div className="min-h-screen bg-bg flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-accent border-t-transparent"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show landing page if not logged in, not on auth page, and not in onboarding
+  if (!user && !showAuthPage && !showOnboarding) {
+    return (
+      <LandingPage
+        onGetStarted={() => setShowOnboarding(true)}
+        onSignIn={() => setShowAuthPage(true)}
+      />
+    );
+  }
+
+  // Show onboarding (includes signup)
+  if (!user && showOnboarding) {
+    return (
+      <OnboardingFlow
+        onComplete={() => {
+          setShowOnboarding(false);
+        }}
+        onGoToSignIn={() => {
+          setShowOnboarding(false);
+          setShowAuthPage(true);
+        }}
+      />
+    );
+  }
+
+  // Show auth page if requested
+  if (!user && showAuthPage) {
+    return (
+      <div className={`theme-${themeStyle} ${themeMode}`}>
+        <div className="relative">
+          <button
+            onClick={() => setShowAuthPage(false)}
+            className="absolute top-4 left-4 z-50 px-4 py-2 text-sm text-text-muted hover:text-text transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to home
+          </button>
+          <AuthPage onAuthSuccess={() => {
+            AuthService.getUser().then(setUser);
+            setShowAuthPage(false);
+          }} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`theme-${themeStyle} ${themeMode}`}>
       <div className="min-h-screen bg-bg-primary text-text-primary font-sans transition-colors duration-300">
@@ -768,6 +877,11 @@ const App: React.FC = () => {
               toggleTheme={toggleMode}
               searchQuery={searchQuery}
               onSearchChange={handleSearch}
+              canvasMode={activePage === 'Canvas' ? canvasMode : undefined}
+              onCanvasModeChange={activePage === 'Canvas' ? setCanvasMode : undefined}
+              onCanvasInsertFrame={activePage === 'Canvas' && canvasInsertFrameFn ? canvasInsertFrameFn : undefined}
+              userEmail={user?.email}
+              onSignOut={handleSignOut}
             />
             <div className="flex-1 p-4 md:p-8 overflow-y-auto">
               {renderPage()}

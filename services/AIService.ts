@@ -134,6 +134,10 @@ export const askGemini = async (
   onChunk?: (chunk: string) => void,
   abortSignal?: AbortSignal
 ): Promise<string> => {
+  console.log('🤖 [askGemini] Called with message:', userMessage.substring(0, 50) + '...');
+  console.log('🤖 [askGemini] Conversation history:', conversationHistory.length, 'messages');
+  console.log('🤖 [askGemini] Fetching /api/ai...');
+
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -148,12 +152,16 @@ export const askGemini = async (
     signal: abortSignal
   });
 
+  console.log('🤖 [askGemini] Response status:', response.status, response.statusText);
+
   if (!response.ok) {
     const error = await response.json();
+    console.error('🤖 [askGemini] ❌ Error response:', error);
     throw new Error(error.error || 'AI request failed');
   }
 
   const data = await response.json();
+  console.log('🤖 [askGemini] ✅ Success, response length:', data.response?.length || 0);
   return data.response;
 };
 
@@ -651,6 +659,10 @@ export const getAIResponse = async (
   appContext?: AppContext,
   abortSignal?: AbortSignal
 ): Promise<string> => {
+  console.log('📡 [getAIResponse] Called from page:', currentPage);
+  console.log('📡 [getAIResponse] User message:', userMessage.substring(0, 50) + '...');
+  console.log('📡 [getAIResponse] Conversation history:', conversationHistory?.length || 0, 'messages');
+
   // Build context for system prompt
   const context: AIContext = {
     currentPage,
@@ -670,9 +682,18 @@ export const getAIResponse = async (
     projects: appContext?.projects || [],
   };
 
+  console.log('📡 [getAIResponse] Context:', {
+    tasks: context.taskCount,
+    notes: context.noteCount,
+    events: context.eventCount,
+    goals: context.goalCount,
+    projects: context.projectCount
+  });
+
   // Build system prompt with context
   const systemPrompt = buildSystemPrompt(context);
 
+  console.log('📡 [getAIResponse] Calling askGemini...');
   // Return structured data to Gemini API with abort signal
   return await askGemini(systemPrompt, conversationHistory || [], userMessage, undefined, abortSignal);
 };

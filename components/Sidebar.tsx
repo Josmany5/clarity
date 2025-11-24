@@ -56,6 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
   const navItems = [
     { id: 'Dashboard', icon: <HomeIcon />, label: 'Dashboard' },
     { id: 'Workspaces', icon: <WorkspaceIcon />, label: 'Workspaces' },
+    { id: 'Canvas', icon: <PlannerIcon />, label: 'Canvas' },
     { id: 'Notes', icon: <NoteIcon />, label: 'Notes' },
     { id: 'Tasks', icon: <HeartIcon />, label: 'Tasks' },
     { id: 'Events', icon: <CalendarIcon />, label: 'Events' },

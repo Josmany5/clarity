@@ -25,6 +25,7 @@
     "test:all:advanced": "npm run test:advanced"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.84.0",
     "@tiptap/extension-code-block-lowlight": "^3.10.1",
     "@tiptap/extension-link": "^3.10.1",
     "@tiptap/extension-task-item": "^3.10.1",

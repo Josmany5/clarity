@@ -16,6 +16,9 @@ const GOOGLE_CLOUD_TTS_KEY = process.env.GOOGLE_CLOUD_TTS_KEY;
 app.post('/api/ai', async (req, res) => {
   const { action, data } = req.body;
 
+  // Log incoming request
+  console.log(`📨 Incoming API request - Action: ${action}`);
+
   if (!GEMINI_API_KEY) {
     return res.status(500).json({ error: 'Gemini API key not configured' });
   }
@@ -24,6 +27,8 @@ app.post('/api/ai', async (req, res) => {
     // Handle chat action
     if (action === 'chat') {
       const { systemPrompt, context, conversationHistory, message } = data;
+      console.log(`💬 Chat request - Message: "${message.substring(0, 50)}..."`);
+      console.log(`📊 Conversation history length: ${conversationHistory?.length || 0}`);
 
       // Support both systemPrompt (from app) and context (from tests)
       const actualSystemPrompt = systemPrompt || context || 'You are a helpful assistant.';
@@ -47,8 +52,9 @@ app.post('/api/ai', async (req, res) => {
         parts: [{ text: message }]
       });
 
+      console.log(`🚀 Calling Gemini API (gemini-2.5-flash-lite)...`);
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
